@@ -7,6 +7,7 @@ import { RegionsModule } from './regions/regions.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { CentersModule } from './centers/centers.module';
 import { SitesModule } from './sites/sites.module';
+import { AreasModule } from './areas/areas.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SitesModule } from './sites/sites.module';
     DepartmentsModule,
     CentersModule,
     SitesModule,
+    AreasModule,
   ],
   controllers: [],
   providers: [],
