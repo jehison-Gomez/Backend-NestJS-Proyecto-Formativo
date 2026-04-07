@@ -6,6 +6,7 @@ import { join } from 'path';
 import { RegionsModule } from './regions/regions.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { CentersModule } from './centers/centers.module';
+import { SitesModule } from './sites/sites.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CentersModule } from './centers/centers.module';
     RegionsModule,
     DepartmentsModule,
     CentersModule,
+    SitesModule,
   ],
   controllers: [],
   providers: [],
