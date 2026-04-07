@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MaterialRepositorio, MATERIAL_REPOSITORIO } from '../../dominio/material.repositorio';
+import { MATERIAL_REPOSITORIO } from '../../dominio/material.repositorio';
+import type { MaterialRepositorio } from '../../dominio/material.repositorio';
 import { BuscarUnMaterialCasoUso } from './buscar-un-material.caso-uso';
 
 @Injectable()
@@ -11,7 +12,7 @@ export class EliminarMaterialCasoUso {
   ) {}
 
   async ejecutar(id: number): Promise<void> {
-    await this.buscarUno.ejecutar(id); // verifica que existe
+    await this.buscarUno.ejecutar(id);
     await this.repositorio.eliminar(id);
   }
 }

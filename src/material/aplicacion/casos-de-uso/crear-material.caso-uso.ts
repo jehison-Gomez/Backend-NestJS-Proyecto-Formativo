@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MaterialRepositorio, MATERIAL_REPOSITORIO } from '../../dominio/material.repositorio';
+import { MATERIAL_REPOSITORIO } from '../../dominio/material.repositorio';
+import type { MaterialRepositorio } from '../../dominio/material.repositorio';
 import { Material, TipoMaterial } from '../../dominio/material.entidad';
 import { CrearMaterialDto } from '../dto/crear-material.dto';
 import { manejarErroresDB } from '../manejar-errores-db';
@@ -23,8 +24,16 @@ export class CrearMaterialCasoUso {
     material.lote = dto.lote;
     material.estadoFisico = dto.estadoFisico;
     material.sitioId = dto.sitioId;
-    if (dto.fechaVencimiento) material.fechaVencimiento = new Date(dto.fechaVencimiento);
-    try { return await this.repositorio.guardar(material); }
-    catch (error) { manejarErroresDB(error); }
+
+    if (dto.fechaVencimiento) {
+      material.fechaVencimiento = new Date(dto.fechaVencimiento);
+    }
+
+    try {
+      return await this.repositorio.guardar(material);
+    } catch (error) {
+      manejarErroresDB(error);
+      throw error;
+    }
   }
 }

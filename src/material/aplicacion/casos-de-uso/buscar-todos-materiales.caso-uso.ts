@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MaterialRepositorio, MATERIAL_REPOSITORIO } from '../../dominio/material.repositorio';
+import { MATERIAL_REPOSITORIO } from '../../dominio/material.repositorio';
+import type { MaterialRepositorio } from '../../dominio/material.repositorio'; 
+
 import { Material } from '../../dominio/material.entidad';
 
 @Injectable()

@@ -1,46 +1,18 @@
 import { IsString, IsOptional, IsEnum, IsDateString, MinLength, IsInt } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { TipoMaterial } from '../../dominio/material.entidad';
 
 export class CrearMaterialDto {
-  @IsString({ message: 'El nombre debe ser texto' })
-  @MinLength(2, { message: 'El nombre debe tener mínimo 2 caracteres' })
-  nombre: string;
+  @ApiProperty() @IsString() @MinLength(2) nombre: string;
+  @ApiProperty({ enum: TipoMaterial }) @IsEnum(TipoMaterial) tipo: TipoMaterial;
+  @ApiProperty() @IsString() unidadMedida: string;
 
-  @IsOptional()
-  @IsString()
-  codigoUncs?: string;
-
-  @IsOptional()
-  @IsString()
-  codigoSku?: string;
-
-  @IsOptional()
-  @IsString()
-  codigoBarras?: string;
-
-  @IsEnum(TipoMaterial, { message: 'Tipo debe ser CONSUMIBLE o DEVOLUTIVO' })
-  tipo: TipoMaterial;
-
-  @IsOptional()
-  @IsString()
-  categoria?: string;
-
-  @IsString({ message: 'Unidad de medida debe ser texto' })
-  unidadMedida: string;
-
-  @IsOptional()
-  @IsDateString({}, { message: 'Fecha de vencimiento debe ser una fecha válida' })
-  fechaVencimiento?: string;
-
-  @IsOptional()
-  @IsString()
-  lote?: string;
-
-  @IsOptional()
-  @IsString()
-  estadoFisico?: string;
-
-  @IsOptional()
-  @IsInt()
-  sitioId?: number;
+  @ApiPropertyOptional() @IsOptional() @IsString() codigoUncs?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() codigoSku?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() codigoBarras?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() categoria?: string;
+  @ApiPropertyOptional() @IsOptional() @IsDateString() fechaVencimiento?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() lote?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() estadoFisico?: string;
+  @ApiPropertyOptional() @IsOptional() @IsInt() sitioId?: number;
 }

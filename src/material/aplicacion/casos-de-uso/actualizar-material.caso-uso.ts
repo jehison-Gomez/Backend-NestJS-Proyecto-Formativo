@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MaterialRepositorio, MATERIAL_REPOSITORIO } from '../../dominio/material.repositorio';
-import { Material } from '../../dominio/material.entidad';
+import { MATERIAL_REPOSITORIO } from '../../dominio/material.repositorio';
+import type { MaterialRepositorio } from '../../dominio/material.repositorio'
+import type { Material } from '../../dominio/material.entidad';
 import { ActualizarMaterialDto } from '../dto/actualizar-material.dto';
 import { BuscarUnMaterialCasoUso } from './buscar-un-material.caso-uso';
 import { manejarErroresDB } from '../manejar-errores-db';
