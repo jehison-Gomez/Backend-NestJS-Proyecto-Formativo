@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# Carpeta con datos persistentes de PostgreSQL
+postgres/
+
 # Logs
 logs
 *.log
