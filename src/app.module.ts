@@ -4,6 +4,7 @@ import { UsuarioModule } from './modules/usuario/usuario.module';
 import { UsuarioOrmEntity } from './modules/usuario/infrastructure/typeorm/usuario.orm-entity';
 import { RolOrmEntity } from './entities/rol.orm-entity';
 import { PermisoOrmEntity } from './entities/permiso.orm-entity';
+import { RolPermisoOrmEntity } from './entities/rol-permiso.orm-entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { PermisoOrmEntity } from './entities/permiso.orm-entity';
       username: process.env.DB_USERNAME ?? 'nest',
       password: process.env.DB_PASSWORD ?? 'nest',
       database: process.env.DB_DATABASE ?? 'hexagonal_db',
-      entities: [UsuarioOrmEntity, RolOrmEntity, PermisoOrmEntity],
+      entities: [UsuarioOrmEntity, RolOrmEntity, PermisoOrmEntity, RolPermisoOrmEntity],
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
       logging: process.env.DB_LOGGING === 'true',
     }),
