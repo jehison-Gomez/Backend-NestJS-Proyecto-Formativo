@@ -1,4 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { DepartmentOrmEntity } from 'src/departments/infrastructure/persistence/departamento.orm-entity';
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('region')
 export class RegionOrmEntity {
@@ -8,6 +9,9 @@ export class RegionOrmEntity {
 
     @Column('text', { unique: true })
     name: string;
+    
+    @OneToMany(() => DepartmentOrmEntity, (department) => department.region)
+    departments: DepartmentOrmEntity[];
 
     @BeforeInsert()
     @BeforeUpdate()

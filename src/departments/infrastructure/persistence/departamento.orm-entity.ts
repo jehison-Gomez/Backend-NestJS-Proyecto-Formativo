@@ -1,6 +1,7 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { RegionOrmEntity } from 'src/regions/infrastructure/persistence/region.orm-entity';
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('departamento')
+@Entity('departments')
 export class DepartmentOrmEntity {
 
     @PrimaryGeneratedColumn('uuid')
@@ -8,6 +9,16 @@ export class DepartmentOrmEntity {
 
     @Column('text', { unique: true })
     name: string;
+
+    @Column('uuid')
+    region_id: string;
+
+    @ManyToOne(() => RegionOrmEntity, (region) => region.departments, {
+        nullable: false,
+        onDelete: 'RESTRICT',
+    })
+    @JoinColumn({ name: 'region_id' })
+    region: RegionOrmEntity;
 
     @BeforeInsert()
     @BeforeUpdate()

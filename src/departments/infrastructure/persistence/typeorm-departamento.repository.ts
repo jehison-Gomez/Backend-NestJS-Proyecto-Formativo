@@ -14,7 +14,7 @@ export class TypeOrmDepartmentRepository implements DepartmentRepository {
     ) {}
 
     async save(department: Department): Promise<Department> {
-        const orm = this.repo.create({ name: department.name });
+        const orm = this.repo.create({ name: department.name, region_id: department.region_id });
         const saved = await this.repo.save(orm);
         return this.toDomain(saved);
     }
@@ -38,6 +38,7 @@ export class TypeOrmDepartmentRepository implements DepartmentRepository {
         const department = new Department();
         department.id = orm.id;
         department.name = orm.name;
+        department.region_id = orm.region_id;
         return department;
     }
 }
