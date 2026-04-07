@@ -14,7 +14,7 @@ export class TypeOrmAreaRepository implements AreaRepository {
   ) {}
 
   async save(area: Area): Promise<Area> {
-    const orm = this.repo.create({ name: area.name });
+    const orm = this.repo.create({ name: area.name, site_id: area.site_id });
     const saved = await this.repo.save(orm);
     return this.toDomain(saved);
   }
@@ -38,6 +38,7 @@ export class TypeOrmAreaRepository implements AreaRepository {
     const area = new Area();
     area.id = orm.id;
     area.name = orm.name;
+    area.site_id = orm.site_id;
     return area;
   }
 }

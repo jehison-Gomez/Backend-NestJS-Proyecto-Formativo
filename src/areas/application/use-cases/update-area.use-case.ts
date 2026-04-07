@@ -17,6 +17,7 @@ export class UpdateAreaUseCase {
     async execute(id: string, dto: UpdateAreaDto): Promise<Area> {
         const area = await this.findOne.execute(id);
         area.name = dto.name ?? area.name;
+        area.site_id = dto.site_id ?? area.site_id;
 
         try {
             return await this.repo.save(area);

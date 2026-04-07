@@ -14,47 +14,21 @@ import { FindAllAreasUseCase } from './application/use-cases/find-all-areas.use-
 import { FindOneAreaUseCase } from './application/use-cases/find-one-area.use-case';
 import { UpdateAreaUseCase } from './application/use-cases/update-area.use-case';
 import { RemoveAreaUseCase } from './application/use-cases/remove-area.use-case';
+import { AREA_REPOSITORY } from './domain/area.repository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AreaOrmEntity])
-  ],
+  imports: [TypeOrmModule.forFeature([AreaOrmEntity])],
   controllers: [AreasController],
   providers: [
-    // Adaptador
-    TypeOrmAreaRepository,
-
-    // Casos de uso
     {
-      provide: CreateAreaUseCase,
-      useFactory: (repo: TypeOrmAreaRepository) =>
-        new CreateAreaUseCase(repo),
-      inject: [TypeOrmAreaRepository],
+      provide: AREA_REPOSITORY,
+      useClass: TypeOrmAreaRepository,
     },
-    {
-      provide: FindAllAreasUseCase,
-      useFactory: (repo: TypeOrmAreaRepository) =>
-        new FindAllAreasUseCase(repo),
-      inject: [TypeOrmAreaRepository],
-    },
-    {
-      provide: FindOneAreaUseCase,
-      useFactory: (repo: TypeOrmAreaRepository) =>
-        new FindOneAreaUseCase(repo),
-      inject: [TypeOrmAreaRepository],
-    },
-    {
-      provide: UpdateAreaUseCase,
-      useFactory: (repo: TypeOrmAreaRepository, findOne: FindOneAreaUseCase) =>
-        new UpdateAreaUseCase(repo, findOne),
-      inject: [TypeOrmAreaRepository, FindOneAreaUseCase],
-    },
-    {
-      provide: RemoveAreaUseCase,
-      useFactory: (repo: TypeOrmAreaRepository, findOne: FindOneAreaUseCase) =>
-        new RemoveAreaUseCase(repo, findOne),
-      inject: [TypeOrmAreaRepository, FindOneAreaUseCase],
-    },
+    CreateAreaUseCase,
+    FindAllAreasUseCase,
+    FindOneAreaUseCase,
+    UpdateAreaUseCase,
+    RemoveAreaUseCase,
   ],
 })
 export class AreasModule {}

@@ -14,6 +14,7 @@ export class CreateAreaUseCase {
     async execute(dto: CreateAreaDto): Promise<Area> {
         const area = new Area();
         area.name = dto.name;
+        area.site_id = dto.site_id;
 
         try {
             return await this.repo.save(area);

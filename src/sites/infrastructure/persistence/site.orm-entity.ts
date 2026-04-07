@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { CenterOrmEntity } from "src/centers/infrastructure/persistence/center.orm-entity";
+import { AreaOrmEntity } from "src/areas/infrastructure/persistence/area.orm-entity";
 
 @Entity('sede')
 export class SiteOrmEntity {
@@ -22,4 +23,7 @@ export class SiteOrmEntity {
    })
    @JoinColumn({ name: 'center_id' })
    center: CenterOrmEntity;
+
+   @OneToMany(() => AreaOrmEntity, (area) => area.site)
+   areas: AreaOrmEntity[];
 }
