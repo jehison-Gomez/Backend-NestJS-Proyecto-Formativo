@@ -1,4 +1,4 @@
-import { IsEnum, IsString, MinLength } from "class-validator";
+import { IsEnum, IsString, MinLength, IsUUID } from "class-validator";
 import { SpaceType } from "src/spaces/domain/enum";
 
 export class CreateSpaceDto {
@@ -9,4 +9,7 @@ export class CreateSpaceDto {
 
     @IsEnum(SpaceType, { message: `El tipo debe ser uno de los siguientes: ${Object.values(SpaceType).join(', ')}` })
     type: SpaceType;
+
+    @IsUUID('4', { message: 'El area_id debe ser un UUID válido' })
+    area_id: string;
 }

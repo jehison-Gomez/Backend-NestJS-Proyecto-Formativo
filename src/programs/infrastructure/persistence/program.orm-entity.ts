@@ -1,7 +1,7 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { AreaOrmEntity } from 'src/areas/infrastructure/persistence/area.orm-entity';
 
-@Entity('program')
+@Entity('programs')
 export class ProgramOrmEntity {
 
   @PrimaryGeneratedColumn('uuid')

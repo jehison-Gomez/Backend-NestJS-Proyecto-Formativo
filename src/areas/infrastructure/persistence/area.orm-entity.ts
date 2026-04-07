@@ -1,8 +1,9 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { SiteOrmEntity } from "src/sites/infrastructure/persistence/site.orm-entity";
 import { ProgramOrmEntity } from "src/programs/infrastructure/persistence/program.orm-entity";
+import { SpaceOrmEntity } from "src/spaces/infrastructure/persistence/space.orm-entity";
 
-@Entity('area')
+@Entity('areas')
 export class AreaOrmEntity {
 
     @PrimaryGeneratedColumn('uuid')
@@ -23,6 +24,9 @@ export class AreaOrmEntity {
 
     @OneToMany(() => ProgramOrmEntity, (program) => program.area)
     programs: ProgramOrmEntity[];
+
+    @OneToMany(() => SpaceOrmEntity, (space) => space.area)
+    spaces: SpaceOrmEntity[];
 
     @BeforeInsert()
     @BeforeUpdate()

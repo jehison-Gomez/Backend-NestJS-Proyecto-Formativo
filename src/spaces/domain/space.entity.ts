@@ -4,4 +4,5 @@ export class Space {
     id: string;
     name: string;
     type: SpaceType;
+    area_id: string;
 }

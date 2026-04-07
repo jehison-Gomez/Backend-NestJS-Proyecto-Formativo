@@ -18,6 +18,7 @@ export class UpdateSpaceUseCase {
         const space = await this.findOne.execute(id);
         space.name = dto.name ?? space.name;
         space.type = dto.type ?? space.type;
+        space.area_id = dto.area_id ?? space.area_id;
         try {
             return await this.repo.save(space);
         } catch (error) {

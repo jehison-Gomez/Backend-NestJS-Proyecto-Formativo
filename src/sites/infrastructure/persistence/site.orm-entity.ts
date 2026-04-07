@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMan
 import { CenterOrmEntity } from "src/centers/infrastructure/persistence/center.orm-entity";
 import { AreaOrmEntity } from "src/areas/infrastructure/persistence/area.orm-entity";
 
-@Entity('sede')
+@Entity('sites')
 export class SiteOrmEntity {
 
    @PrimaryGeneratedColumn('uuid')

@@ -15,6 +15,7 @@ export class CreateSpaceUseCase {
         const space = new Space();
         space.name = dto.name;
         space.type = dto.type;
+        space.area_id = dto.area_id;
 
         try {
             return await this.repo.save(space);

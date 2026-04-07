@@ -1,7 +1,7 @@
 import { DepartmentOrmEntity } from 'src/departments/infrastructure/persistence/departamento.orm-entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('region')
+@Entity('regions')
 export class RegionOrmEntity {
 
     @PrimaryGeneratedColumn('uuid')

@@ -1,5 +1,6 @@
 import { SpaceType } from "src/spaces/domain/enum";
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { AreaOrmEntity } from "src/areas/infrastructure/persistence/area.orm-entity";
 
 @Entity('spaces')
 export class SpaceOrmEntity {
@@ -15,6 +16,16 @@ export class SpaceOrmEntity {
         enum: SpaceType,
     })
     type: SpaceType;
+
+    @Column('uuid')
+    area_id: string;
+
+    @ManyToOne(() => AreaOrmEntity, (area) => area.spaces, {
+        nullable: false,
+        onDelete: 'RESTRICT',
+    })
+    @JoinColumn({ name: 'area_id' })
+    area: AreaOrmEntity;
 
     @BeforeInsert()
     @BeforeUpdate()

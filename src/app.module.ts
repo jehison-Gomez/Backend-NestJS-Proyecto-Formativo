@@ -26,6 +26,7 @@ import { SpacesModule } from './spaces/spaces.module';
         database: process.env.DB_NAME,
         autoLoadEntities: true,
         synchronize: true,
+        dropSchema: true,
       }),
     RegionsModule,
     DepartmentsModule,

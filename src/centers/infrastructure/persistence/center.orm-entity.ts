@@ -2,7 +2,7 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn, Man
 import { DepartmentOrmEntity } from 'src/departments/infrastructure/persistence/departamento.orm-entity';
 import { SiteOrmEntity } from 'src/sites/infrastructure/persistence/site.orm-entity';
 
-@Entity('center')
+@Entity('centers')
 export class CenterOrmEntity {
 
     @PrimaryGeneratedColumn('uuid')

@@ -15,7 +15,7 @@ export class TypeOrmSpaceRepository implements SpaceRepository {
   ) {}
 
   async save(space: Space): Promise<Space> {
-    const orm = this.repo.create({ name: space.name, type: space.type });
+    const orm = this.repo.create({ name: space.name, type: space.type, area_id: space.area_id });
     const saved = await this.repo.save(orm);
     return this.toDomain(saved);
   }
@@ -40,6 +40,7 @@ export class TypeOrmSpaceRepository implements SpaceRepository {
     space.id = orm.id;
     space.name = orm.name;
     space.type = orm.type as any; // casteo necesario por el enum
+    space.area_id = orm.area_id;
     return space;
   }
 }

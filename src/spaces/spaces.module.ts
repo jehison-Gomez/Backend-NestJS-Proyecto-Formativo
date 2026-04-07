@@ -15,6 +15,9 @@ import { FindOneSpaceUseCase } from './application/use-cases/find-one-space.use-
 import { UpdateSpaceUseCase } from './application/use-cases/update-space.use-case';
 import { RemoveSpaceUseCase } from './application/use-cases/remove-space.use-case';
 
+// Domain
+import { SPACE_REPOSITORY } from './domain/space.repository';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([SpaceOrmEntity])
@@ -22,39 +25,17 @@ import { RemoveSpaceUseCase } from './application/use-cases/remove-space.use-cas
   controllers: [SpacesController],
   providers: [
     // Adaptador
-    TypeOrmSpaceRepository,
+    {
+      provide: SPACE_REPOSITORY,
+      useClass: TypeOrmSpaceRepository,
+    },
 
     // Casos de uso
-    {
-      provide: CreateSpaceUseCase,
-      useFactory: (repo: TypeOrmSpaceRepository) =>
-        new CreateSpaceUseCase(repo),
-      inject: [TypeOrmSpaceRepository],
-    },
-    {
-      provide: FindAllSpacesUseCase,
-      useFactory: (repo: TypeOrmSpaceRepository) =>
-        new FindAllSpacesUseCase(repo),
-      inject: [TypeOrmSpaceRepository],
-    },
-    {
-      provide: FindOneSpaceUseCase,
-      useFactory: (repo: TypeOrmSpaceRepository) =>
-        new FindOneSpaceUseCase(repo),
-      inject: [TypeOrmSpaceRepository],
-    },
-    {
-      provide: UpdateSpaceUseCase,
-      useFactory: (repo: TypeOrmSpaceRepository, findOne: FindOneSpaceUseCase) =>
-        new UpdateSpaceUseCase(repo, findOne),
-      inject: [TypeOrmSpaceRepository, FindOneSpaceUseCase],
-    },
-    {
-      provide: RemoveSpaceUseCase,
-      useFactory: (repo: TypeOrmSpaceRepository, findOne: FindOneSpaceUseCase) =>
-        new RemoveSpaceUseCase(repo, findOne),
-      inject: [TypeOrmSpaceRepository, FindOneSpaceUseCase],
-    },
+    CreateSpaceUseCase,
+    FindAllSpacesUseCase,
+    FindOneSpaceUseCase,
+    UpdateSpaceUseCase,
+    RemoveSpaceUseCase,
   ],
 })
 export class SpacesModule {}
