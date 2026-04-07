@@ -4,6 +4,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { RegionsModule } from './regions/regions.module';
+import { DepartmentsModule } from './departments/departments.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { RegionsModule } from './regions/regions.module';
         synchronize: true,
       }),
     RegionsModule,
+    DepartmentsModule,
   ],
   controllers: [],
   providers: [],
