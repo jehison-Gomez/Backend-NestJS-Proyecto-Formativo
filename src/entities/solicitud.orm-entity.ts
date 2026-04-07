@@ -14,35 +14,35 @@ export enum EstadoSolicitud {
 @Entity('Solicitud')
 export class Solicitud {
   @PrimaryGeneratedColumn({ name: 'ID_Solicitud' })
-  id: number;
+  id!: number;
 
   @Column({ name: 'Fecha_Solicitud', type: 'timestamp' })
-  fechaSolicitud: Date;
+  fechaSolicitud!: Date;
 
   @Column({ name: 'Duracion_Estimada', type: 'int' })
-  duracionEstimada: number;
+  duracionEstimada!: number;
 
   @Column({ name: 'Fecha_Requerida', type: 'date' })
-  fechaRequerida: Date;
+  fechaRequerida!: Date;
 
   @Column({ name: 'Descripcion', type: 'varchar', length: 255 })
-  descripcion: string;
+  descripcion!: string;
 
   @Column({ name: 'Tipo', type: 'enum', enum: TipoSolicitud })
-  tipo: TipoSolicitud;
+  tipo!: TipoSolicitud;
 
   @Column({ name: 'Estado', type: 'enum', enum: EstadoSolicitud })
-  estado: EstadoSolicitud;
+  estado!: EstadoSolicitud;
 
   @Column({ name: 'Cantidad_Aprendices', type: 'int' })
-  cantidadAprendices: number;
+  cantidadAprendices!: number;
 
   @Column({ name: 'FK_ID_Solicitante', type: 'int' })
-  solicitanteId: number;
+  solicitanteId!: number;
 
   @Column({ name: 'FK_ID_Aprobador', type: 'int' })
-  aprobadorId: number;
+  aprobadorId!: number;
 
   @Column({ name: 'FK_ID_Ficha', type: 'int' })
-  fichaId: number;
+  fichaId!: number;
 }
