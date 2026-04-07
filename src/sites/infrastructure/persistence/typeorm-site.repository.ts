@@ -14,7 +14,7 @@ export class TypeOrmSiteRepository implements SiteRepository {
     ) {}
 
     async save(site: Site): Promise<Site> {
-        const orm = this.repo.create({ name: site.name, address: site.address });
+        const orm = this.repo.create({ name: site.name, address: site.address, center_id: site.center_id });
         const saved = await this.repo.save(orm);
         return this.toDomain(saved);
     }
@@ -39,6 +39,7 @@ export class TypeOrmSiteRepository implements SiteRepository {
         site.id = orm.id;
         site.name = orm.name;
         site.address = orm.address;
+        site.center_id = orm.center_id;
         return site;
     }
 }

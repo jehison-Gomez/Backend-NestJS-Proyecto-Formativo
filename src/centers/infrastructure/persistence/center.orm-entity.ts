@@ -1,5 +1,6 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { DepartmentOrmEntity } from 'src/departments/infrastructure/persistence/departamento.orm-entity';
+import { SiteOrmEntity } from 'src/sites/infrastructure/persistence/site.orm-entity';
 
 @Entity('center')
 export class CenterOrmEntity {
@@ -25,6 +26,9 @@ export class CenterOrmEntity {
     })
     @JoinColumn({ name: 'department_id' })
     department: DepartmentOrmEntity;
+
+    @OneToMany(() => SiteOrmEntity, (site) => site.center)
+    sites: SiteOrmEntity[];
 
     @BeforeInsert()
     @BeforeUpdate()

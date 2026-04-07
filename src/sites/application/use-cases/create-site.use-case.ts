@@ -15,6 +15,7 @@ export class CreateSiteUseCase {
         const site = new Site();
         site.name = dto.name;
         site.address = dto.address;
+        site.center_id = dto.center_id;
 
         try {
             return await this.repo.save(site);
