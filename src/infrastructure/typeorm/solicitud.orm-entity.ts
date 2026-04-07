@@ -1,18 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
-export enum TipoSolicitud {
-  PRESTAMO = 'PRESTAMO',
-  DEVOLUCION = 'DEVOLUCION',
-}
-
-export enum EstadoSolicitud {
-  PENDIENTE = 'PENDIENTE',
-  APROBADA = 'APROBADA',
-  RECHAZADA = 'RECHAZADA',
-}
+import { TipoSolicitud, EstadoSolicitud } from '../../domain/entities/solicitud.entity';
 
 @Entity('Solicitud')
-export class Solicitud {
+export class SolicitudOrmEntity {
   @PrimaryGeneratedColumn({ name: 'ID_Solicitud' })
   id!: number;
 
@@ -46,4 +36,3 @@ export class Solicitud {
   @Column({ name: 'FK_ID_Ficha', type: 'int' })
   fichaId!: number;
 }
-// Eliminado por migración a arquitectura hexagonal. Usar domain/entities y infrastructure/typeorm.

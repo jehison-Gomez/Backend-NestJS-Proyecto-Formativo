@@ -1,11 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('Asignacion')
-export class Asignacion {
+export class AsignacionOrmEntity {
   @PrimaryGeneratedColumn({ name: 'ID_Asignacion' })
   id: number;
 
   @Column({ name: 'FK_ID_Material_Movimiento', type: 'int' })
   materialMovimientoId: number;
 }
-// Eliminado por migración a arquitectura hexagonal. Usar domain/entities y infrastructure/typeorm.

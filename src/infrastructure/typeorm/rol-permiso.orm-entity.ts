@@ -11,4 +11,3 @@ export class RolPermisoOrmEntity {
   @Column({ name: 'FK_ID_Rol', type: 'int' })
   rolId: number;
 }
-// Eliminado por migración a arquitectura hexagonal. Usar domain/entities y infrastructure/typeorm.

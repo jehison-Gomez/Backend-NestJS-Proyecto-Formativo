@@ -8,4 +8,3 @@ export class PermisoOrmEntity {
   @Column({ name: 'Nombre', type: 'varchar', length: 255 })
   nombre!: string;
 }
-// Eliminado por migración a arquitectura hexagonal. Usar domain/entities y infrastructure/typeorm.

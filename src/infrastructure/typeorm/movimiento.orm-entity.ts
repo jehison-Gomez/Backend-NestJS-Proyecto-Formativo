@@ -1,28 +1,23 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
-export enum TipoMovimiento {
-  ENTRADA = 'ENTRADA',
-  SALIDA = 'SALIDA',
-}
+import { TipoMovimiento } from '../../domain/entities/movimiento.entity';
 
 @Entity('Movimiento')
-export class Movimiento {
+export class MovimientoOrmEntity {
   @PrimaryGeneratedColumn({ name: 'ID_Movimiento' })
-  id: number;
+  id!: number;
 
   @Column({ name: 'Fecha', type: 'date' })
-  fecha: Date;
+  fecha!: Date;
 
   @Column({ name: 'Tipo', type: 'enum', enum: TipoMovimiento })
-  tipo: TipoMovimiento;
+  tipo!: TipoMovimiento;
 
   @Column({ name: 'Cantidad', type: 'int' })
-  cantidad: number;
+  cantidad!: number;
 
   @Column({ name: 'Motivo', type: 'varchar', length: 255 })
-  motivo: string;
+  motivo!: string;
 
   @Column({ name: 'FK_ID_Movimiento', type: 'int', nullable: true })
-  movimientoId: number;
+  movimientoId!: number;
 }
-// Eliminado por migración a arquitectura hexagonal. Usar domain/entities y infrastructure/typeorm.
