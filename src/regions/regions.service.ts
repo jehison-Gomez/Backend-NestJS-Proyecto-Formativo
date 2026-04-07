@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRegionDto } from './dto/create-region.dto';
-import { UpdateRegionDto } from './dto/update-region.dto';
+import { CreateRegionDto } from './application/dto/create-region.dto';
+import { UpdateRegionDto } from './application/dto/update-region.dto';
 
 @Injectable()
 export class RegionsService {
