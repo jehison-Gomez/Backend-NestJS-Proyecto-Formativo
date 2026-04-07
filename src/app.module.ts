@@ -9,6 +9,7 @@ import { CentersModule } from './centers/centers.module';
 import { SitesModule } from './sites/sites.module';
 import { AreasModule } from './areas/areas.module';
 import { ProgramsModule } from './programs/programs.module';
+import { SpacesModule } from './spaces/spaces.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ProgramsModule } from './programs/programs.module';
     SitesModule,
     AreasModule,
     ProgramsModule,
+    SpacesModule,
   ],
   controllers: [],
   providers: [],
