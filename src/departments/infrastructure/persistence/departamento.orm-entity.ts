@@ -1,5 +1,6 @@
 import { RegionOrmEntity } from 'src/regions/infrastructure/persistence/region.orm-entity';
-import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { CenterOrmEntity } from 'src/centers/infrastructure/persistence/center.orm-entity';
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('departments')
 export class DepartmentOrmEntity {
@@ -19,6 +20,9 @@ export class DepartmentOrmEntity {
     })
     @JoinColumn({ name: 'region_id' })
     region: RegionOrmEntity;
+
+    @OneToMany(() => CenterOrmEntity, (center) => center.department)
+    centers: CenterOrmEntity[];
 
     @BeforeInsert()
     @BeforeUpdate()

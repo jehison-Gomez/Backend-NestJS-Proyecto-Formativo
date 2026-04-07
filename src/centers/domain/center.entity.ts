@@ -3,4 +3,5 @@ export class Center {
     center_code: string;
     name: string;
     address: string;
+    department_id: string;
 }

@@ -20,6 +20,7 @@ export class UpdateCenterUseCase {
         center.name = dto.name ?? center.name;
         center.center_code = dto.center_code ?? center.center_code;
         center.address = dto.address ?? center.address;
+        center.department_id = dto.department_id ?? center.department_id;
 
         try {
             return await this.repo.save(center);

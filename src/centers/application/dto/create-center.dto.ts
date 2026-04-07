@@ -1,4 +1,4 @@
-import { IsString, MinLength } from "class-validator";
+import { IsString, MinLength, IsUUID } from "class-validator";
 
 export class CreateCenterDto {
 
@@ -13,4 +13,7 @@ export class CreateCenterDto {
     @IsString({ message: 'La dirección debe ser un texto' })
     @MinLength(5, { message: 'La dirección debe tener al menos 5 caracteres' })
     address: string;
+
+    @IsUUID('4', { message: 'El department_id debe ser un UUID válido' })
+    department_id: string;
 }

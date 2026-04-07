@@ -15,7 +15,7 @@ export class TypeOrmCenterRepository implements CenterRepository {
     ) {}
 
     async save(center: Center): Promise<Center> {
-        const orm = this.repo.create({ name: center.name, center_code: center.center_code, address: center.address });
+        const orm = this.repo.create({ name: center.name, center_code: center.center_code, address: center.address, department_id: center.department_id });
         const saved = await this.repo.save(orm);
         return this.toDomain(saved);
     }
@@ -41,6 +41,7 @@ export class TypeOrmCenterRepository implements CenterRepository {
         center.name = orm.name;
         center.center_code = orm.center_code;
         center.address = orm.address;
+        center.department_id = orm.department_id;
         return center;
     }
 }
