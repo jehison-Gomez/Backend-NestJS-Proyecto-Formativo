@@ -15,7 +15,7 @@ export class TypeOrmProgramRepository implements ProgramRepository {
   ) {}
 
   async save(program: Program): Promise<Program> {
-    const orm = this.repo.create({ name: program.name, description: program.description });
+    const orm = this.repo.create({ name: program.name, description: program.description, area_id: program.area_id });
     const saved = await this.repo.save(orm);
     return this.toDomain(saved);
   }
@@ -40,6 +40,7 @@ export class TypeOrmProgramRepository implements ProgramRepository {
     program.id = orm.id;
     program.name = orm.name;
     program.description = orm.description;
+    program.area_id = orm.area_id;
     return program;
   }
 }

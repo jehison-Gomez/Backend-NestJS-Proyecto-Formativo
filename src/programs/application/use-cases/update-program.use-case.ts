@@ -18,6 +18,7 @@ export class UpdateProgramUseCase {
         const program = await this.findOne.execute(id);
         program.name = dto.name ?? program.name;
         program.description = dto.description ?? program.description;
+        program.area_id = dto.area_id ?? program.area_id;
         try {
             return await this.repo.save(program);
         } catch (error) {

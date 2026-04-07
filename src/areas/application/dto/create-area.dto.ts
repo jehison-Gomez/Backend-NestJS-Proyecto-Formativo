@@ -6,6 +6,6 @@ export class CreateAreaDto {
     @MinLength(2, {message: 'El nombre debe tener al menos 2 caracteres' })
     name: string;
 
-    @IsUUID('4', { message: 'El site_id debe ser un UUID válido' })
+    @IsUUID(undefined, { message: 'El site_id debe ser un UUID válido' })
     site_id: string;
 }

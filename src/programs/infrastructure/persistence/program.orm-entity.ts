@@ -1,4 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { AreaOrmEntity } from 'src/areas/infrastructure/persistence/area.orm-entity';
 
 @Entity('program')
 export class ProgramOrmEntity {
@@ -11,6 +12,16 @@ export class ProgramOrmEntity {
 
   @Column('text')
   description: string;
+
+  @Column('uuid')
+  area_id: string;
+
+  @ManyToOne(() => AreaOrmEntity, (area) => area.programs, {
+    nullable: false,
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn({ name: 'area_id' })
+  area: AreaOrmEntity;
 
   @BeforeInsert()
   @BeforeUpdate()

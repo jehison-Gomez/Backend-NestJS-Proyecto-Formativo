@@ -1,5 +1,6 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { SiteOrmEntity } from "src/sites/infrastructure/persistence/site.orm-entity";
+import { ProgramOrmEntity } from "src/programs/infrastructure/persistence/program.orm-entity";
 
 @Entity('area')
 export class AreaOrmEntity {
@@ -19,6 +20,9 @@ export class AreaOrmEntity {
     })
     @JoinColumn({ name: 'site_id' })
     site: SiteOrmEntity;
+
+    @OneToMany(() => ProgramOrmEntity, (program) => program.area)
+    programs: ProgramOrmEntity[];
 
     @BeforeInsert()
     @BeforeUpdate()

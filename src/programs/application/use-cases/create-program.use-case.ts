@@ -15,6 +15,7 @@ export class CreateProgramUseCase {
         const program = new Program();
         program.name = dto.name;
         program.description = dto.description;
+        program.area_id = dto.area_id;
 
         try {
             return await this.repo.save(program);
