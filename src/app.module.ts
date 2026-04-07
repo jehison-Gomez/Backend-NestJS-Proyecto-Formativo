@@ -8,6 +8,7 @@ import { DepartmentsModule } from './departments/departments.module';
 import { CentersModule } from './centers/centers.module';
 import { SitesModule } from './sites/sites.module';
 import { AreasModule } from './areas/areas.module';
+import { ProgramsModule } from './programs/programs.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AreasModule } from './areas/areas.module';
     CentersModule,
     SitesModule,
     AreasModule,
+    ProgramsModule,
   ],
   controllers: [],
   providers: [],
