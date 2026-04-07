@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsuarioModule } from './modules/usuario/usuario.module';
 import { UsuarioOrmEntity } from './modules/usuario/infrastructure/typeorm/usuario.orm-entity';
+import { RolOrmEntity } from './entities/rol.orm-entity';
 
 @Module({
   imports: [
@@ -14,13 +13,11 @@ import { UsuarioOrmEntity } from './modules/usuario/infrastructure/typeorm/usuar
       username: process.env.DB_USERNAME ?? 'nest',
       password: process.env.DB_PASSWORD ?? 'nest',
       database: process.env.DB_DATABASE ?? 'hexagonal_db',
-      entities: [UsuarioOrmEntity],
+      entities: [UsuarioOrmEntity, RolOrmEntity],
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
       logging: process.env.DB_LOGGING === 'true',
     }),
     UsuarioModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
