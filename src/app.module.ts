@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
+import { RegionsModule } from './regions/regions.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { join } from 'path';
         autoLoadEntities: true,
         synchronize: true,
       }),
+    RegionsModule,
   ],
   controllers: [],
   providers: [],
