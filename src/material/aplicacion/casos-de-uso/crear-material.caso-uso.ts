@@ -23,7 +23,7 @@ export class CrearMaterialCasoUso {
     material.categoria = dto.categoria;
     material.lote = dto.lote;
     material.estadoFisico = dto.estadoFisico;
-    material.sitioId = dto.sitioId;
+    
 
     if (dto.fechaVencimiento) {
       material.fechaVencimiento = new Date(dto.fechaVencimiento);

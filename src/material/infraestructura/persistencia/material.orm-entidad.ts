@@ -37,6 +37,5 @@ export class MaterialOrmEntidad {
   @Column({ name: 'Estado_Fisico', type: 'varchar', length: 100, nullable: true })
   estadoFisico?: string;
 
-  @Column({ name: 'FK_ID_Sitio', type: 'int', nullable: true })
-  sitioId?: number;
+  
 }

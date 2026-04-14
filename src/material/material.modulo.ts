@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MaterialOrmEntidad } from './infraestructura/persistencia/material.orm-entidad';
+import { MaterialUbicacionOrmEntidad } from '../material-ubicacion/infraestructura/persistencia/material-ubicacion.orm-entidad';
 import { TypeOrmMaterialRepositorio } from './infraestructura/persistencia/typeorm-material.repositorio';
 import { MaterialControlador } from './infraestructura/http/material.controlador';
 import { CrearMaterialCasoUso } from './aplicacion/casos-de-uso/crear-material.caso-uso';
@@ -10,7 +11,12 @@ import { ActualizarMaterialCasoUso } from './aplicacion/casos-de-uso/actualizar-
 import { EliminarMaterialCasoUso } from './aplicacion/casos-de-uso/eliminar-material.caso-uso';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MaterialOrmEntidad])],
+  imports: [
+    TypeOrmModule.forFeature([
+      MaterialOrmEntidad, 
+      MaterialUbicacionOrmEntidad
+    ])
+  ],
   controllers: [MaterialControlador],
   providers: [
     TypeOrmMaterialRepositorio,
@@ -45,6 +51,6 @@ import { EliminarMaterialCasoUso } from './aplicacion/casos-de-uso/eliminar-mate
       inject: [TypeOrmMaterialRepositorio, BuscarUnMaterialCasoUso],
     },
   ],
-  exports: [BuscarUnMaterialCasoUso], // lo necesitan los módulos hijos
+  exports: [BuscarUnMaterialCasoUso],
 })
 export class MaterialModulo {}
