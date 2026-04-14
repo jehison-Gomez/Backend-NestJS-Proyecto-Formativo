@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MaterialModulo } from './material/material.modulo';
+import { TrasladoModulo } from './traslado/traslado.modulo';
+import { MaterialUbicacionModulo } from './material-ubicacion/material-ubicacion.modulo';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { MaterialModulo } from './material/material.modulo';
       synchronize: true,
     }),
     MaterialModulo,
+    MaterialUbicacionModulo,
+    TrasladoModulo,
   ],
   controllers: [],
   providers: [],
