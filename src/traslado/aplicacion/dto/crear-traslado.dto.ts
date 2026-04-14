@@ -1,17 +1,30 @@
 import { IsInt, IsOptional, IsString, IsEnum, IsDateString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'; 
 import { EstadoTraslado } from '../../dominio/traslado.entidad';
 
 export class CrearTrasladoDto {
+  @ApiProperty()
   @IsDateString()
   fechaTraslado: string;
 
-  @IsOptional() @IsString()
+  @ApiPropertyOptional() 
+  @IsOptional() 
+  @IsString()
   motivo?: string;
 
+  @ApiProperty({ enum: EstadoTraslado }) 
   @IsEnum(EstadoTraslado)
   estado: EstadoTraslado;
 
-  @IsInt() usuarioId: number;
-  @IsInt() ubicacionDestinoId: number;
-  @IsInt() ubicacionOrigenId: number;
+  @ApiProperty()
+  @IsInt() 
+  usuarioId: number;
+
+  @ApiProperty()
+  @IsInt() 
+  ubicacionDestinoId: number;
+
+  @ApiProperty()
+  @IsInt() 
+  ubicacionOrigenId: number;
 }
