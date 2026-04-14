@@ -15,5 +15,6 @@ export class Material {
   fechaVencimiento?: Date;
   lote?: string;
   estadoFisico?: string;
-  sitioId?: number;
+   estadoId?: number;  
+  fichaId?: number;
 }
