@@ -1,14 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsuarioModule } from './modules/usuario/usuario.module';
-import { UsuarioOrmEntity } from './modules/usuario/infrastructure/typeorm/usuario.orm-entity';
-import { RolOrmEntity } from './entities/rol.orm-entity';
-import { PermisoOrmEntity } from './entities/permiso.orm-entity';
-import { RolPermisoOrmEntity } from './entities/rol-permiso.orm-entity';
-import { FichaOrmEntity } from './infrastructure/typeorm/ficha.orm-entity';
-import { AsignacionOrmEntity } from './infrastructure/typeorm/asignacion.orm-entity';
-import { MovimientoOrmEntity } from './infrastructure/typeorm/movimiento.orm-entity';
-import { SolicitudOrmEntity } from './infrastructure/typeorm/solicitud.orm-entity';
+import { DepartamentoOrmEntity } from './infrastructure/typeorm/departamento.orm-entity';
+import { MunicipioOrmEntity } from './infrastructure/typeorm/municipio.orm-entity';
+import { CentroOrmEntity } from './infrastructure/typeorm/centro.orm-entity';
+import { SedeOrmEntity } from './infrastructure/typeorm/sede.orm-entity';
+import { AreaOrmEntity } from './infrastructure/typeorm/area.orm-entity';
 
 @Module({
   imports: [
@@ -20,19 +16,15 @@ import { SolicitudOrmEntity } from './infrastructure/typeorm/solicitud.orm-entit
       password: process.env.DB_PASSWORD ?? 'nest',
       database: process.env.DB_DATABASE ?? 'hexagonal_db',
       entities: [
-        UsuarioOrmEntity,
-        RolOrmEntity,
-        PermisoOrmEntity,
-        RolPermisoOrmEntity,
-        FichaOrmEntity,
-        AsignacionOrmEntity,
-        MovimientoOrmEntity,
-        SolicitudOrmEntity,
+        DepartamentoOrmEntity,
+        MunicipioOrmEntity,
+        CentroOrmEntity,
+        SedeOrmEntity,
+        AreaOrmEntity,
       ],
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
       logging: process.env.DB_LOGGING === 'true',
     }),
-    UsuarioModule,
   ],
 })
 export class AppModule {}
