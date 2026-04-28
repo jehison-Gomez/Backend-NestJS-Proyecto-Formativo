@@ -2,10 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PrestamoModulo } from './prestamo/prestamo.modulo.js';
-import { AprobacionModulo } from './aprobacion/aprobacion.modulo.js';
-import { DevolucionModulo } from './devolucion/devolucion.modulo.js';
-import { NovedadModulo } from './novedad/novedad.modulo.js';
-import { PrestamoMaterialModulo } from './prestamo-material/prestamo-material.modulo.js';
 
 @Module({
   imports: [
@@ -21,10 +17,8 @@ import { PrestamoMaterialModulo } from './prestamo-material/prestamo-material.mo
       synchronize: true,
     }),
     PrestamoModulo,
-    AprobacionModulo,
-    DevolucionModulo,
-    NovedadModulo,
-    PrestamoMaterialModulo,
   ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
