@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, IsUUID, MaxLength } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID, MaxLength, IsEnum } from "class-validator";
+import { ProgramaEstado } from "src/programas/domain/programa-estado.enum";
 
 export class CreateProgramaDto {
     @IsString()
@@ -13,13 +14,11 @@ export class CreateProgramaDto {
 
     @IsString()
     @IsNotEmpty()
-    @MaxLength(100)
+    @MaxLength(50)
     nivel_formacion: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(100)
-    estado: string;
+    @IsEnum(ProgramaEstado)
+    estado: ProgramaEstado;
 
     @IsUUID()
     @IsNotEmpty()

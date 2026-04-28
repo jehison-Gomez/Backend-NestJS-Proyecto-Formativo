@@ -1,8 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, OneToMany } from 'typeorm';
+import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
+import { ProgramaEstado } from 'src/programas/domain/programa-estado.enum';
 
 @Entity('programas')
 export class ProgramaOrmEntity {
-  
+
   @PrimaryGeneratedColumn('uuid')
   id_programa: string;
 
@@ -15,11 +17,14 @@ export class ProgramaOrmEntity {
   @Column('text')
   nivel_formacion: string;
 
-  @Column('text')
-  estado: string;
+  @Column({ type: 'enum', enum: ProgramaEstado })
+  estado: ProgramaEstado;
 
   @Column('text')
   id_area: string;
+
+  @OneToMany(() => FichaOrmEntity, (ficha) => ficha.programa)
+  fichas: FichaOrmEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()
