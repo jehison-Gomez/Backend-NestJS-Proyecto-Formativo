@@ -3,13 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { RegionsModule } from './regions/regions.module';
-import { DepartmentsModule } from './departments/departments.module';
-import { CentersModule } from './centers/centers.module';
-import { SitesModule } from './sites/sites.module';
-import { AreasModule } from './areas/areas.module';
-import { ProgramsModule } from './programs/programs.module';
-import { SpacesModule } from './spaces/spaces.module';
+import { FichasModule } from './fichas/fichas.module';
+import { PermisosModule } from './permisos/permisos.module';
+import { ProgramasModule } from './programas/programas.module';
+import { RolModule } from './rol/rol.module';
+import { RolPermisosModule } from './rol_permisos/rol_permisos.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
 
 @Module({
   imports: [
@@ -28,13 +27,12 @@ import { SpacesModule } from './spaces/spaces.module';
         synchronize: true,
         dropSchema: true,
       }),
-    RegionsModule,
-    DepartmentsModule,
-    CentersModule,
-    SitesModule,
-    AreasModule,
-    ProgramsModule,
-    SpacesModule,
+    FichasModule,
+    PermisosModule,
+    ProgramasModule,
+    RolModule,
+    RolPermisosModule,
+    UsuariosModule
   ],
   controllers: [],
   providers: [],
