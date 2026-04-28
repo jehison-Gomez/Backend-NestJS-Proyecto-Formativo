@@ -19,9 +19,7 @@ import { RemoveSpaceUseCase } from './application/use-cases/remove-space.use-cas
 import { SPACE_REPOSITORY } from './domain/space.repository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([SpaceOrmEntity])
-  ],
+  imports: [TypeOrmModule.forFeature([SpaceOrmEntity])],
   controllers: [SpacesController],
   providers: [
     // Adaptador

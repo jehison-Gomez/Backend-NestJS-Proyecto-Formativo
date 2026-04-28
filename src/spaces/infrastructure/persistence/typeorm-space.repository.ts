@@ -8,21 +8,24 @@ import { SpaceOrmEntity } from './space.orm-entity';
 
 @Injectable()
 export class TypeOrmSpaceRepository implements SpaceRepository {
-
   constructor(
     @InjectRepository(SpaceOrmEntity)
     private readonly repo: Repository<SpaceOrmEntity>,
   ) {}
 
   async save(space: Space): Promise<Space> {
-    const orm = this.repo.create({ name: space.name, type: space.type, area_id: space.area_id });
+    const orm = this.repo.create({
+      name: space.name,
+      type: space.type,
+      area_id: space.area_id,
+    });
     const saved = await this.repo.save(orm);
     return this.toDomain(saved);
   }
 
   async findAll(): Promise<Space[]> {
     const list = await this.repo.find();
-    return list.map(orm => this.toDomain(orm));
+    return list.map((orm) => this.toDomain(orm));
   }
 
   async findById(id: string): Promise<Space | null> {

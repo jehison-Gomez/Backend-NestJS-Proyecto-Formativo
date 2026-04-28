@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { AreasService } from '../../areas.service';
 import { CreateAreaDto } from '../../application/dto/create-area.dto';
 import { UpdateAreaDto } from '../../application/dto/update-area.dto';
@@ -34,10 +43,7 @@ export class AreasController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() dto: UpdateAreaDto,
-  ) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateAreaDto) {
     return this.updateArea.execute(id, dto);
   }
 

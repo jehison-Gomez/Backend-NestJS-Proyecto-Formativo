@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { CreateDepartmentDto } from 'src/departments/application/dto/create-department.dto';
 import { UpdateDepartmentDto } from 'src/departments/application/dto/update-department.dto';
 import { CreateDepartamentoUseCase } from 'src/departments/application/use-cases/create-departamento.use-case';
@@ -34,8 +43,9 @@ export class DepartmentsController {
 
   @Patch(':id')
   update(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() dto: UpdateDepartmentDto) {
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateDepartmentDto,
+  ) {
     return this.updateDepartment.execute(id, dto);
   }
 

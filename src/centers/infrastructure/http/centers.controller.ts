@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { CreateCenterDto } from 'src/centers/application/dto/create-center.dto';
 import { UpdateCenterDto } from 'src/centers/application/dto/update-center.dto';
 import { CreateCenterUseCase } from 'src/centers/application/use-cases/create-center.use-case';
@@ -33,9 +42,7 @@ export class CentersController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() dto: UpdateCenterDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateCenterDto) {
     return this.updateCenter.execute(id, dto);
   }
 

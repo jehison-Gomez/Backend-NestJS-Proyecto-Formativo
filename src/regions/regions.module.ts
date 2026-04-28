@@ -16,9 +16,7 @@ import { UpdateRegionUseCase } from './application/use-cases/update-region.use-c
 import { RemoveRegionUseCase } from './application/use-cases/remove-region.use-case';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([RegionOrmEntity])
-  ],
+  imports: [TypeOrmModule.forFeature([RegionOrmEntity])],
   controllers: [RegionsController],
   providers: [
     // Adaptador
@@ -45,14 +43,18 @@ import { RemoveRegionUseCase } from './application/use-cases/remove-region.use-c
     },
     {
       provide: UpdateRegionUseCase,
-      useFactory: (repo: TypeOrmRegionRepository, findOne: FindOneRegionUseCase) =>
-        new UpdateRegionUseCase(repo, findOne),
+      useFactory: (
+        repo: TypeOrmRegionRepository,
+        findOne: FindOneRegionUseCase,
+      ) => new UpdateRegionUseCase(repo, findOne),
       inject: [TypeOrmRegionRepository],
     },
     {
       provide: RemoveRegionUseCase,
-      useFactory: (repo: TypeOrmRegionRepository, findOne: FindOneRegionUseCase) =>
-        new RemoveRegionUseCase(repo, findOne),
+      useFactory: (
+        repo: TypeOrmRegionRepository,
+        findOne: FindOneRegionUseCase,
+      ) => new RemoveRegionUseCase(repo, findOne),
       inject: [TypeOrmRegionRepository],
     },
   ],

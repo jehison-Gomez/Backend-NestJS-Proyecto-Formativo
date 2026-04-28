@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { CreateRegionDto } from 'src/regions/application/dto/create-region.dto';
 import { UpdateRegionDto } from 'src/regions/application/dto/update-region.dto';
 import { CreateRegionUseCase } from 'src/regions/application/use-cases/create-region.use-case';
@@ -33,9 +42,7 @@ export class RegionsController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() dto: UpdateRegionDto,) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateRegionDto) {
     return this.updateRegion.execute(id, dto);
   }
 

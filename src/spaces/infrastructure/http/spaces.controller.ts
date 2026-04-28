@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { CreateSpaceDto } from 'src/spaces/application/dto/create-space.dto';
 import { UpdateSpaceDto } from 'src/spaces/application/dto/update-space.dto';
 import { CreateSpaceUseCase } from 'src/spaces/application/use-cases/create-space.use-case';
@@ -33,10 +42,7 @@ export class SpacesController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() dto: UpdateSpaceDto,
-  ) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateSpaceDto) {
     return this.updateSpace.execute(id, dto);
   }
 

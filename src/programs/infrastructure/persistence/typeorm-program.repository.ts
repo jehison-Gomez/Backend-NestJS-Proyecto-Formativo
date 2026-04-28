@@ -8,21 +8,24 @@ import { ProgramOrmEntity } from './program.orm-entity';
 
 @Injectable()
 export class TypeOrmProgramRepository implements ProgramRepository {
-
   constructor(
     @InjectRepository(ProgramOrmEntity)
     private readonly repo: Repository<ProgramOrmEntity>,
   ) {}
 
   async save(program: Program): Promise<Program> {
-    const orm = this.repo.create({ name: program.name, description: program.description, area_id: program.area_id });
+    const orm = this.repo.create({
+      name: program.name,
+      description: program.description,
+      area_id: program.area_id,
+    });
     const saved = await this.repo.save(orm);
     return this.toDomain(saved);
   }
 
   async findAll(): Promise<Program[]> {
     const list = await this.repo.find();
-    return list.map(orm => this.toDomain(orm));
+    return list.map((orm) => this.toDomain(orm));
   }
 
   async findById(id: string): Promise<Program | null> {

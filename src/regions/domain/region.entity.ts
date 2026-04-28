@@ -1,4 +1,4 @@
 export class Region {
-    id: string;
-    name: string;
+  id: string;
+  name: string;
 }

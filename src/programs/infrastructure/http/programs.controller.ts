@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { CreateProgramDto } from 'src/programs/application/dto/create-program.dto';
 import { UpdateProgramDto } from 'src/programs/application/dto/update-program.dto';
 import { CreateProgramUseCase } from 'src/programs/application/use-cases/create-program.use-case';
@@ -34,8 +43,9 @@ export class ProgramsController {
 
   @Patch(':id')
   update(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() dto: UpdateProgramDto,) {
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateProgramDto,
+  ) {
     return this.updateProgram.execute(id, dto);
   }
 
