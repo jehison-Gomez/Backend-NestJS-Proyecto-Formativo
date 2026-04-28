@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID, MaxLength } from "class-validator";
+﻿import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
 export class CreatePermisoDto {
     @IsString()
@@ -8,7 +8,7 @@ export class CreatePermisoDto {
 
     @IsString()
     @IsNotEmpty()
-    @MaxLength(20)
+    @MaxLength(100)
     descripcion: string;
 
     @IsString()
@@ -21,7 +21,7 @@ export class CreatePermisoDto {
     @MaxLength(100)
     accion: string;
 
-    @IsUUID()
+    @IsString()
     @IsNotEmpty()
     activo: string;
 }
