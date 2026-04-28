@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MaterialModulo } from './material/material.modulo';
-import { TrasladoModulo } from './traslado/traslado.modulo';
-import { MaterialUbicacionModulo } from './material-ubicacion/material-ubicacion.modulo';
+import { PrestamoModulo } from './prestamo/prestamo.modulo.js';
+import { AprobacionModulo } from './aprobacion/aprobacion.modulo.js';
+import { DevolucionModulo } from './devolucion/devolucion.modulo.js';
+import { NovedadModulo } from './novedad/novedad.modulo.js';
+import { PrestamoMaterialModulo } from './prestamo-material/prestamo-material.modulo.js';
 
 @Module({
   imports: [
@@ -18,11 +20,11 @@ import { MaterialUbicacionModulo } from './material-ubicacion/material-ubicacion
       autoLoadEntities: true,
       synchronize: true,
     }),
-    MaterialModulo,
-    MaterialUbicacionModulo,
-    TrasladoModulo,
+    PrestamoModulo,
+    AprobacionModulo,
+    DevolucionModulo,
+    NovedadModulo,
+    PrestamoMaterialModulo,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
