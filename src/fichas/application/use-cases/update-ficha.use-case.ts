@@ -15,7 +15,14 @@ export class UpdateFichaUseCase {
             if (!exists)
                 throw new NotFoundException(`Ficha #${id} no encontrado`);
 
-            return await this.repository.update(id, dto);
+            const { fecha_inicio, fecha_fin, ...rest } = dto;
+            const partial: Partial<Ficha> = {
+                ...rest,
+                ...(fecha_inicio && { fecha_inicio: new Date(fecha_inicio) }),
+                ...(fecha_fin    && { fecha_fin:    new Date(fecha_fin) }),
+            };
+
+            return await this.repository.update(id, partial);
         } catch (error) {
             handleDBErrors(error);
         }
