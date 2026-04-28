@@ -1,8 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
+import { RolPermisoOrmEntity } from 'src/rol_permisos/infrastructure/persistence/rol_permiso.orm-entity';
 
 @Entity('rol')
 export class RolOrmEntity {
-  
+
   @PrimaryGeneratedColumn('uuid')
   id_rol: string;
 
@@ -18,8 +20,12 @@ export class RolOrmEntity {
   @Column('text')
   activo: string;
 
-  @Column('text')
-  id_usuario: string;
+  @ManyToOne(() => UsuarioOrmEntity, (usuario) => usuario.roles, { nullable: false })
+  @JoinColumn({ name: 'id_usuario' })
+  usuario: UsuarioOrmEntity;
+
+  @OneToMany(() => RolPermisoOrmEntity, (rp) => rp.rol)
+  rol_permisos: RolPermisoOrmEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()
