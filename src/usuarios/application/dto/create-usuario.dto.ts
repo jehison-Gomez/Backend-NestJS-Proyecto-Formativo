@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, IsUUID, MaxLength } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString, IsUUID, MaxLength } from "class-validator";
+import { UsuarioEstado } from "src/usuarios/domain/usuario-estado.enum";
 
 export class CreateUsuarioDto {
     @IsString()
@@ -26,10 +27,8 @@ export class CreateUsuarioDto {
     @MaxLength(100)
     documento: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(100)
-    estado: string;
+    @IsEnum(UsuarioEstado)
+    estado: UsuarioEstado;
 
     @IsString()
     @IsNotEmpty()

@@ -1,3 +1,5 @@
+import { UsuarioEstado } from "./usuario-estado.enum";
+
 export class Usuario {
     id_usuario: string;
     nombre: string;
@@ -5,7 +7,7 @@ export class Usuario {
     contrasena: string;
     telefono: string;
     documento: string;
-    estado: string;
+    estado: UsuarioEstado;
     fecha_registro: Date;
     ultimo_acceso: Date;
     id_ficha: string;
