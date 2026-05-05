@@ -57,6 +57,8 @@ export class TypeOrmRolPermisoRepository implements RolPermisoRepository {
   }
 
   async remove(id: string): Promise<void> {
+    const existing = await this.repo.findOneBy({ id_rol_permiso: id });
+    if (!existing) throw new NotFoundException(`RolPermiso #${id} no encontrado`);
     await this.repo.delete(id);
   }
 }
