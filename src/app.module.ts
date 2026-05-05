@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DepartamentoOrmEntity } from './infrastructure/typeorm/departamento.orm-entity';
-import { MunicipioOrmEntity } from './infrastructure/typeorm/municipio.orm-entity';
-import { CentroOrmEntity } from './infrastructure/typeorm/centro.orm-entity';
-import { SedeOrmEntity } from './infrastructure/typeorm/sede.orm-entity';
-import { AreaOrmEntity } from './infrastructure/typeorm/area.orm-entity';
+import { DepartamentoModule } from './departamento/departamento.module';
+import { MunicipioModule } from './municipio/municipio.module';
+import { CentroModule } from './centro/centro.module';
+import { SedeModule } from './sede/sede.module';
+import { AreaModule } from './area/area.module';
 
 @Module({
   imports: [
@@ -15,16 +15,15 @@ import { AreaOrmEntity } from './infrastructure/typeorm/area.orm-entity';
       username: process.env.DB_USERNAME ?? 'nest',
       password: process.env.DB_PASSWORD ?? 'nest',
       database: process.env.DB_DATABASE ?? 'hexagonal_db',
-      entities: [
-        DepartamentoOrmEntity,
-        MunicipioOrmEntity,
-        CentroOrmEntity,
-        SedeOrmEntity,
-        AreaOrmEntity,
-      ],
+      autoLoadEntities: true,
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
       logging: process.env.DB_LOGGING === 'true',
     }),
+    DepartamentoModule,
+    MunicipioModule,
+    CentroModule,
+    SedeModule,
+    AreaModule,
   ],
 })
 export class AppModule {}
