@@ -56,6 +56,8 @@ export class TypeOrmProgramaRepository implements ProgramaRepository {
   }
 
   async remove(id: string): Promise<void> {
+    const existing = await this.repo.findOneBy({ id_programa: id });
+    if (!existing) throw new NotFoundException(`Programa #${id} no encontrado`);
     await this.repo.delete(id);
   }
 }

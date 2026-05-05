@@ -14,10 +14,10 @@ export class ProgramaOrmEntity {
   @Column('text', { unique: true })
   codigo: string;
 
-  @Column('text')
+  @Column({ type: 'text', nullable: true })
   nivel_formacion: string;
 
-  @Column({ type: 'enum', enum: ProgramaEstado })
+  @Column({ type: 'enum', enum: ProgramaEstado, nullable: true })
   estado: ProgramaEstado;
 
   @Column('text')

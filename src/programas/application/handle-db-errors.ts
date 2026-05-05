@@ -7,12 +7,17 @@ export function handleDBErrors(error: any): never {
     `Ya existe un registro con ese valor único: ${error.detail}`
 );
 
-    if (error.code === '23502')
-        throw new BadRequestException(
-    `Campo requerido faltante: ${error.colum} no puede ser nulo`
+    if (error.code === '23503')
+        throw new ConflictException(
+    `No se puede eliminar este registro porque tiene registros relacionados que dependen de él`
 );
 
-    if (error.code === '23P02')
+    if (error.code === '23502')
+        throw new BadRequestException(
+    `Campo requerido faltante: ${error.column} no puede ser nulo`
+);
+
+    if (error.code === '22P02')
         throw new BadRequestException(
     `Formato inválido: ${error.message}`
 );
