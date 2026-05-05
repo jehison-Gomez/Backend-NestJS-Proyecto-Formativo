@@ -10,17 +10,17 @@ export class PermisoOrmEntity {
   @Column('text', { unique: true })
   nombre: string;
 
-  @Column('text', { unique: true })
+  @Column({ type: 'text', nullable: true })
   descripcion: string;
 
   @Column('text')
   modulo: string;
 
-  @Column('text')
+  @Column({ type: 'text', nullable: true })
   accion: string;
 
-  @Column('text')
-  activo: string;
+  @Column({ type: 'boolean', nullable: true })
+  activo: boolean;
 
   @OneToMany(() => RolPermisoOrmEntity, (rp) => rp.permiso)
   rol_permisos: RolPermisoOrmEntity[];

@@ -57,6 +57,8 @@ export class TypeOrmPermisoRepository implements PermisoRepository {
   }
 
   async remove(id: string): Promise<void> {
+    const existing = await this.repo.findOneBy({ id_permiso: id });
+    if (!existing) throw new NotFoundException(`Permiso #${id} no encontrado`);
     await this.repo.delete(id);
   }
 }

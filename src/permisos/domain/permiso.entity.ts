@@ -3,8 +3,8 @@ export class Permiso {
     nombre: string;
     descripcion: string;
     modulo: string;
-    accion: string;
-    activo: string;
+    accion?: string;
+    activo?: boolean;
 
     constructor(partial: Partial<Permiso>) {
         Object.assign(this, partial);
