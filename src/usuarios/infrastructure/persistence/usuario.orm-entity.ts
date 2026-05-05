@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
 import { RolOrmEntity } from 'src/rol/infrastructure/persistence/rol.orm-entity';
 import { UsuarioEstado } from 'src/usuarios/domain/usuario-estado.enum';
@@ -9,7 +9,7 @@ export class UsuarioOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id_usuario: string;
 
-  @Column('text', { unique: true })
+  @Column('text')
   nombre: string;
 
   @Column('text', { unique: true })
@@ -27,7 +27,7 @@ export class UsuarioOrmEntity {
   @Column({ type: 'enum', enum: UsuarioEstado})
   estado: UsuarioEstado;
 
-  @Column('timestamp')
+  @CreateDateColumn({ type: 'timestamp' })
   fecha_registro: Date;
 
   @Column('timestamp')
@@ -40,8 +40,9 @@ export class UsuarioOrmEntity {
   @OneToMany(() => FichaOrmEntity, (ficha) => ficha.usuario_lider)
   fichas_lider: FichaOrmEntity[];
 
-  @OneToMany(() => RolOrmEntity, (rol: any) => rol.usuario)
-  roles: RolOrmEntity[];
+  @ManyToOne(() => RolOrmEntity, (rol) => rol.usuarios, { nullable: true })
+  @JoinColumn({ name: 'id_rol' })
+  rol: RolOrmEntity;
 
   @BeforeInsert()
   @BeforeUpdate()

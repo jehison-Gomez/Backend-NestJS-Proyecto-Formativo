@@ -5,8 +5,9 @@ import { Usuario } from "src/usuarios/domain/usuario.entity";
 import { UsuarioRepository } from "src/usuarios/domain/usuario.repository";
 import { UsuarioOrmEntity } from "./usuario.orm-entity";
 import { FichaOrmEntity } from "src/fichas/infrastructure/persistence/ficha.orm-entity";
+import { RolOrmEntity } from "src/rol/infrastructure/persistence/rol.orm-entity";
 
-const RELATIONS = ['ficha'];
+const RELATIONS = ['ficha', 'rol'];
 
 @Injectable()
 export class TypeOrmUsuarioRepository implements UsuarioRepository {
@@ -27,6 +28,7 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
       fecha_registro: orm.fecha_registro,
       ultimo_acceso: orm.ultimo_acceso,
       id_ficha: orm.ficha?.id_ficha,
+      id_rol: orm.rol?.id_rol,
     });
   }
 
@@ -41,6 +43,7 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
       ...(usuario.fecha_registro !== undefined && { fecha_registro: usuario.fecha_registro }),
       ...(usuario.ultimo_acceso !== undefined && { ultimo_acceso: usuario.ultimo_acceso }),
       ...(usuario.id_ficha !== undefined && { ficha: { id_ficha: usuario.id_ficha } as FichaOrmEntity }),
+      ...(usuario.id_rol !== undefined && { rol: { id_rol: usuario.id_rol } as RolOrmEntity }),
     };
   }
 
@@ -70,6 +73,8 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
   }
 
   async remove(id: string): Promise<void> {
+    const existing = await this.repo.findOneBy({ id_usuario: id });
+    if (!existing) throw new NotFoundException(`Usuario #${id} no encontrado`);
     await this.repo.delete(id);
   }
 }

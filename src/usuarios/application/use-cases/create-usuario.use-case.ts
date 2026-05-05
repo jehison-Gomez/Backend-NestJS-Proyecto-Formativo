@@ -10,7 +10,7 @@ export class CreateUsuarioUseCase {
 
     async execute(dto: CreateUsuarioDto): Promise<Usuario> {
         try {
-            const usuario = new Usuario({ ...dto });
+            const usuario = new Usuario({ ...dto, ultimo_acceso: new Date() });
             return await this.repository.create(usuario);
         } catch (error) {
             handleDBErrors(error);

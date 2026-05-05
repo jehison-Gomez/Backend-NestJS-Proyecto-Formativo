@@ -10,7 +10,8 @@ export class Usuario {
     estado: UsuarioEstado;
     fecha_registro: Date;
     ultimo_acceso: Date;
-    id_ficha: string;
+    id_ficha?: string;
+    id_rol?: string;
 
     constructor(partial: Partial<Usuario>) {
         Object.assign(this, partial);
