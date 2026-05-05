@@ -1,0 +1,46 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { AreaService } from '../../area.service';
+import { CreateAreaDto } from '../../application/dto/create-area.dto';
+import { UpdateAreaDto } from '../../application/dto/update-area.dto';
+
+@Controller('areas')
+export class AreaController {
+  constructor(private readonly areaService: AreaService) {}
+
+  @Post()
+  create(@Body() createAreaDto: CreateAreaDto) {
+    return this.areaService.create(createAreaDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.areaService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.areaService.findOne(id);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateAreaDto: UpdateAreaDto,
+  ) {
+    return this.areaService.update(id, updateAreaDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.areaService.remove(id);
+  }
+}
