@@ -65,6 +65,8 @@ export class TypeOrmFichaRepository implements FichaRepository {
   }
 
   async remove(id: string): Promise<void> {
+    const existing = await this.repo.findOneBy({ id_ficha: id });
+    if (!existing) throw new NotFoundException(`Ficha #${id} no encontrada`);
     await this.repo.delete(id);
   }
 }

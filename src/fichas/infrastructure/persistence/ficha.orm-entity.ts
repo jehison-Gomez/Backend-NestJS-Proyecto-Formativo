@@ -12,13 +12,13 @@ export class FichaOrmEntity {
   @Column('text', { unique: true })
   codigo_ficha: string;
 
-  @Column('date')
+  @Column({ type: 'date', nullable: true })
   fecha_inicio: Date;
 
-  @Column('date')
+  @Column({ type: 'date', nullable: true })
   fecha_fin: Date;
 
-  @Column({ type: 'enum', enum: FichaEstado })
+  @Column({ type: 'enum', enum: FichaEstado, nullable: true })
   estado: FichaEstado;
 
   @ManyToOne(() => ProgramaOrmEntity, (programa) => programa.fichas, { nullable: false })
@@ -35,6 +35,6 @@ export class FichaOrmEntity {
   @BeforeInsert()
   @BeforeUpdate()
   checkFields() {
-    this.codigo_ficha = this.codigo_ficha.trim().toLowerCase();
+    this.codigo_ficha = this.codigo_ficha.trim();
   }
 }
