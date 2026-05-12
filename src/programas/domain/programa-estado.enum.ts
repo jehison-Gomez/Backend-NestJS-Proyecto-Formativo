@@ -1,4 +1,4 @@
 export enum ProgramaEstado {
-    ACTIVO = 'activo',
-    INACTIVO = 'inactivo',
+  ACTIVO   = 'activo',
+  INACTIVO = 'inactivo',
 }

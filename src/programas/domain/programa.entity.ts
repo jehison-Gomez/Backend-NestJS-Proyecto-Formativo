@@ -1,14 +1,14 @@
-import { ProgramaEstado } from "./programa-estado.enum";
+import { ProgramaEstado } from './programa-estado.enum';
 
 export class Programa {
-    id_programa: string;
-    nombre: string;
-    codigo: string;
-    nivel_formacion: string;
-    estado: ProgramaEstado;
-    id_area: string;
+  id: string;
+  nombre: string;
+  codigo: string;
+  estado: ProgramaEstado;
+  creadoEn: Date;
+  actualizadoEn: Date;
 
-    constructor(partial: Partial<Programa>) {
-        Object.assign(this, partial);
-    }
+  constructor(partial: Partial<Programa>) {
+    Object.assign(this, partial);
+  }
 }

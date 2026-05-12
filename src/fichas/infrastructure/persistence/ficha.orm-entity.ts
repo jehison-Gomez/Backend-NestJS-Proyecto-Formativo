@@ -1,40 +1,30 @@
-import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { ProgramaOrmEntity } from 'src/programas/infrastructure/persistence/programa.orm-entity';
-import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
-import { FichaEstado } from 'src/fichas/domain/ficha-estado.enum';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { FichaEstado } from '../../domain/ficha-estado.enum';
 
 @Entity('fichas')
 export class FichaOrmEntity {
-
   @PrimaryGeneratedColumn('uuid')
-  id_ficha: string;
+  id: string;
 
-  @Column('text', { unique: true })
-  codigo_ficha: string;
+  @Column({ type: 'varchar', length: 255, unique: true })
+  nombre: string;
 
-  @Column({ type: 'date', nullable: true })
-  fecha_inicio: Date;
+  @Column({ type: 'varchar', length: 20, unique: true })
+  codigo: string;
 
-  @Column({ type: 'date', nullable: true })
-  fecha_fin: Date;
-
-  @Column({ type: 'enum', enum: FichaEstado, nullable: true })
+  @Column({ type: 'enum', enum: FichaEstado, default: FichaEstado.ACTIVO })
   estado: FichaEstado;
 
-  @ManyToOne(() => ProgramaOrmEntity, (programa) => programa.fichas, { nullable: false })
-  @JoinColumn({ name: 'id_programa' })
-  programa: ProgramaOrmEntity;
+  @CreateDateColumn({ name: 'creado_en' })
+  creadoEn: Date;
 
-  @ManyToOne(() => UsuarioOrmEntity, (usuario) => usuario.fichas_lider, { nullable: true })
-  @JoinColumn({ name: 'id_usuario_lider' })
-  usuario_lider: UsuarioOrmEntity;
-
-  @OneToMany(() => UsuarioOrmEntity, (usuario) => usuario.ficha)
-  usuarios: UsuarioOrmEntity[];
+  @UpdateDateColumn({ name: 'actualizado_en' })
+  actualizadoEn: Date;
 
   @BeforeInsert()
   @BeforeUpdate()
   checkFields() {
-    this.codigo_ficha = this.codigo_ficha.trim();
+    this.nombre = this.nombre.trim().toLowerCase();
+    this.codigo = this.codigo.trim().toLowerCase();
   }
 }

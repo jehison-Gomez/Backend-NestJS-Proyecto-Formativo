@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Programa } from "src/programas/domain/programa.entity";
-import { ProgramaRepository } from "src/programas/domain/programa.repository";
-import { ProgramaOrmEntity } from "./programa.orm-entity";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ProgramaRepository } from '../../domain/programa.repository';
+import { Programa } from '../../domain/programa.entity';
+import { ProgramaOrmEntity } from './programa.orm-entity';
 
 @Injectable()
 export class TypeOrmProgramaRepository implements ProgramaRepository {
@@ -14,21 +14,20 @@ export class TypeOrmProgramaRepository implements ProgramaRepository {
 
   private toDomain(orm: ProgramaOrmEntity): Programa {
     return new Programa({
-      id_programa: orm.id_programa,
+      id: orm.id,
       nombre: orm.nombre,
-      nivel_formacion: orm.nivel_formacion,
+      codigo: orm.codigo,
       estado: orm.estado,
-      id_area: orm.id_area,
+      creadoEn: orm.creadoEn,
+      actualizadoEn: orm.actualizadoEn,
     });
   }
 
   private toOrm(programa: Partial<Programa>): Partial<ProgramaOrmEntity> {
     return {
-      ...(programa.nombre !== undefined && { nombre: programa.nombre}),
-      ...(programa.codigo !== undefined && { codigo: programa.codigo}),
-      ...(programa.nivel_formacion !== undefined && { nivel_formacion: programa.nivel_formacion}),
-      ...(programa.estado !== undefined && { estado: programa.estado}),
-      ...(programa.id_area !== undefined && { id_area: programa.id_area}),
+      ...(programa.nombre !== undefined && { nombre: programa.nombre }),
+      ...(programa.codigo !== undefined && { codigo: programa.codigo }),
+      ...(programa.estado !== undefined && { estado: programa.estado }),
     };
   }
 
@@ -44,20 +43,17 @@ export class TypeOrmProgramaRepository implements ProgramaRepository {
   }
 
   async findOne(id: string): Promise<Programa | null> {
-    const found = await this.repo.findOneBy({ id_programa: id });
+    const found = await this.repo.findOneBy({ id });
     return found ? this.toDomain(found) : null;
   }
 
   async update(id: string, programa: Partial<Programa>): Promise<Programa> {
     await this.repo.update(id, this.toOrm(programa));
-    const update = await this.repo.findOneBy({ id_programa: id });
-    if (!update) throw new NotFoundException(`Programa #${id} no encontrado`);
-    return this.toDomain(update);
+    const updated = await this.repo.findOneBy({ id });
+    return this.toDomain(updated!);
   }
 
   async remove(id: string): Promise<void> {
-    const existing = await this.repo.findOneBy({ id_programa: id });
-    if (!existing) throw new NotFoundException(`Programa #${id} no encontrado`);
     await this.repo.delete(id);
   }
 }

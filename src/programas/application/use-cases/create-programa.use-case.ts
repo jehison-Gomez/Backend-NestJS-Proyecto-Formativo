@@ -1,19 +1,19 @@
-import { Injectable } from "@nestjs/common";
-import { ProgramaRepository } from "src/programas/domain/programa.repository";
-import { Programa } from "src/programas/domain/programa.entity";
-import { CreateProgramaDto } from "../dto/create-programa.dto";
-import { handleDBErrors } from "../handle-db-errors";
+import { Injectable } from '@nestjs/common';
+import { ProgramaRepository } from '../../domain/programa.repository';
+import { CreateProgramaDto } from '../dto/create-programa.dto';
+import { Programa } from '../../domain/programa.entity';
+import { handleDbErrors } from '../handle-db-errors';
 
 @Injectable()
 export class CreateProgramaUseCase {
-    constructor(private readonly repository: ProgramaRepository) {}
+  constructor(private readonly programaRepository: ProgramaRepository) {}
 
-    async execute(dto: CreateProgramaDto): Promise<Programa> {
-        try {
-            const programa = new Programa({ ...dto });
-            return await this.repository.create(programa);
-        } catch (error) {
-            handleDBErrors(error);
-        }
+  async execute(dto: CreateProgramaDto): Promise<Programa> {
+    try {
+      const programa = new Programa({ ...dto });
+      return await this.programaRepository.create(programa);
+    } catch (error) {
+      handleDbErrors(error);
     }
+  }
 }

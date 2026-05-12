@@ -1,4 +1,4 @@
-import { Ficha } from "./ficha.entity";
+import { Ficha } from './ficha.entity';
 
 export abstract class FichaRepository {
   abstract create(ficha: Ficha): Promise<Ficha>;

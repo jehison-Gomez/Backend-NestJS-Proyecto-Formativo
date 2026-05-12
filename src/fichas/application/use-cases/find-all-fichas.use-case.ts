@@ -1,17 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { FichaRepository } from "src/fichas/domain/ficha.repository";
-import { Ficha } from "src/fichas/domain/ficha.entity";
-import { handleDBErrors } from "../handle-db-errors";
+import { Injectable } from '@nestjs/common';
+import { FichaRepository } from '../../domain/ficha.repository';
+import { Ficha } from '../../domain/ficha.entity';
 
 @Injectable()
 export class FindAllFichasUseCase {
-    constructor(private readonly repository: FichaRepository) {}
+  constructor(private readonly fichaRepository: FichaRepository) {}
 
-    async execute(): Promise<Ficha[]> {
-        try {
-            return await this.repository.findAll();
-        } catch (error) {
-            handleDBErrors(error);
-        }
-    }
+  async execute(): Promise<Ficha[]> {
+    return this.fichaRepository.findAll();
+  }
 }

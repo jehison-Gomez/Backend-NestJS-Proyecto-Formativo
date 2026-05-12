@@ -1,23 +1,20 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { ProgramaRepository } from "src/programas/domain/programa.repository";
-import { handleDBErrors } from "../handle-db-errors";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { ProgramaRepository } from '../../domain/programa.repository';
+import { handleDbErrors } from '../handle-db-errors';
 
 @Injectable()
 export class RemoveProgramaUseCase {
-    constructor(private readonly repository: ProgramaRepository) {}
+  constructor(private readonly programaRepository: ProgramaRepository) {}
 
-    async execute(id: string): Promise<{ message: string }> {
-        try {
-            const exists = await this.repository.findOne(id);
+  async execute(id: string): Promise<{ message: string }> {
+    const exists = await this.programaRepository.findOne(id);
+    if (!exists) throw new NotFoundException(`Programa #${id} no encontrado`);
 
-            if (!exists)
-                throw new NotFoundException(`Programa #${id} no encontrado`);
-
-            await this.repository.remove(id);
-
-            return { message: `Programa #${id} eliminado correctamente` };
-        } catch (error) {
-            handleDBErrors(error);
-        }
+    try {
+      await this.programaRepository.remove(id);
+      return { message: `Programa #${id} eliminado correctamente` };
+    } catch (error) {
+      handleDbErrors(error);
     }
+  }
 }

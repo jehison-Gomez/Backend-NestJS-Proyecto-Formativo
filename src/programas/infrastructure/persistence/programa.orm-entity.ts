@@ -1,30 +1,25 @@
-import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, OneToMany } from 'typeorm';
-import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
-import { ProgramaEstado } from 'src/programas/domain/programa-estado.enum';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ProgramaEstado } from '../../domain/programa-estado.enum';
 
 @Entity('programas')
 export class ProgramaOrmEntity {
-
   @PrimaryGeneratedColumn('uuid')
-  id_programa: string;
+  id: string;
 
-  @Column('text', { unique: true })
+  @Column({ type: 'varchar', length: 255, unique: true })
   nombre: string;
 
-  @Column('text', { unique: true })
+  @Column({ type: 'varchar', length: 20, unique: true })
   codigo: string;
 
-  @Column({ type: 'text', nullable: true })
-  nivel_formacion: string;
-
-  @Column({ type: 'enum', enum: ProgramaEstado, nullable: true })
+  @Column({ type: 'enum', enum: ProgramaEstado, default: ProgramaEstado.ACTIVO })
   estado: ProgramaEstado;
 
-  @Column('text')
-  id_area: string;
+  @CreateDateColumn({ name: 'creado_en' })
+  creadoEn: Date;
 
-  @OneToMany(() => FichaOrmEntity, (ficha) => ficha.programa)
-  fichas: FichaOrmEntity[];
+  @UpdateDateColumn({ name: 'actualizado_en' })
+  actualizadoEn: Date;
 
   @BeforeInsert()
   @BeforeUpdate()
