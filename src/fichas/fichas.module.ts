@@ -15,6 +15,7 @@ import { FindAllFichasUseCase }         from './application/use-cases/find-all-f
 import { FindOneFichaUseCase }          from './application/use-cases/find-one-ficha.use-case';
 import { UpdateFichaUseCase }           from './application/use-cases/update-ficha.use-case';
 import { RemoveFichaUseCase }           from './application/use-cases/remove-ficha.use-case';
+import { ProgramasModule }               from 'src/programas/programas.module';
 
 const USE_CASES = [
   CreateFichaUseCase,
@@ -25,7 +26,10 @@ const USE_CASES = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FichaOrmEntity])],
+  imports: [
+    TypeOrmModule.forFeature([FichaOrmEntity]),
+    ProgramasModule,
+  ],
   controllers: [FichasController],
   providers: [
     ...USE_CASES,
