@@ -3,10 +3,13 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-// import { FichasModule } from './fichas/fichas.module';
 import { DepartamentosModule } from './departamentos/departamentos.module';
 import { MunicipiosModule } from './municipios/municipios.module';
 import { CentrosModule } from './centros/centros.module';
+import { SedesModule } from './sedes/sedes.module';
+import { AreasModule } from './areas/areas.module';
+import { ProgramasModule } from './programas/programas.module';
+import { FichasModule } from './fichas/fichas.module';
 
 @Module({
   imports: [
@@ -29,6 +32,10 @@ import { CentrosModule } from './centros/centros.module';
     DepartamentosModule,
     MunicipiosModule,
     CentrosModule,
+    SedesModule,
+    AreasModule,
+    ProgramasModule,
+    FichasModule,
   ],
   controllers: [],
   providers: [],
