@@ -15,6 +15,7 @@ import { FindAllProgramasUseCase }         from './application/use-cases/find-al
 import { FindOneProgramaUseCase }          from './application/use-cases/find-one-programa.use-case';
 import { UpdateProgramaUseCase }           from './application/use-cases/update-programa.use-case';
 import { RemoveProgramaUseCase }           from './application/use-cases/remove-programa.use-case';
+import { AreasModule }                     from 'src/areas/areas.module';
 
 const USE_CASES = [
   CreateProgramaUseCase,
@@ -25,7 +26,10 @@ const USE_CASES = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProgramaOrmEntity])],
+  imports: [
+    TypeOrmModule.forFeature([ProgramaOrmEntity]),
+    AreasModule,
+  ],
   controllers: [ProgramasController],
   providers: [
     ...USE_CASES,

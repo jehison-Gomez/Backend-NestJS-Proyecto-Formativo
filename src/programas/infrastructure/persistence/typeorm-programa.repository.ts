@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ProgramaRepository } from '../../domain/programa.repository';
 import { Programa } from '../../domain/programa.entity';
 import { ProgramaOrmEntity } from './programa.orm-entity';
+import { Area } from 'src/areas/domain/area.entity';
 
 @Injectable()
 export class TypeOrmProgramaRepository implements ProgramaRepository {
@@ -17,7 +18,14 @@ export class TypeOrmProgramaRepository implements ProgramaRepository {
       id: orm.id,
       nombre: orm.nombre,
       codigo: orm.codigo,
+      nivelFormacion: orm.nivelFormacion,
       estado: orm.estado,
+      area: orm.area ? new Area({
+        id: orm.area.id,
+        nombre: orm.area.nombre,
+        descripcion: orm.area.descripcion,
+        estado: orm.area.estado,
+      }) : undefined,
       creadoEn: orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -27,30 +35,38 @@ export class TypeOrmProgramaRepository implements ProgramaRepository {
     return {
       ...(programa.nombre !== undefined && { nombre: programa.nombre }),
       ...(programa.codigo !== undefined && { codigo: programa.codigo }),
+      ...(programa.nivelFormacion !== undefined && { nivelFormacion: programa.nivelFormacion }),
       ...(programa.estado !== undefined && { estado: programa.estado }),
+      ...(programa.area !== undefined && { area: { id: programa.area.id } as any }),
     };
   }
 
   async create(programa: Programa): Promise<Programa> {
     const ormEntity = this.repo.create(this.toOrm(programa));
     const saved = await this.repo.save(ormEntity);
-    return this.toDomain(saved);
+    const result = await this.findOne(saved.id);
+    return result!;
   }
 
   async findAll(): Promise<Programa[]> {
-    const list = await this.repo.find();
+    const list = await this.repo.find({
+      relations: ['area'],
+    });
     return list.map(this.toDomain.bind(this));
   }
 
   async findOne(id: string): Promise<Programa | null> {
-    const found = await this.repo.findOneBy({ id });
+    const found = await this.repo.findOne({
+      where: { id },
+      relations: ['area'],
+    });
     return found ? this.toDomain(found) : null;
   }
 
   async update(id: string, programa: Partial<Programa>): Promise<Programa> {
     await this.repo.update(id, this.toOrm(programa));
-    const updated = await this.repo.findOneBy({ id });
-    return this.toDomain(updated!);
+    const result = await this.findOne(id);
+    return result!;
   }
 
   async remove(id: string): Promise<void> {
