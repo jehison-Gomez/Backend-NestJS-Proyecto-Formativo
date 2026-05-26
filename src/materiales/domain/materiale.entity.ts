@@ -9,6 +9,7 @@ export class Materiale {
   estado: MaterialeEstado;
   categoriaMaterial: Categoria_material;
   ficha: Ficha;
+  materialUbicaciones?: import('src/material_ubicacion/domain/material_ubicacion.entity').Material_ubicacion[];
   creadoEn: Date;
   actualizadoEn: Date;
 

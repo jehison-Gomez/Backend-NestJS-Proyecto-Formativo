@@ -1,4 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Material_ubicacionOrmEntity } from 'src/material_ubicacion/infrastructure/persistence/material_ubicacion.orm-entity';
 import { UbicacionEstado } from '../../domain/ubicacion-estado.enum';
 import { Tipo_ubicacionOrmEntity } from 'src/tipo_ubicacion/infrastructure/persistence/tipo_ubicacion.orm-entity';
 import { AreaOrmEntity } from 'src/areas/infrastructure/persistence/area.orm-entity';
@@ -30,6 +31,9 @@ export class UbicacionOrmEntity {
   })
   @JoinColumn({ name: 'area_id' })
   area: AreaOrmEntity;
+
+  @OneToMany(() => Material_ubicacionOrmEntity, (mu) => mu.ubicacion)
+  materialUbicaciones: Material_ubicacionOrmEntity[];
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;
