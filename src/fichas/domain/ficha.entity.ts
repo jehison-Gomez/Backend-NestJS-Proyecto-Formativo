@@ -1,4 +1,5 @@
 import { Programa } from 'src/programas/domain/programa.entity';
+import { Usuario } from 'src/usuarios/domain/usuario.entity';
 import { FichaEstado } from './ficha-estado.enum';
 
 export class Ficha {
@@ -8,6 +9,8 @@ export class Ficha {
   fechaFin: Date;
   estado: FichaEstado;
   programa: Programa;
+  usuarioLider?: Usuario;
+  aprendices?: Usuario[];
   creadoEn: Date;
   actualizadoEn: Date;
 

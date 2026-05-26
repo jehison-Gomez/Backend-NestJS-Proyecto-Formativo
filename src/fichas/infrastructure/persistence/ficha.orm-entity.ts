@@ -1,6 +1,7 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { FichaEstado } from '../../domain/ficha-estado.enum';
 import { ProgramaOrmEntity } from 'src/programas/infrastructure/persistence/programa.orm-entity';
+import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
 
 @Entity('fichas')
 export class FichaOrmEntity {
@@ -25,6 +26,16 @@ export class FichaOrmEntity {
   })
   @JoinColumn({ name: 'programa_id' })
   programa: ProgramaOrmEntity;
+
+  @ManyToOne(() => UsuarioOrmEntity, (usuario) => usuario.fichasLideradas, {
+    nullable: true,
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn({ name: 'usuario_lider_id' })
+  usuarioLider: UsuarioOrmEntity;
+
+  @OneToMany(() => UsuarioOrmEntity, (usuario) => usuario.ficha)
+  aprendices: UsuarioOrmEntity[];
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;

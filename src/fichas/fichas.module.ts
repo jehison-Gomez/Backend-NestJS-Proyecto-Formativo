@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Infrastructure
@@ -16,6 +16,7 @@ import { FindOneFichaUseCase }          from './application/use-cases/find-one-f
 import { UpdateFichaUseCase }           from './application/use-cases/update-ficha.use-case';
 import { RemoveFichaUseCase }           from './application/use-cases/remove-ficha.use-case';
 import { ProgramasModule }               from 'src/programas/programas.module';
+import { UsuariosModule }                from 'src/usuarios/usuarios.module';
 
 const USE_CASES = [
   CreateFichaUseCase,
@@ -29,6 +30,7 @@ const USE_CASES = [
   imports: [
     TypeOrmModule.forFeature([FichaOrmEntity]),
     ProgramasModule,
+    forwardRef(() => UsuariosModule),
   ],
   controllers: [FichasController],
   providers: [

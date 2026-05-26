@@ -21,4 +21,8 @@ export class CreateFichaDto {
   @IsUUID('4', { message: 'El ID del programa debe ser un UUID válido' })
   @IsNotEmpty({ message: 'El programa es obligatorio' })
   programaId: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del usuario líder debe ser un UUID válido' })
+  usuarioLiderId?: string;
 }

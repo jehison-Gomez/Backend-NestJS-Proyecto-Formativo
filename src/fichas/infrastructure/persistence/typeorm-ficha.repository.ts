@@ -5,6 +5,7 @@ import { FichaRepository } from '../../domain/ficha.repository';
 import { Ficha } from '../../domain/ficha.entity';
 import { FichaOrmEntity } from './ficha.orm-entity';
 import { Programa } from 'src/programas/domain/programa.entity';
+import { Usuario } from 'src/usuarios/domain/usuario.entity';
 
 @Injectable()
 export class TypeOrmFichaRepository implements FichaRepository {
@@ -27,6 +28,18 @@ export class TypeOrmFichaRepository implements FichaRepository {
         nivelFormacion: orm.programa.nivelFormacion,
         estado: orm.programa.estado,
       }) : undefined,
+      usuarioLider: orm.usuarioLider ? new Usuario({
+        id: orm.usuarioLider.id,
+        nombre: orm.usuarioLider.nombre,
+        correo: orm.usuarioLider.correo,
+        estado: orm.usuarioLider.estado,
+      }) : undefined,
+      aprendices: orm.aprendices?.map(u => new Usuario({
+        id: u.id,
+        nombre: u.nombre,
+        correo: u.correo,
+        estado: u.estado,
+      })),
       creadoEn: orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -39,6 +52,7 @@ export class TypeOrmFichaRepository implements FichaRepository {
       ...(ficha.fechaFin !== undefined && { fechaFin: ficha.fechaFin }),
       ...(ficha.estado !== undefined && { estado: ficha.estado }),
       ...(ficha.programa !== undefined && { programa: { id: ficha.programa.id } as any }),
+      ...(ficha.usuarioLider !== undefined && { usuarioLider: { id: ficha.usuarioLider.id } as any }),
     };
   }
 
@@ -51,7 +65,7 @@ export class TypeOrmFichaRepository implements FichaRepository {
 
   async findAll(): Promise<Ficha[]> {
     const list = await this.repo.find({
-      relations: ['programa'],
+      relations: ['programa', 'usuarioLider', 'aprendices'],
     });
     return list.map(this.toDomain.bind(this));
   }
@@ -59,7 +73,7 @@ export class TypeOrmFichaRepository implements FichaRepository {
   async findOne(id: string): Promise<Ficha | null> {
     const found = await this.repo.findOne({
       where: { id },
-      relations: ['programa'],
+      relations: ['programa', 'usuarioLider', 'aprendices'],
     });
     return found ? this.toDomain(found) : null;
   }
