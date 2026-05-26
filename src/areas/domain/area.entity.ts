@@ -11,6 +11,7 @@ export class Area {
   sede: Sede;
   programas?: Programa[];
   usuarioLider?: Usuario;
+  ubicaciones?: import('src/ubicacion/domain/ubicacion.entity').Ubicacion[];
   creadoEn: Date;
   actualizadoEn: Date;
 

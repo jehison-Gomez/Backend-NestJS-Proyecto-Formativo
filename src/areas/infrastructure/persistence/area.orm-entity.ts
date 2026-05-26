@@ -3,6 +3,7 @@ import { AreaEstado } from '../../domain/area-estado.enum';
 import { SedeOrmEntity } from 'src/sedes/infrastructure/persistence/sede.orm-entity';
 import { ProgramaOrmEntity } from 'src/programas/infrastructure/persistence/programa.orm-entity';
 import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
+import { UbicacionOrmEntity } from 'src/ubicacion/infrastructure/persistence/ubicacion.orm-entity';
 
 @Entity('areas')
 export class AreaOrmEntity {
@@ -27,6 +28,9 @@ export class AreaOrmEntity {
 
   @OneToMany(() => ProgramaOrmEntity, (programa) => programa.area)
   programas: ProgramaOrmEntity[];
+
+  @OneToMany(() => UbicacionOrmEntity, (u) => u.area)
+  ubicaciones: UbicacionOrmEntity[];
 
   @OneToOne(() => UsuarioOrmEntity, (usuario) => usuario.areaLiderada, {
     nullable: true,

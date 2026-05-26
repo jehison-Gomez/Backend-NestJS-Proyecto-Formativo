@@ -5,6 +5,7 @@ export class Tipo_ubicacion {
   nombre: string;
   descripcion: string;
   estado: Tipo_ubicacionEstado;
+  ubicaciones?: import('src/ubicacion/domain/ubicacion.entity').Ubicacion[];
   creadoEn: Date;
   actualizadoEn: Date;
 
