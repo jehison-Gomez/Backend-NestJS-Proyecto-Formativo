@@ -1,0 +1,21 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Categoria_materialRepository } from '../../domain/categoria_material.repository';
+import { UpdateCategoria_materialDto } from '../dto/update-categoria_material.dto';
+import { Categoria_material } from '../../domain/categoria_material.entity';
+import { handleDbErrors } from '../handle-db-errors';
+
+@Injectable()
+export class UpdateCategoria_materialUseCase {
+  constructor(private readonly categoria_materialRepository: Categoria_materialRepository) {}
+
+  async execute(id: string, dto: UpdateCategoria_materialDto): Promise<Categoria_material> {
+    const exists = await this.categoria_materialRepository.findOne(id);
+    if (!exists) throw new NotFoundException(`Categoria_material #${id} no encontrado`);
+
+    try {
+      return await this.categoria_materialRepository.update(id, dto);
+    } catch (error) {
+      handleDbErrors(error);
+    }
+  }
+}
