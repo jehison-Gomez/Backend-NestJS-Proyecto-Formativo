@@ -1,7 +1,8 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { UsuarioEstado } from '../../domain/usuario-estado.enum';
 import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
 import { RoleOrmEntity } from 'src/roles/infrastructure/persistence/role.orm-entity';
+import { AreaOrmEntity } from 'src/areas/infrastructure/persistence/area.orm-entity';
 
 @Entity('usuarios')
 export class UsuarioOrmEntity {
@@ -38,6 +39,9 @@ export class UsuarioOrmEntity {
 
   @OneToMany(() => FichaOrmEntity, (ficha) => ficha.usuarioLider)
   fichasLideradas: FichaOrmEntity[];
+
+  @OneToOne(() => AreaOrmEntity, (area) => area.usuarioLider)
+  areaLiderada: AreaOrmEntity;
 
   @ManyToOne(() => RoleOrmEntity, (role) => role.usuarios, {
     nullable: false,

@@ -13,6 +13,7 @@ export class Usuario {
   fechaRegistro: Date;
   ficha?: Ficha;
   fichasLideradas?: Ficha[];
+  areaLiderada?: import('src/areas/domain/area.entity').Area;
   role: Role;
   creadoEn: Date;
   actualizadoEn: Date;

@@ -16,6 +16,7 @@ import { FindOneAreaUseCase }          from './application/use-cases/find-one-ar
 import { UpdateAreaUseCase }           from './application/use-cases/update-area.use-case';
 import { RemoveAreaUseCase }           from './application/use-cases/remove-area.use-case';
 import { SedesModule }                 from 'src/sedes/sedes.module';
+import { UsuariosModule }               from 'src/usuarios/usuarios.module';
 
 const USE_CASES = [
   CreateAreaUseCase,
@@ -29,6 +30,7 @@ const USE_CASES = [
   imports: [
     TypeOrmModule.forFeature([AreaOrmEntity]),
     SedesModule,
+    UsuariosModule,
   ],
   controllers: [AreasController],
   providers: [

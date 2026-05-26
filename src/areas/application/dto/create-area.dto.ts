@@ -18,4 +18,8 @@ export class CreateAreaDto {
   @IsUUID('4', { message: 'El ID de la sede debe ser un UUID válido' })
   @IsNotEmpty({ message: 'La sede es obligatoria' })
   sedeId: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del usuario líder debe ser un UUID válido' })
+  usuarioLiderId?: string;
 }

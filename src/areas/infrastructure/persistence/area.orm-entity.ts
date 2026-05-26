@@ -1,7 +1,8 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { AreaEstado } from '../../domain/area-estado.enum';
 import { SedeOrmEntity } from 'src/sedes/infrastructure/persistence/sede.orm-entity';
 import { ProgramaOrmEntity } from 'src/programas/infrastructure/persistence/programa.orm-entity';
+import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
 
 @Entity('areas')
 export class AreaOrmEntity {
@@ -26,6 +27,13 @@ export class AreaOrmEntity {
 
   @OneToMany(() => ProgramaOrmEntity, (programa) => programa.area)
   programas: ProgramaOrmEntity[];
+
+  @OneToOne(() => UsuarioOrmEntity, (usuario) => usuario.areaLiderada, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'usuario_lider_id' })
+  usuarioLider: UsuarioOrmEntity;
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;

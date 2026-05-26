@@ -5,6 +5,7 @@ import { AreaRepository } from '../../domain/area.repository';
 import { Area } from '../../domain/area.entity';
 import { AreaOrmEntity } from './area.orm-entity';
 import { Sede } from 'src/sedes/domain/sede.entity';
+import { Usuario } from 'src/usuarios/domain/usuario.entity';
 
 @Injectable()
 export class TypeOrmAreaRepository implements AreaRepository {
@@ -25,6 +26,12 @@ export class TypeOrmAreaRepository implements AreaRepository {
         direccion: orm.sede.direccion,
         estado: orm.sede.estado,
       }) : undefined,
+      usuarioLider: orm.usuarioLider ? new Usuario({
+        id: orm.usuarioLider.id,
+        nombre: orm.usuarioLider.nombre,
+        correo: orm.usuarioLider.correo,
+        estado: orm.usuarioLider.estado,
+      }) : undefined,
       creadoEn: orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -36,6 +43,7 @@ export class TypeOrmAreaRepository implements AreaRepository {
       ...(area.descripcion !== undefined && { descripcion: area.descripcion }),
       ...(area.estado !== undefined && { estado: area.estado }),
       ...(area.sede !== undefined && { sede: { id: area.sede.id } as any }),
+      ...(area.usuarioLider !== undefined && { usuarioLider: { id: area.usuarioLider.id } as any }),
     };
   }
 
@@ -48,7 +56,7 @@ export class TypeOrmAreaRepository implements AreaRepository {
 
   async findAll(): Promise<Area[]> {
     const list = await this.repo.find({
-      relations: ['sede'],
+      relations: ['sede', 'usuarioLider'],
     });
     return list.map(this.toDomain.bind(this));
   }
@@ -56,7 +64,7 @@ export class TypeOrmAreaRepository implements AreaRepository {
   async findOne(id: string): Promise<Area | null> {
     const found = await this.repo.findOne({
       where: { id },
-      relations: ['sede'],
+      relations: ['sede', 'usuarioLider'],
     });
     return found ? this.toDomain(found) : null;
   }
