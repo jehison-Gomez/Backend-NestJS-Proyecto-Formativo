@@ -11,6 +11,7 @@ export class Ficha {
   programa: Programa;
   usuarioLider?: Usuario;
   aprendices?: Usuario[];
+  materiales?: import('src/materiales/domain/materiale.entity').Materiale[];
   creadoEn: Date;
   actualizadoEn: Date;
 

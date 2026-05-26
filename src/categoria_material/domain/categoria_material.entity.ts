@@ -5,6 +5,7 @@ export class Categoria_material {
   nombre: string;
   descripcion: string;
   estado: Categoria_materialEstado;
+  materiales?: import('src/materiales/domain/materiale.entity').Materiale[];
   creadoEn: Date;
   actualizadoEn: Date;
 

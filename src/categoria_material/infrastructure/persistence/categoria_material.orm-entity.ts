@@ -1,5 +1,6 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Categoria_materialEstado } from '../../domain/categoria_material-estado.enum';
+import { MaterialeOrmEntity } from 'src/materiales/infrastructure/persistence/materiale.orm-entity';
 
 @Entity('categoria_material')
 export class Categoria_materialOrmEntity {
@@ -14,6 +15,9 @@ export class Categoria_materialOrmEntity {
 
   @Column({ type: 'enum', enum: Categoria_materialEstado, default: Categoria_materialEstado.ACTIVO })
   estado: Categoria_materialEstado;
+
+  @OneToMany(() => MaterialeOrmEntity, (m) => m.categoriaMaterial)
+  materiales: MaterialeOrmEntity[];
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;

@@ -2,6 +2,7 @@ import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColum
 import { FichaEstado } from '../../domain/ficha-estado.enum';
 import { ProgramaOrmEntity } from 'src/programas/infrastructure/persistence/programa.orm-entity';
 import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
+import { MaterialeOrmEntity } from 'src/materiales/infrastructure/persistence/materiale.orm-entity';
 
 @Entity('fichas')
 export class FichaOrmEntity {
@@ -36,6 +37,9 @@ export class FichaOrmEntity {
 
   @OneToMany(() => UsuarioOrmEntity, (usuario) => usuario.ficha)
   aprendices: UsuarioOrmEntity[];
+
+  @OneToMany(() => MaterialeOrmEntity, (m) => m.ficha)
+  materiales: MaterialeOrmEntity[];
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;
