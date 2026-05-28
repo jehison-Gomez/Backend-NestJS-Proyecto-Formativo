@@ -9,7 +9,6 @@ export class Ubicacion {
   estado: UbicacionEstado;
   tipoUbicacion: Tipo_ubicacion;
   area: Area;
-  materialUbicaciones?: import('src/material_ubicacion/domain/material_ubicacion.entity').Material_ubicacion[];
   creadoEn: Date;
   actualizadoEn: Date;
 

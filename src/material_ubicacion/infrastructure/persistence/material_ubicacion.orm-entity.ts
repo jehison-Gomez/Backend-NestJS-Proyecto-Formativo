@@ -7,17 +7,11 @@ export class Material_ubicacionOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => MaterialeOrmEntity, (m) => m.materialUbicaciones, {
-    nullable: false,
-    onDelete: 'RESTRICT',
-  })
+  @ManyToOne(() => MaterialeOrmEntity, { nullable: false, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'material_id' })
   material: MaterialeOrmEntity;
 
-  @ManyToOne(() => UbicacionOrmEntity, (u) => u.materialUbicaciones, {
-    nullable: false,
-    onDelete: 'RESTRICT',
-  })
+  @ManyToOne(() => UbicacionOrmEntity, { nullable: false, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'ubicacion_id' })
   ubicacion: UbicacionOrmEntity;
 
