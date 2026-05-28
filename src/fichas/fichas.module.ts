@@ -29,7 +29,7 @@ const USE_CASES = [
 @Module({
   imports: [
     TypeOrmModule.forFeature([FichaOrmEntity]),
-    ProgramasModule,
+    forwardRef(() => ProgramasModule),
     forwardRef(() => UsuariosModule),
   ],
   controllers: [FichasController],

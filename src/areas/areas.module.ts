@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Infrastructure
@@ -30,7 +30,7 @@ const USE_CASES = [
   imports: [
     TypeOrmModule.forFeature([AreaOrmEntity]),
     SedesModule,
-    UsuariosModule,
+    forwardRef(() => UsuariosModule),
   ],
   controllers: [AreasController],
   providers: [
