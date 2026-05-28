@@ -6,6 +6,8 @@ import { Materiale } from '../../domain/materiale.entity';
 import { MaterialeOrmEntity } from './materiale.orm-entity';
 import { Categoria_material } from 'src/categoria_material/domain/categoria_material.entity';
 import { Ficha } from 'src/fichas/domain/ficha.entity';
+import { Material_item } from 'src/material_item/domain/material_item.entity';
+import { Material_consumible } from 'src/material_consumible/domain/material_consumible.entity';
 
 @Injectable()
 export class TypeOrmMaterialeRepository implements MaterialeRepository {
@@ -33,6 +35,23 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
         fechaFin:    orm.ficha.fechaFin,
         estado:      orm.ficha.estado,
       }) : undefined,
+      tipoMaterial: orm.tipoMaterial ?? undefined,
+      materialItem: orm.materialItem ? new Material_item({
+        id:          orm.materialItem.id,
+        codigoSena:  orm.materialItem.codigoSena,
+        condicion:   orm.materialItem.condicion,
+        observacion: orm.materialItem.observacion,
+        estadoItem:  orm.materialItem.estadoItem,
+        estado:      orm.materialItem.estado,
+      }) : undefined,
+      materialConsumible: orm.materialConsumible ? new Material_consumible({
+        id:               orm.materialConsumible.id,
+        stockActual:      Number(orm.materialConsumible.stockActual),
+        stockMinimo:      Number(orm.materialConsumible.stockMinimo),
+        unidadMedida:     orm.materialConsumible.unidadMedida,
+        fechaVencimiento: orm.materialConsumible.fechaVencimiento,
+        estado:           orm.materialConsumible.estado,
+      }) : undefined,
       creadoEn:      orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -40,11 +59,14 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
 
   private toOrm(materiale: Partial<Materiale>): Partial<MaterialeOrmEntity> {
     return {
-      ...(materiale.nombre             !== undefined && { nombre:            materiale.nombre }),
-      ...(materiale.descripcion        !== undefined && { descripcion:       materiale.descripcion }),
-      ...(materiale.estado             !== undefined && { estado:            materiale.estado }),
-      ...(materiale.categoriaMaterial  !== undefined && { categoriaMaterial: { id: materiale.categoriaMaterial.id } as any }),
-      ...(materiale.ficha              !== undefined && { ficha:             { id: materiale.ficha.id } as any }),
+      ...(materiale.nombre            !== undefined && { nombre:            materiale.nombre }),
+      ...(materiale.descripcion       !== undefined && { descripcion:       materiale.descripcion }),
+      ...(materiale.estado            !== undefined && { estado:            materiale.estado }),
+      ...(materiale.categoriaMaterial !== undefined && { categoriaMaterial: { id: materiale.categoriaMaterial.id } as any }),
+      ...(materiale.ficha             !== undefined && { ficha:             { id: materiale.ficha.id } as any }),
+      ...(materiale.tipoMaterial      !== undefined && { tipoMaterial:      materiale.tipoMaterial }),
+      ...(materiale.materialItem      !== undefined && { materialItem:      materiale.materialItem ? { id: materiale.materialItem.id } as any : null }),
+      ...(materiale.materialConsumible !== undefined && { materialConsumible: materiale.materialConsumible ? { id: materiale.materialConsumible.id } as any : null }),
     };
   }
 
@@ -57,7 +79,7 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
 
   async findAll(): Promise<Materiale[]> {
     const list = await this.repo.find({
-      relations: ['categoriaMaterial', 'ficha'],
+      relations: ['categoriaMaterial', 'ficha', 'materialItem', 'materialConsumible'],
     });
     return list.map(this.toDomain.bind(this));
   }
@@ -65,7 +87,7 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
   async findOne(id: string): Promise<Materiale | null> {
     const found = await this.repo.findOne({
       where: { id },
-      relations: ['categoriaMaterial', 'ficha'],
+      relations: ['categoriaMaterial', 'ficha', 'materialItem', 'materialConsumible'],
     });
     return found ? this.toDomain(found) : null;
   }

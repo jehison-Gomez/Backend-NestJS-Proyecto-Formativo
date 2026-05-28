@@ -1,11 +1,12 @@
 import { Categoria_materialEstado } from './categoria_material-estado.enum';
+import type { Materiale } from 'src/materiales/domain/materiale.entity';
 
 export class Categoria_material {
   id: string;
   nombre: string;
   descripcion: string;
   estado: Categoria_materialEstado;
-  materiales?: import('src/materiales/domain/materiale.entity').Materiale[];
+  materiales?: Materiale[];
   creadoEn: Date;
   actualizadoEn: Date;
 

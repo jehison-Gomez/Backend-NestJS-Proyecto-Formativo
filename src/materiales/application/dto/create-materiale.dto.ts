@@ -1,5 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional, IsEnum, MinLength, IsUUID } from 'class-validator';
 import { MaterialeEstado } from '../../domain/materiale-estado.enum';
+import { TipoMateriale } from '../../domain/tipo-materiale.enum';
 
 export class CreateMaterialeDto {
   @IsString({ message: 'El nombre debe ser texto' })
@@ -23,4 +24,12 @@ export class CreateMaterialeDto {
   @IsUUID('4', { message: 'El ID de la ficha debe ser un UUID válido' })
   @IsNotEmpty({ message: 'La ficha es obligatoria' })
   fichaId: string;
+
+  @IsOptional()
+  @IsEnum(TipoMateriale, { message: 'tipoMaterial debe ser "item" o "consumible"' })
+  tipoMaterial?: TipoMateriale;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del tipo de material debe ser un UUID válido' })
+  tipoMaterialId?: string;
 }

@@ -19,6 +19,8 @@ import { RemoveMaterialeUseCase }           from './application/use-cases/remove
 // Módulos relacionados
 import { Categoria_materialModule }         from 'src/categoria_material/categoria_material.module';
 import { FichasModule }                     from 'src/fichas/fichas.module';
+import { Material_itemModule }              from 'src/material_item/material_item.module';
+import { Material_consumibleModule }        from 'src/material_consumible/material_consumible.module';
 
 const USE_CASES = [
   CreateMaterialeUseCase,
@@ -33,6 +35,8 @@ const USE_CASES = [
     TypeOrmModule.forFeature([MaterialeOrmEntity]),
     Categoria_materialModule,
     FichasModule,
+    Material_itemModule,
+    Material_consumibleModule,
   ],
   controllers: [MaterialesController],
   providers: [
