@@ -10,6 +10,25 @@ import { SedesModule } from './sedes/sedes.module';
 import { AreasModule } from './areas/areas.module';
 import { ProgramasModule } from './programas/programas.module';
 import { FichasModule } from './fichas/fichas.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
+import { RolesModule } from './roles/roles.module';
+import { PermisosModule } from './permisos/permisos.module';
+import { Rol_permisosModule }        from './rol_permisos/rol_permisos.module';
+import { Tipo_ubicacionModule }       from './tipo_ubicacion/tipo_ubicacion.module';
+import { Categoria_materialModule }   from './categoria_material/categoria_material.module';
+import { MovimientosModule }          from './movimientos/movimientos.module';
+import { MaterialesModule }           from './materiales/materiales.module';
+import { UbicacionModule }            from './ubicacion/ubicacion.module';
+import { Material_ubicacionModule }   from './material_ubicacion/material_ubicacion.module';
+import { Material_consumibleModule }  from './material_consumible/material_consumible.module';
+import { Material_itemModule }        from './material_item/material_item.module';
+import { DevolucionesModule }         from './devoluciones/devoluciones.module';
+import { NovedadesModule }            from './novedades/novedades.module';
+import { Usuario_movimientoModule }   from './usuario_movimiento/usuario_movimiento.module';
+import { PrestamosModule }            from './prestamos/prestamos.module';
+import { AprobacionesModule }         from './aprobaciones/aprobaciones.module';
+import { KardexModule }               from './kardex/kardex.module';
+import { Prestamo_materialModule }    from './prestamo_material/prestamo_material.module';
 
 @Module({
   imports: [
@@ -28,7 +47,6 @@ import { FichasModule } from './fichas/fichas.module';
         synchronize: true,
         dropSchema: true,
       }),
-    // FichasModule,
     DepartamentosModule,
     MunicipiosModule,
     CentrosModule,
@@ -36,6 +54,25 @@ import { FichasModule } from './fichas/fichas.module';
     AreasModule,
     ProgramasModule,
     FichasModule,
+    UsuariosModule,
+    RolesModule,
+    PermisosModule,
+    Rol_permisosModule,
+    Tipo_ubicacionModule,
+    Categoria_materialModule,
+    PrestamosModule,
+    MovimientosModule,
+    MaterialesModule,
+    UbicacionModule,
+    Material_ubicacionModule,
+    Material_consumibleModule,
+    Material_itemModule,
+    DevolucionesModule,
+    NovedadesModule,
+    Usuario_movimientoModule,
+    AprobacionesModule,
+    KardexModule,
+    Prestamo_materialModule,
   ],
   controllers: [],
   providers: [],
