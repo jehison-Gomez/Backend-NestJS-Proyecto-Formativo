@@ -60,7 +60,7 @@ export class UsuarioOrmEntity {
   @BeforeInsert()
   async hashPasswordOnInsert() {
     this.nombre = this.nombre.trim();
-    this.correo = this.correo.trim().toLowerCase();
+    this.correo = this.correo.trim();
     if (this.contrasena) {
       this.contrasena = await bcrypt.hash(this.contrasena, 10);
     }
@@ -69,7 +69,7 @@ export class UsuarioOrmEntity {
   @BeforeUpdate()
   async hashPasswordOnUpdate() {
     this.nombre = this.nombre?.trim();
-    this.correo = this.correo?.trim().toLowerCase();
+    this.correo = this.correo?.trim();
     if (this.contrasena && !this.contrasena.startsWith('$2')) {
       this.contrasena = await bcrypt.hash(this.contrasena, 10);
     }

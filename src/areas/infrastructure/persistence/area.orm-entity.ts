@@ -48,6 +48,6 @@ export class AreaOrmEntity {
   @BeforeInsert()
   @BeforeUpdate()
   checkFields() {
-    this.nombre = this.nombre.trim().toLowerCase();
+    this.nombre = this.nombre.trim();
   }
 }

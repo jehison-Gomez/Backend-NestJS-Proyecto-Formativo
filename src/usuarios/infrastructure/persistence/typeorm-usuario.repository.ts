@@ -81,7 +81,7 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
 
   async findByCorreo(correo: string): Promise<Usuario | null> {
     const found = await this.repo.findOne({
-      where: { correo: correo.trim().toLowerCase() },
+      where: { correo: correo.trim() },
       relations: ['ficha', 'role'],
     });
     return found ? this.toDomain(found) : null;

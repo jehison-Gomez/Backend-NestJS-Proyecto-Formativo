@@ -28,7 +28,7 @@ export class Tipo_ubicacionOrmEntity {
   @BeforeInsert()
   @BeforeUpdate()
   checkFields() {
-    this.nombre = this.nombre.trim().toLowerCase();
-    this.descripcion = this.descripcion.trim().toLowerCase();
+    this.nombre = this.nombre.trim();
+    this.descripcion = this.descripcion.trim();
   }
 }

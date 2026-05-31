@@ -39,7 +39,7 @@ export class CentroOrmEntity {
   @BeforeInsert()
   @BeforeUpdate()
   checkFields() {
-    this.nombre = this.nombre.trim().toLowerCase();
-    this.codigo = this.codigo.trim().toLowerCase();
+    this.nombre = this.nombre.trim();
+    this.codigo = this.codigo.trim();
   }
 }

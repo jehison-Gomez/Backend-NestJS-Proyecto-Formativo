@@ -34,8 +34,8 @@ export class PermisoOrmEntity {
   @BeforeInsert()
   @BeforeUpdate()
   checkFields() {
-    this.nombre = this.nombre.trim().toLowerCase();
-    this.modulo = this.modulo.trim().toLowerCase();
-    this.accion = this.accion.trim().toLowerCase();
+    this.nombre = this.nombre.trim();
+    this.modulo = this.modulo.trim();
+    this.accion = this.accion.trim();
   }
 }
