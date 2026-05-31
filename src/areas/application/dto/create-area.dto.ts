@@ -4,7 +4,7 @@ import { AreaEstado } from '../../domain/area-estado.enum';
 export class CreateAreaDto {
   @IsString({ message: 'El nombre debe ser texto' })
   @IsNotEmpty({ message: 'El nombre es obligatorio' })
-  @MinLength(5, { message: 'El nombre debe tener al menos 5 caracteres' })
+  @MinLength(2, { message: 'El nombre debe tener al menos 5 caracteres' })
   nombre: string;
 
   @IsString({ message: 'La descripción debe ser texto' })
