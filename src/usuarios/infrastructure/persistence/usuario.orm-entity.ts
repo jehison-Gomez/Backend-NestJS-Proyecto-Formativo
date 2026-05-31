@@ -1,5 +1,6 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { UsuarioEstado } from '../../domain/usuario-estado.enum';
+import * as bcrypt from 'bcryptjs';
 import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
 import { RoleOrmEntity } from 'src/roles/infrastructure/persistence/role.orm-entity';
 import { AreaOrmEntity } from 'src/areas/infrastructure/persistence/area.orm-entity';
@@ -57,9 +58,20 @@ export class UsuarioOrmEntity {
   actualizadoEn: Date;
 
   @BeforeInsert()
-  @BeforeUpdate()
-  checkFields() {
+  async hashPasswordOnInsert() {
     this.nombre = this.nombre.trim();
     this.correo = this.correo.trim().toLowerCase();
+    if (this.contrasena) {
+      this.contrasena = await bcrypt.hash(this.contrasena, 10);
+    }
+  }
+
+  @BeforeUpdate()
+  async hashPasswordOnUpdate() {
+    this.nombre = this.nombre?.trim();
+    this.correo = this.correo?.trim().toLowerCase();
+    if (this.contrasena && !this.contrasena.startsWith('$2')) {
+      this.contrasena = await bcrypt.hash(this.contrasena, 10);
+    }
   }
 }

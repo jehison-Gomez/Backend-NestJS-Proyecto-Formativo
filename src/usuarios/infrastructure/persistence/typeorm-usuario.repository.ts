@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 import { UsuarioRepository } from '../../domain/usuario.repository';
 import { Usuario } from '../../domain/usuario.entity';
 import { UsuarioOrmEntity } from './usuario.orm-entity';
@@ -78,8 +79,20 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
     return found ? this.toDomain(found) : null;
   }
 
+  async findByCorreo(correo: string): Promise<Usuario | null> {
+    const found = await this.repo.findOne({
+      where: { correo: correo.trim().toLowerCase() },
+      relations: ['ficha', 'role'],
+    });
+    return found ? this.toDomain(found) : null;
+  }
+
   async update(id: string, usuario: Partial<Usuario>): Promise<Usuario> {
-    await this.repo.update(id, this.toOrm(usuario));
+    const data = this.toOrm(usuario);
+    if (data.contrasena) {
+      data.contrasena = await bcrypt.hash(data.contrasena, 10);
+    }
+    await this.repo.update(id, data);
     const result = await this.findOne(id);
     return result!;
   }
