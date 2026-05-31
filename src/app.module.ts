@@ -29,6 +29,7 @@ import { PrestamosModule }            from './prestamos/prestamos.module';
 import { AprobacionesModule }         from './aprobaciones/aprobaciones.module';
 import { KardexModule }               from './kardex/kardex.module';
 import { Prestamo_materialModule }    from './prestamo_material/prestamo_material.module';
+import { AuthModule }                 from './auth/auth.module';
 
 @Module({
   imports: [
@@ -45,7 +46,6 @@ import { Prestamo_materialModule }    from './prestamo_material/prestamo_materia
         database: process.env.DB_NAME,
         autoLoadEntities: true,
         synchronize: true,
-        dropSchema: true,
       }),
     DepartamentosModule,
     MunicipiosModule,
@@ -73,6 +73,7 @@ import { Prestamo_materialModule }    from './prestamo_material/prestamo_materia
     AprobacionesModule,
     KardexModule,
     Prestamo_materialModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

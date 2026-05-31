@@ -40,6 +40,6 @@ const USE_CASES = [
       useClass: TypeOrmUsuarioRepository,
     },
   ],
-  exports: [...USE_CASES],
+  exports: [...USE_CASES, UsuarioRepository],
 })
 export class UsuariosModule {}

@@ -4,6 +4,7 @@ export abstract class UsuarioRepository {
   abstract create(usuario: Usuario): Promise<Usuario>;
   abstract findAll(): Promise<Usuario[]>;
   abstract findOne(id: string): Promise<Usuario | null>;
+  abstract findByCorreo(correo: string): Promise<Usuario | null>;
   abstract update(id: string, usuario: Partial<Usuario>): Promise<Usuario>;
   abstract remove(id: string): Promise<void>;
 }
