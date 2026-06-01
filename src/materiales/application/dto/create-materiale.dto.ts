@@ -5,7 +5,7 @@ import { TipoMateriale } from '../../domain/tipo-materiale.enum';
 export class CreateMaterialeDto {
   @IsString({ message: 'El nombre debe ser texto' })
   @IsNotEmpty({ message: 'El nombre es obligatorio' })
-  @MinLength(3, { message: 'El nombre debe tener al menos 3 caracteres' })
+  @MinLength(2, { message: 'El nombre debe tener al menos 2 caracteres' })
   nombre: string;
 
   @IsString({ message: 'La descripción debe ser texto' })
@@ -25,11 +25,7 @@ export class CreateMaterialeDto {
   @IsNotEmpty({ message: 'La ficha es obligatoria' })
   fichaId: string;
 
-  @IsOptional()
   @IsEnum(TipoMateriale, { message: 'tipoMaterial debe ser "item" o "consumible"' })
-  tipoMaterial?: TipoMateriale;
-
-  @IsOptional()
-  @IsUUID('4', { message: 'El ID del tipo de material debe ser un UUID válido' })
-  tipoMaterialId?: string;
+  @IsNotEmpty({ message: 'El tipo de material es obligatorio' })
+  tipoMaterial: TipoMateriale;
 }

@@ -1,5 +1,6 @@
 import { Material_itemEstado } from './material_item-estado.enum';
 import { Material_itemEstadoItem } from './material_item-estado_item';
+import { Materiale } from 'src/materiales/domain/materiale.entity';
 
 export class Material_item {
   id: string;
@@ -8,6 +9,7 @@ export class Material_item {
   observacion: string;
   estadoItem: Material_itemEstadoItem;
   estado: Material_itemEstado;
+  materiale: Materiale;
   creadoEn: Date;
   actualizadoEn: Date;
 

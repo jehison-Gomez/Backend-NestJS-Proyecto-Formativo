@@ -14,47 +14,48 @@ export class TypeOrmMaterial_consumibleRepository implements Material_consumible
 
   private toDomain(orm: Material_consumibleOrmEntity): Material_consumible {
     return new Material_consumible({
-      id: orm.id,
-      stockActual: Number(orm.stockActual),
-      stockMinimo: Number(orm.stockMinimo),
-      unidadMedida: orm.unidadMedida,
+      id:               orm.id,
+      stockActual:      Number(orm.stockActual),
+      stockMinimo:      Number(orm.stockMinimo),
+      unidadMedida:     orm.unidadMedida,
       fechaVencimiento: orm.fechaVencimiento,
-      estado: orm.estado,
-      creadoEn: orm.creadoEn,
-      actualizadoEn: orm.actualizadoEn,
+      estado:           orm.estado,
+      materiale:        orm.materiale ? { id: orm.materiale.id } as any : undefined,
+      creadoEn:         orm.creadoEn,
+      actualizadoEn:    orm.actualizadoEn,
     });
   }
 
   private toOrm(mc: Partial<Material_consumible>): Partial<Material_consumibleOrmEntity> {
     return {
-      ...(mc.stockActual   !== undefined && { stockActual:   mc.stockActual }),
-      ...(mc.stockMinimo   !== undefined && { stockMinimo:   mc.stockMinimo }),
-      ...(mc.unidadMedida  !== undefined && { unidadMedida:  mc.unidadMedida }),
+      ...(mc.stockActual      !== undefined && { stockActual:      mc.stockActual }),
+      ...(mc.stockMinimo      !== undefined && { stockMinimo:      mc.stockMinimo }),
+      ...(mc.unidadMedida     !== undefined && { unidadMedida:     mc.unidadMedida }),
       ...(mc.fechaVencimiento !== undefined && { fechaVencimiento: mc.fechaVencimiento }),
-      ...(mc.estado        !== undefined && { estado:        mc.estado }),
+      ...(mc.estado           !== undefined && { estado:           mc.estado }),
+      ...(mc.materiale        !== undefined && { materiale:        { id: mc.materiale.id } as any }),
     };
   }
 
   async create(mc: Material_consumible): Promise<Material_consumible> {
     const ormEntity = this.repo.create(this.toOrm(mc));
     const saved = await this.repo.save(ormEntity);
-    return this.toDomain(saved);
+    return (await this.findOne(saved.id))!;
   }
 
   async findAll(): Promise<Material_consumible[]> {
-    const list = await this.repo.find();
+    const list = await this.repo.find({ relations: ['materiale'] });
     return list.map(this.toDomain.bind(this));
   }
 
   async findOne(id: string): Promise<Material_consumible | null> {
-    const found = await this.repo.findOneBy({ id });
+    const found = await this.repo.findOne({ where: { id }, relations: ['materiale'] });
     return found ? this.toDomain(found) : null;
   }
 
   async update(id: string, mc: Partial<Material_consumible>): Promise<Material_consumible> {
     await this.repo.update(id, this.toOrm(mc));
-    const updated = await this.repo.findOneBy({ id });
-    return this.toDomain(updated!);
+    return (await this.findOne(id))!;
   }
 
   async remove(id: string): Promise<void> {

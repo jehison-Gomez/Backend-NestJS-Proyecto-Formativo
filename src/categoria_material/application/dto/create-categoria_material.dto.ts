@@ -4,7 +4,7 @@ import { Categoria_materialEstado } from '../../domain/categoria_material-estado
 export class CreateCategoria_materialDto {
   @IsString({ message: 'El nombre debe ser texto' })
   @IsNotEmpty({ message: 'El nombre es obligatorio' })
-  @MinLength(3, { message: 'El nombre debe tener al menos 3 caracteres' })
+  @MinLength(2, { message: 'El nombre debe tener al menos 2 caracteres' })
   nombre: string;
 
   @IsString({ message: 'La descripción debe ser texto' })

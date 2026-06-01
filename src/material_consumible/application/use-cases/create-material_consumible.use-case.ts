@@ -3,12 +3,18 @@ import { Material_consumibleRepository } from '../../domain/material_consumible.
 import { CreateMaterial_consumibleDto } from '../dto/create-material_consumible.dto';
 import { Material_consumible } from '../../domain/material_consumible.entity';
 import { handleDbErrors } from '../handle-db-errors';
+import { FindOneMaterialeUseCase } from 'src/materiales/application/use-cases/find-one-materiale.use-case';
 
 @Injectable()
 export class CreateMaterial_consumibleUseCase {
-  constructor(private readonly material_consumibleRepository: Material_consumibleRepository) {}
+  constructor(
+    private readonly material_consumibleRepository: Material_consumibleRepository,
+    private readonly findOneMateriale: FindOneMaterialeUseCase,
+  ) {}
 
   async execute(dto: CreateMaterial_consumibleDto): Promise<Material_consumible> {
+    const materiale = await this.findOneMateriale.execute(dto.materialeId);
+
     try {
       const material_consumible = new Material_consumible({
         stockActual:      dto.stockActual,
@@ -16,6 +22,7 @@ export class CreateMaterial_consumibleUseCase {
         unidadMedida:     dto.unidadMedida,
         fechaVencimiento: dto.fechaVencimiento ? new Date(dto.fechaVencimiento) : undefined,
         estado:           dto.estado,
+        materiale,
       });
       return await this.material_consumibleRepository.create(material_consumible);
     } catch (error) {
