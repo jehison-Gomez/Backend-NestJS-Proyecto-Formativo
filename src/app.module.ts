@@ -30,6 +30,7 @@ import { AprobacionesModule }         from './aprobaciones/aprobaciones.module';
 import { KardexModule }               from './kardex/kardex.module';
 import { Prestamo_materialModule }    from './prestamo_material/prestamo_material.module';
 import { AuthModule }                 from './auth/auth.module';
+import { Usuario_permisosModule }     from './usuario_permisos/usuario_permisos.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { AuthModule }                 from './auth/auth.module';
     KardexModule,
     Prestamo_materialModule,
     AuthModule,
+    Usuario_permisosModule,
   ],
   controllers: [],
   providers: [],
