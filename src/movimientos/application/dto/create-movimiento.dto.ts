@@ -21,4 +21,8 @@ export class CreateMovimientoDto {
   @IsOptional()
   @IsUUID('4', { message: 'El ID del préstamo debe ser un UUID válido' })
   prestamoId?: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del material_item debe ser un UUID válido' })
+  materialItemId?: string;
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Infrastructure
@@ -15,7 +15,10 @@ import { FindAllMovimientosUseCase }         from './application/use-cases/find-
 import { FindOneMovimientoUseCase }          from './application/use-cases/find-one-movimiento.use-case';
 import { UpdateMovimientoUseCase }           from './application/use-cases/update-movimiento.use-case';
 import { RemoveMovimientoUseCase }           from './application/use-cases/remove-movimiento.use-case';
+
+// Módulos relacionados (forwardRef para romper ciclo con PrestamosModule)
 import { PrestamosModule }                   from 'src/prestamos/prestamos.module';
+import { Material_itemModule }               from 'src/material_item/material_item.module';
 
 const USE_CASES = [
   CreateMovimientoUseCase,
@@ -28,7 +31,8 @@ const USE_CASES = [
 @Module({
   imports: [
     TypeOrmModule.forFeature([MovimientoOrmEntity]),
-    PrestamosModule,
+    forwardRef(() => PrestamosModule),
+    forwardRef(() => Material_itemModule),
   ],
   controllers: [MovimientosController],
   providers: [
@@ -38,6 +42,6 @@ const USE_CASES = [
       useClass: TypeOrmMovimientoRepository,
     },
   ],
-  exports: [...USE_CASES],
+  exports: [...USE_CASES, MovimientoRepository],
 })
 export class MovimientosModule {}
