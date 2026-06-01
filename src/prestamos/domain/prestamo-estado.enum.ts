@@ -1,4 +1,8 @@
 export enum PrestamoEstado {
-  ACTIVO   = 'activo',
-  INACTIVO = 'inactivo',
+  PENDIENTE = 'pendiente',
+  APROBADO  = 'aprobado',
+  RECHAZADO = 'rechazado',
+  DEVUELTO  = 'devuelto',
+  ACTIVO    = 'activo',
+  INACTIVO  = 'inactivo',
 }
