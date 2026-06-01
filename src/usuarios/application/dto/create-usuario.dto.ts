@@ -4,7 +4,7 @@ import { UsuarioEstado } from '../../domain/usuario-estado.enum';
 export class CreateUsuarioDto {
   @IsString({ message: 'El nombre debe ser texto' })
   @IsNotEmpty({ message: 'El nombre es obligatorio' })
-  @MinLength(3, { message: 'El nombre debe tener al menos 3 caracteres' })
+  @MinLength(2, { message: 'El nombre debe tener al menos 2 caracteres' })
   nombre: string;
 
   @IsEmail({}, { message: 'El correo debe ser un email válido' })

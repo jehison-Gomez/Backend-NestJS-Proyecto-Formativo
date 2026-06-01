@@ -1,20 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
-import { CreateUsuarioUseCase }    from '../../application/use-cases/create-usuario.use-case';
-import { FindAllUsuariosUseCase }  from '../../application/use-cases/find-all-usuarios.use-case';
-import { FindOneUsuarioUseCase }   from '../../application/use-cases/find-one-usuario.use-case';
-import { UpdateUsuarioUseCase }    from '../../application/use-cases/update-usuario.use-case';
-import { RemoveUsuarioUseCase }    from '../../application/use-cases/remove-usuario.use-case';
-import { CreateUsuarioDto }        from '../../application/dto/create-usuario.dto';
-import { UpdateUsuarioDto }        from '../../application/dto/update-usuario.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import { CreateUsuarioUseCase }              from '../../application/use-cases/create-usuario.use-case';
+import { FindAllUsuariosUseCase }            from '../../application/use-cases/find-all-usuarios.use-case';
+import { FindUsuariosConFiltrosUseCase }     from '../../application/use-cases/find-usuarios-con-filtros.use-case';
+import { FindOneUsuarioUseCase }             from '../../application/use-cases/find-one-usuario.use-case';
+import { UpdateUsuarioUseCase }              from '../../application/use-cases/update-usuario.use-case';
+import { RemoveUsuarioUseCase }              from '../../application/use-cases/remove-usuario.use-case';
+import { CreateUsuarioDto }                  from '../../application/dto/create-usuario.dto';
+import { UpdateUsuarioDto }                  from '../../application/dto/update-usuario.dto';
+import { GetUsuariosDto }                    from '../../application/dto/get-usuarios.dto';
 
 @Controller('usuarios')
 export class UsuariosController {
   constructor(
-    private readonly createUsuarioUseCase:   CreateUsuarioUseCase,
-    private readonly findAllUsuariosUseCase: FindAllUsuariosUseCase,
-    private readonly findOneUsuarioUseCase:  FindOneUsuarioUseCase,
-    private readonly updateUsuarioUseCase:   UpdateUsuarioUseCase,
-    private readonly removeUsuarioUseCase:   RemoveUsuarioUseCase,
+    private readonly createUsuarioUseCase:           CreateUsuarioUseCase,
+    private readonly findAllUsuariosUseCase:         FindAllUsuariosUseCase,
+    private readonly findUsuariosConFiltrosUseCase:  FindUsuariosConFiltrosUseCase,
+    private readonly findOneUsuarioUseCase:          FindOneUsuarioUseCase,
+    private readonly updateUsuarioUseCase:           UpdateUsuarioUseCase,
+    private readonly removeUsuarioUseCase:           RemoveUsuarioUseCase,
   ) {}
 
   @Post()
@@ -23,7 +26,11 @@ export class UsuariosController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query() filters: GetUsuariosDto) {
+    const hasFilters = filters.search || filters.rolId || filters.estado || filters.page || filters.limit;
+    if (hasFilters) {
+      return this.findUsuariosConFiltrosUseCase.execute(filters);
+    }
     return this.findAllUsuariosUseCase.execute();
   }
 

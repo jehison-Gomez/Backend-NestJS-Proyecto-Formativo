@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { UsuarioRepository } from '../../domain/usuario.repository';
+import { UsuarioRepository, UsuarioFilters, UsuariosPaginados } from '../../domain/usuario.repository';
 import { Usuario } from '../../domain/usuario.entity';
 import { UsuarioOrmEntity } from './usuario.orm-entity';
 import { Ficha } from 'src/fichas/domain/ficha.entity';
@@ -69,6 +69,44 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
       relations: ['ficha', 'role'],
     });
     return list.map(this.toDomain.bind(this));
+  }
+
+  async findWithFilters(filters: UsuarioFilters): Promise<UsuariosPaginados> {
+    const { search, rolId, estado, page = 1, limit = 10 } = filters;
+
+    const query = this.repo.createQueryBuilder('usuario')
+      .leftJoinAndSelect('usuario.ficha', 'ficha')
+      .leftJoinAndSelect('usuario.role', 'role');
+
+    if (search) {
+      query.andWhere(
+        '(LOWER(usuario.nombre) LIKE :search OR LOWER(usuario.correo) LIKE :search)',
+        { search: `%${search.toLowerCase()}%` },
+      );
+    }
+
+    if (rolId) {
+      query.andWhere('role.id = :rolId', { rolId });
+    }
+
+    if (estado) {
+      query.andWhere('usuario.estado = :estado', { estado });
+    }
+
+    const total = await query.getCount();
+    const list   = await query
+      .orderBy('usuario.nombre', 'ASC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
+
+    return {
+      usuarios:   list.map(this.toDomain.bind(this)),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string): Promise<Usuario | null> {
