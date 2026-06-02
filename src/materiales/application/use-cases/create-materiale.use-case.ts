@@ -22,7 +22,6 @@ export class CreateMaterialeUseCase {
       nombre:          dto.nombre,
       descripcion:     dto.descripcion,
       estado:          dto.estado,
-      tipoMaterial:    dto.tipoMaterial,
       categoriaMaterial,
       ficha,
     });

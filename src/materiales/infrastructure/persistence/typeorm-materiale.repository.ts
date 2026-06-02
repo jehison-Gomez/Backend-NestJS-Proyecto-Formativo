@@ -20,7 +20,6 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
       nombre:      orm.nombre,
       descripcion: orm.descripcion,
       estado:      orm.estado,
-      tipoMaterial: orm.tipoMaterial,
       categoriaMaterial: orm.categoriaMaterial ? new Categoria_material({
         id:          orm.categoriaMaterial.id,
         nombre:      orm.categoriaMaterial.nombre,
@@ -44,7 +43,6 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
       ...(materiale.nombre            !== undefined && { nombre:            materiale.nombre }),
       ...(materiale.descripcion       !== undefined && { descripcion:       materiale.descripcion }),
       ...(materiale.estado            !== undefined && { estado:            materiale.estado }),
-      ...(materiale.tipoMaterial      !== undefined && { tipoMaterial:      materiale.tipoMaterial }),
       ...(materiale.categoriaMaterial !== undefined && { categoriaMaterial: { id: materiale.categoriaMaterial.id } as any }),
       ...(materiale.ficha             !== undefined && { ficha:             { id: materiale.ficha.id } as any }),
     };

@@ -1,6 +1,5 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { MaterialeEstado } from '../../domain/materiale-estado.enum';
-import { TipoMateriale } from '../../domain/tipo-materiale.enum';
 import { Categoria_materialOrmEntity } from 'src/categoria_material/infrastructure/persistence/categoria_material.orm-entity';
 import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
 
@@ -31,9 +30,6 @@ export class MaterialeOrmEntity {
   })
   @JoinColumn({ name: 'ficha_id' })
   ficha: FichaOrmEntity;
-
-  @Column({ type: 'enum', enum: TipoMateriale, nullable: false })
-  tipoMaterial: TipoMateriale;
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;
