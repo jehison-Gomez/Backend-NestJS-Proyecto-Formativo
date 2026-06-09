@@ -6,6 +6,7 @@ import { Materiale } from '../../domain/materiale.entity';
 import { MaterialeOrmEntity } from './materiale.orm-entity';
 import { Categoria_material } from 'src/categoria_material/domain/categoria_material.entity';
 import { Ficha } from 'src/fichas/domain/ficha.entity';
+import { Ubicacion } from 'src/ubicacion/domain/ubicacion.entity';
 
 @Injectable()
 export class TypeOrmMaterialeRepository implements MaterialeRepository {
@@ -16,10 +17,11 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
 
   private toDomain(orm: MaterialeOrmEntity): Materiale {
     return new Materiale({
-      id:          orm.id,
-      nombre:      orm.nombre,
-      descripcion: orm.descripcion,
-      estado:      orm.estado,
+      id:           orm.id,
+      nombre:       orm.nombre,
+      descripcion:  orm.descripcion,
+      estado:       orm.estado,
+      tipoMaterial: orm.tipoMaterial,
       categoriaMaterial: orm.categoriaMaterial ? new Categoria_material({
         id:          orm.categoriaMaterial.id,
         nombre:      orm.categoriaMaterial.nombre,
@@ -33,6 +35,12 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
         fechaFin:    orm.ficha.fechaFin,
         estado:      orm.ficha.estado,
       }) : undefined,
+      ubicacion: orm.ubicacion ? new Ubicacion({
+        id:          orm.ubicacion.id,
+        nombre:      orm.ubicacion.nombre,
+        descripcion: orm.ubicacion.descripcion,
+        estado:      orm.ubicacion.estado,
+      }) : undefined,
       creadoEn:      orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -43,8 +51,10 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
       ...(materiale.nombre            !== undefined && { nombre:            materiale.nombre }),
       ...(materiale.descripcion       !== undefined && { descripcion:       materiale.descripcion }),
       ...(materiale.estado            !== undefined && { estado:            materiale.estado }),
+      ...(materiale.tipoMaterial      !== undefined && { tipoMaterial:      materiale.tipoMaterial }),
       ...(materiale.categoriaMaterial !== undefined && { categoriaMaterial: { id: materiale.categoriaMaterial.id } as any }),
       ...(materiale.ficha             !== undefined && { ficha:             { id: materiale.ficha.id } as any }),
+      ...(materiale.ubicacion         !== undefined && { ubicacion:         { id: materiale.ubicacion.id } as any }),
     };
   }
 
@@ -55,14 +65,14 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
   }
 
   async findAll(): Promise<Materiale[]> {
-    const list = await this.repo.find({ relations: ['categoriaMaterial', 'ficha'] });
+    const list = await this.repo.find({ relations: ['categoriaMaterial', 'ficha', 'ubicacion'] });
     return list.map(this.toDomain.bind(this));
   }
 
   async findOne(id: string): Promise<Materiale | null> {
     const found = await this.repo.findOne({
       where: { id },
-      relations: ['categoriaMaterial', 'ficha'],
+      relations: ['categoriaMaterial', 'ficha', 'ubicacion'],
     });
     return found ? this.toDomain(found) : null;
   }

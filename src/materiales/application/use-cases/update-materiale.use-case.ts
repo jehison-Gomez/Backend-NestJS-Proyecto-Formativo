@@ -5,6 +5,7 @@ import { Materiale } from '../../domain/materiale.entity';
 import { handleDbErrors } from '../handle-db-errors';
 import { FindOneCategoria_materialUseCase } from 'src/categoria_material/application/use-cases/find-one-categoria_material.use-case';
 import { FindOneFichaUseCase } from 'src/fichas/application/use-cases/find-one-ficha.use-case';
+import { FindOneUbicacionUseCase } from 'src/ubicacion/application/use-cases/find-one-ubicacion.use-case';
 
 @Injectable()
 export class UpdateMaterialeUseCase {
@@ -12,6 +13,7 @@ export class UpdateMaterialeUseCase {
     private readonly materialeRepository: MaterialeRepository,
     private readonly findOneCategoriaMaterial: FindOneCategoria_materialUseCase,
     private readonly findOneFicha: FindOneFichaUseCase,
+    private readonly findOneUbicacion: FindOneUbicacionUseCase,
   ) {}
 
   async execute(id: string, dto: UpdateMaterialeDto): Promise<Materiale> {
@@ -22,8 +24,10 @@ export class UpdateMaterialeUseCase {
     if (dto.nombre              !== undefined) partial.nombre            = dto.nombre;
     if (dto.descripcion         !== undefined) partial.descripcion       = dto.descripcion;
     if (dto.estado              !== undefined) partial.estado            = dto.estado;
+    if (dto.tipoMaterial        !== undefined) partial.tipoMaterial      = dto.tipoMaterial;
     if (dto.categoriaMaterialId !== undefined) partial.categoriaMaterial = await this.findOneCategoriaMaterial.execute(dto.categoriaMaterialId);
     if (dto.fichaId             !== undefined) partial.ficha             = await this.findOneFicha.execute(dto.fichaId);
+    if (dto.ubicacionId         !== undefined) partial.ubicacion         = await this.findOneUbicacion.execute(dto.ubicacionId);
 
     try {
       return await this.materialeRepository.update(id, partial);

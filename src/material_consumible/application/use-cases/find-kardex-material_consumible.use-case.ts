@@ -1,22 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { FindOneMaterial_itemUseCase } from './find-one-material_item.use-case';
+import { FindOneMaterial_consumibleUseCase } from './find-one-material_consumible.use-case';
 import { MovimientoOrmEntity } from 'src/movimientos/infrastructure/persistence/movimiento.orm-entity';
 
 @Injectable()
-export class FindKardexMaterial_itemUseCase {
+export class FindKardexMaterial_consumibleUseCase {
   constructor(
-    private readonly findOneMaterialItem: FindOneMaterial_itemUseCase,
+    private readonly findOneMaterialConsumible: FindOneMaterial_consumibleUseCase,
     private readonly dataSource: DataSource,
   ) {}
 
-  async execute(materialItemId: string) {
-    await this.findOneMaterialItem.execute(materialItemId);
+  async execute(materialConsumibleId: string) {
+    await this.findOneMaterialConsumible.execute(materialConsumibleId);
 
     return this.dataSource
       .getRepository(MovimientoOrmEntity)
       .find({
-        where: { materialItem: { id: materialItemId } },
+        where: { materialConsumible: { id: materialConsumibleId } },
         relations: ['prestamo', 'materialItem', 'materialConsumible', 'usuario'],
         order: { creadoEn: 'ASC' },
       });

@@ -15,10 +15,12 @@ import { FindAllMaterialesUseCase }         from './application/use-cases/find-a
 import { FindOneMaterialeUseCase }          from './application/use-cases/find-one-materiale.use-case';
 import { UpdateMaterialeUseCase }           from './application/use-cases/update-materiale.use-case';
 import { RemoveMaterialeUseCase }           from './application/use-cases/remove-materiale.use-case';
+import { FindKardexMaterialeUseCase }       from './application/use-cases/find-kardex-materiale.use-case';
 
 // Módulos relacionados
 import { Categoria_materialModule }         from 'src/categoria_material/categoria_material.module';
 import { FichasModule }                     from 'src/fichas/fichas.module';
+import { UbicacionModule }                  from 'src/ubicacion/ubicacion.module';
 
 const USE_CASES = [
   CreateMaterialeUseCase,
@@ -26,6 +28,7 @@ const USE_CASES = [
   FindOneMaterialeUseCase,
   UpdateMaterialeUseCase,
   RemoveMaterialeUseCase,
+  FindKardexMaterialeUseCase,
 ];
 
 @Module({
@@ -33,6 +36,7 @@ const USE_CASES = [
     TypeOrmModule.forFeature([MaterialeOrmEntity]),
     Categoria_materialModule,
     FichasModule,
+    UbicacionModule,
   ],
   controllers: [MaterialesController],
   providers: [

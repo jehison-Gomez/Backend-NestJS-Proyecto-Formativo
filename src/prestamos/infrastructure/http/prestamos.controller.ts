@@ -1,30 +1,35 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
-import { CreatePrestamoUseCase }    from '../../application/use-cases/create-prestamo.use-case';
-import { FindAllPrestamosUseCase }  from '../../application/use-cases/find-all-prestamos.use-case';
-import { FindOnePrestamoUseCase }   from '../../application/use-cases/find-one-prestamo.use-case';
-import { UpdatePrestamoUseCase }    from '../../application/use-cases/update-prestamo.use-case';
-import { RemovePrestamoUseCase }    from '../../application/use-cases/remove-prestamo.use-case';
-import { ApprovePrestamoUseCase }   from '../../application/use-cases/approve-prestamo.use-case';
-import { RejectPrestamoUseCase }    from '../../application/use-cases/reject-prestamo.use-case';
-import { DeliverPrestamoUseCase }   from '../../application/use-cases/deliver-prestamo.use-case';
-import { ReturnPrestamoUseCase }    from '../../application/use-cases/return-prestamo.use-case';
-import { CreatePrestamoDto }        from '../../application/dto/create-prestamo.dto';
-import { UpdatePrestamoDto }        from '../../application/dto/update-prestamo.dto';
-import { ApprovePrestamoDto }       from '../../application/dto/approve-prestamo.dto';
-import { RejectPrestamoDto }        from '../../application/dto/reject-prestamo.dto';
+import { CreatePrestamoUseCase }              from '../../application/use-cases/create-prestamo.use-case';
+import { FindAllPrestamosUseCase }            from '../../application/use-cases/find-all-prestamos.use-case';
+import { FindOnePrestamoUseCase }             from '../../application/use-cases/find-one-prestamo.use-case';
+import { FindByUsuarioPrestamoUseCase }       from '../../application/use-cases/find-by-usuario-prestamo.use-case';
+import { UpdatePrestamoUseCase }              from '../../application/use-cases/update-prestamo.use-case';
+import { RemovePrestamoUseCase }              from '../../application/use-cases/remove-prestamo.use-case';
+import { ApprovePrestamoUseCase }             from '../../application/use-cases/approve-prestamo.use-case';
+import { RejectPrestamoUseCase }              from '../../application/use-cases/reject-prestamo.use-case';
+import { DeliverPrestamoUseCase }             from '../../application/use-cases/deliver-prestamo.use-case';
+import { ReturnPrestamoUseCase }              from '../../application/use-cases/return-prestamo.use-case';
+import { CambiarUbicacionMaterialUseCase }    from '../../application/use-cases/cambiar-ubicacion-material.use-case';
+import { CreatePrestamoDto }                  from '../../application/dto/create-prestamo.dto';
+import { UpdatePrestamoDto }                  from '../../application/dto/update-prestamo.dto';
+import { ApprovePrestamoDto }                 from '../../application/dto/approve-prestamo.dto';
+import { RejectPrestamoDto }                  from '../../application/dto/reject-prestamo.dto';
+import { CambiarUbicacionMaterialDto }        from '../../application/dto/cambiar-ubicacion-material.dto';
 
 @Controller('prestamos')
 export class PrestamosController {
   constructor(
-    private readonly createPrestamoUseCase:   CreatePrestamoUseCase,
-    private readonly findAllPrestamosUseCase: FindAllPrestamosUseCase,
-    private readonly findOnePrestamoUseCase:  FindOnePrestamoUseCase,
-    private readonly updatePrestamoUseCase:   UpdatePrestamoUseCase,
-    private readonly removePrestamoUseCase:   RemovePrestamoUseCase,
-    private readonly approvePrestamoUseCase:  ApprovePrestamoUseCase,
-    private readonly rejectPrestamoUseCase:   RejectPrestamoUseCase,
-    private readonly deliverPrestamoUseCase:  DeliverPrestamoUseCase,
-    private readonly returnPrestamoUseCase:   ReturnPrestamoUseCase,
+    private readonly createPrestamoUseCase:           CreatePrestamoUseCase,
+    private readonly findAllPrestamosUseCase:         FindAllPrestamosUseCase,
+    private readonly findOnePrestamoUseCase:          FindOnePrestamoUseCase,
+    private readonly findByUsuarioPrestamoUseCase:    FindByUsuarioPrestamoUseCase,
+    private readonly updatePrestamoUseCase:           UpdatePrestamoUseCase,
+    private readonly removePrestamoUseCase:           RemovePrestamoUseCase,
+    private readonly approvePrestamoUseCase:          ApprovePrestamoUseCase,
+    private readonly rejectPrestamoUseCase:           RejectPrestamoUseCase,
+    private readonly deliverPrestamoUseCase:          DeliverPrestamoUseCase,
+    private readonly returnPrestamoUseCase:           ReturnPrestamoUseCase,
+    private readonly cambiarUbicacionMaterialUseCase: CambiarUbicacionMaterialUseCase,
   ) {}
 
   @Post()
@@ -35,6 +40,11 @@ export class PrestamosController {
   @Get()
   findAll() {
     return this.findAllPrestamosUseCase.execute();
+  }
+
+  @Get('usuario/:usuarioId')
+  findByUsuario(@Param('usuarioId', ParseUUIDPipe) usuarioId: string) {
+    return this.findByUsuarioPrestamoUseCase.execute(usuarioId);
   }
 
   @Get(':id')
@@ -70,5 +80,13 @@ export class PrestamosController {
   @Post(':id/devolver')
   return(@Param('id', ParseUUIDPipe) id: string) {
     return this.returnPrestamoUseCase.execute(id);
+  }
+
+  @Post(':id/cambiar-ubicacion')
+  cambiarUbicacion(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CambiarUbicacionMaterialDto,
+  ) {
+    return this.cambiarUbicacionMaterialUseCase.execute(id, dto);
   }
 }

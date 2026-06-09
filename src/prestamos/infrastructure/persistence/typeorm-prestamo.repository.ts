@@ -142,6 +142,24 @@ export class TypeOrmPrestamoRepository implements PrestamoRepository {
     return list.map(this.toDomain.bind(this));
   }
 
+  async findByUsuario(usuarioId: string): Promise<Prestamo[]> {
+    const list = await this.repo.createQueryBuilder('prestamo')
+      .leftJoinAndSelect('prestamo.usuario',              'usuario')
+      .leftJoinAndSelect('prestamo.ficha',                'ficha')
+      .leftJoinAndSelect('prestamo.beneficiarios',        'beneficiarios')
+      .leftJoinAndSelect('prestamo.materialItems',        'materialItems')
+      .leftJoinAndSelect('prestamo.materialConsumibles',  'materialConsumibles')
+      .leftJoinAndSelect('materialConsumibles.materiale',          'mcMateriale')
+      .leftJoinAndSelect('materialConsumibles.materialConsumible', 'mcConsumible')
+      .leftJoinAndSelect('prestamo.aprobadoPor',          'aprobadoPor')
+      .leftJoinAndSelect('prestamo.rechazadoPor',         'rechazadoPor')
+      .where('usuario.id = :usuarioId', { usuarioId })
+      .orWhere('beneficiarios.id = :usuarioId', { usuarioId })
+      .orderBy('prestamo.creadoEn', 'DESC')
+      .getMany();
+    return list.map(this.toDomain.bind(this));
+  }
+
   async findOne(id: string): Promise<Prestamo | null> {
     const found = await this.repo.findOne({ where: { id }, relations: this.RELATIONS });
     return found ? this.toDomain(found) : null;

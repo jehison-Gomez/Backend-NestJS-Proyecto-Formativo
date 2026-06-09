@@ -25,4 +25,8 @@ export class CreateMovimientoDto {
   @IsOptional()
   @IsUUID('4', { message: 'El ID del material_item debe ser un UUID válido' })
   materialItemId?: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del material_consumible debe ser un UUID válido' })
+  materialConsumibleId?: string;
 }

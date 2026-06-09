@@ -6,6 +6,7 @@ import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
 import { CreateMovimientoUseCase } from 'src/movimientos/application/use-cases/create-movimiento.use-case';
 import { UpdateMaterial_itemUseCase } from 'src/material_item/application/use-cases/update-material_item.use-case';
 import { UpdateMaterial_consumibleUseCase } from 'src/material_consumible/application/use-cases/update-material_consumible.use-case';
+import { FindOneMaterial_consumibleUseCase } from 'src/material_consumible/application/use-cases/find-one-material_consumible.use-case';
 import { FindOneUsuarioUseCase } from 'src/usuarios/application/use-cases/find-one-usuario.use-case';
 import { MovimientoTipo } from 'src/movimientos/domain/movimiento-tipo.enum';
 import { Material_itemEstado } from 'src/material_item/domain/material_item-estado.enum';
@@ -19,6 +20,7 @@ export class ApprovePrestamoUseCase {
     private readonly createMovimiento: CreateMovimientoUseCase,
     private readonly updateMaterialItem: UpdateMaterial_itemUseCase,
     private readonly updateMaterialConsumible: UpdateMaterial_consumibleUseCase,
+    private readonly findOneMaterialConsumible: FindOneMaterial_consumibleUseCase,
   ) {}
 
   async execute(id: string, dto: ApprovePrestamoDto): Promise<Prestamo> {
@@ -51,17 +53,18 @@ export class ApprovePrestamoUseCase {
       });
     }
 
-    // Descontar stock de consumibles
+    // Descontar stock de consumibles (siempre con stock fresco de BD)
     for (const detalle of (prestamo.materialConsumibles ?? [])) {
-      const consumible = detalle.materialConsumible;
+      const consumible = await this.findOneMaterialConsumible.execute(detalle.materialConsumible.id);
       await this.updateMaterialConsumible.execute(consumible.id, {
         stockActual: consumible.stockActual - detalle.cantidadPrestada,
       });
       await this.createMovimiento.execute({
-        tipo:        MovimientoTipo.SALIDA,
-        cantidad:    detalle.cantidadPrestada,
-        descripcion: `Salida consumible por préstamo aprobado #${id}`,
-        prestamoId:  id,
+        tipo:                 MovimientoTipo.SALIDA,
+        cantidad:             detalle.cantidadPrestada,
+        descripcion:          `Salida consumible por préstamo aprobado #${id}`,
+        prestamoId:           id,
+        materialConsumibleId: consumible.id,
       });
     }
 

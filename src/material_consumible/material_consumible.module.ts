@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Infrastructure
@@ -15,9 +15,12 @@ import { FindAllMaterial_consumibleUseCase }          from './application/use-ca
 import { FindOneMaterial_consumibleUseCase }          from './application/use-cases/find-one-material_consumible.use-case';
 import { UpdateMaterial_consumibleUseCase }           from './application/use-cases/update-material_consumible.use-case';
 import { RemoveMaterial_consumibleUseCase }           from './application/use-cases/remove-material_consumible.use-case';
+import { IngresarStockUseCase }                       from './application/use-cases/ingresar-stock.use-case';
+import { FindKardexMaterial_consumibleUseCase }        from './application/use-cases/find-kardex-material_consumible.use-case';
 
 // Módulos relacionados
 import { MaterialesModule }                           from 'src/materiales/materiales.module';
+import { MovimientosModule }                          from 'src/movimientos/movimientos.module';
 
 const USE_CASES = [
   CreateMaterial_consumibleUseCase,
@@ -25,12 +28,15 @@ const USE_CASES = [
   FindOneMaterial_consumibleUseCase,
   UpdateMaterial_consumibleUseCase,
   RemoveMaterial_consumibleUseCase,
+  IngresarStockUseCase,
+  FindKardexMaterial_consumibleUseCase,
 ];
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Material_consumibleOrmEntity]),
     MaterialesModule,
+    forwardRef(() => MovimientosModule),
   ],
   controllers: [Material_consumibleController],
   providers: [

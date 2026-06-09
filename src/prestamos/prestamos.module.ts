@@ -14,12 +14,14 @@ import { PrestamoRepository }                         from './domain/prestamo.re
 import { CreatePrestamoUseCase }                      from './application/use-cases/create-prestamo.use-case';
 import { FindAllPrestamosUseCase }                    from './application/use-cases/find-all-prestamos.use-case';
 import { FindOnePrestamoUseCase }                     from './application/use-cases/find-one-prestamo.use-case';
+import { FindByUsuarioPrestamoUseCase }               from './application/use-cases/find-by-usuario-prestamo.use-case';
 import { UpdatePrestamoUseCase }                      from './application/use-cases/update-prestamo.use-case';
 import { RemovePrestamoUseCase }                      from './application/use-cases/remove-prestamo.use-case';
 import { ApprovePrestamoUseCase }                     from './application/use-cases/approve-prestamo.use-case';
 import { RejectPrestamoUseCase }                      from './application/use-cases/reject-prestamo.use-case';
 import { DeliverPrestamoUseCase }                     from './application/use-cases/deliver-prestamo.use-case';
 import { ReturnPrestamoUseCase }                      from './application/use-cases/return-prestamo.use-case';
+import { CambiarUbicacionMaterialUseCase }            from './application/use-cases/cambiar-ubicacion-material.use-case';
 
 // Módulos relacionados
 import { UsuariosModule }                             from 'src/usuarios/usuarios.module';
@@ -28,17 +30,20 @@ import { Material_itemModule }                        from 'src/material_item/ma
 import { MaterialesModule }                           from 'src/materiales/materiales.module';
 import { Material_consumibleModule }                  from 'src/material_consumible/material_consumible.module';
 import { MovimientosModule }                          from 'src/movimientos/movimientos.module';
+import { Material_ubicacionModule }                   from 'src/material_ubicacion/material_ubicacion.module';
 
 const USE_CASES = [
   CreatePrestamoUseCase,
   FindAllPrestamosUseCase,
   FindOnePrestamoUseCase,
+  FindByUsuarioPrestamoUseCase,
   UpdatePrestamoUseCase,
   RemovePrestamoUseCase,
   ApprovePrestamoUseCase,
   RejectPrestamoUseCase,
   DeliverPrestamoUseCase,
   ReturnPrestamoUseCase,
+  CambiarUbicacionMaterialUseCase,
 ];
 
 @Module({
@@ -50,6 +55,7 @@ const USE_CASES = [
     MaterialesModule,
     Material_consumibleModule,
     forwardRef(() => MovimientosModule),
+    Material_ubicacionModule,
   ],
   controllers: [PrestamosController],
   providers: [

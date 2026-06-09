@@ -25,4 +25,8 @@ export class CreateMaterial_itemDto {
   @IsUUID('4', { message: 'El ID del material debe ser un UUID válido' })
   @IsNotEmpty({ message: 'El material es obligatorio' })
   materialeId: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del usuario debe ser un UUID válido' })
+  usuarioId?: string;
 }

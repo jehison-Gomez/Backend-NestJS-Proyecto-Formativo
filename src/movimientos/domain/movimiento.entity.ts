@@ -2,15 +2,20 @@ import { MovimientoEstado } from './movimiento-estado.enum';
 import { MovimientoTipo } from './movimiento-tipo.enum';
 import { Prestamo } from 'src/prestamos/domain/prestamo.entity';
 import { Material_item } from 'src/material_item/domain/material_item.entity';
+import { Material_consumible } from 'src/material_consumible/domain/material_consumible.entity';
+import { Usuario } from 'src/usuarios/domain/usuario.entity';
 
 export class Movimiento {
   id: string;
   tipo: MovimientoTipo;
   cantidad: number;
   descripcion: string;
+  saldo: number;
   estado: MovimientoEstado;
   prestamo?: Prestamo;
   materialItem?: Material_item;
+  materialConsumible?: Material_consumible;
+  usuario?: Usuario;
   creadoEn: Date;
   actualizadoEn: Date;
 

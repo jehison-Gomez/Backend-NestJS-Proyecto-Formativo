@@ -16,8 +16,8 @@ export class Material_consumibleOrmEntity {
   @Column({ type: 'varchar', length: 100 })
   unidadMedida: string;
 
-  @Column({ type: 'date' })
-  fechaVencimiento: Date;
+  @Column({ type: 'date', nullable: true })
+  fechaVencimiento: Date | null;
 
   @Column({ type: 'enum', enum: Material_consumibleEstado, default: Material_consumibleEstado.ACTIVO })
   estado: Material_consumibleEstado;

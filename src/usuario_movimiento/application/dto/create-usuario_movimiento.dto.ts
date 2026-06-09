@@ -1,3 +1,4 @@
+
 import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
 import { Usuario_movimientoEstado } from '../../domain/usuario_movimiento-estado.enum';
 

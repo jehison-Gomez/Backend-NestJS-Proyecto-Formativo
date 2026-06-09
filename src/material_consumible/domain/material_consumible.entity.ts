@@ -6,7 +6,7 @@ export class Material_consumible {
   stockActual: number;
   stockMinimo: number;
   unidadMedida: string;
-  fechaVencimiento: Date;
+  fechaVencimiento?: Date | null;
   estado: Material_consumibleEstado;
   materiale: Materiale;
   creadoEn: Date;

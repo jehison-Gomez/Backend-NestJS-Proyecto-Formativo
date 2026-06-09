@@ -4,7 +4,7 @@ import { Material_consumibleEstado } from '../../domain/material_consumible-esta
 export class CreateMaterial_consumibleDto {
   @IsNumber()
   @Min(0)
-  stockActual: number;
+  stockIngreso: number;
 
   @IsNumber()
   @Min(0)
@@ -14,8 +14,9 @@ export class CreateMaterial_consumibleDto {
   @IsNotEmpty()
   unidadMedida: string;
 
+  @IsOptional()
   @IsDateString()
-  fechaVencimiento: string;
+  fechaVencimiento?: string;
 
   @IsOptional()
   @IsEnum(Material_consumibleEstado)
@@ -24,4 +25,8 @@ export class CreateMaterial_consumibleDto {
   @IsUUID('4', { message: 'El ID del material debe ser un UUID válido' })
   @IsNotEmpty({ message: 'El material es obligatorio' })
   materialeId: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del usuario debe ser un UUID válido' })
+  usuarioId?: string;
 }

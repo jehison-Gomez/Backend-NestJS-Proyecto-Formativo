@@ -16,9 +16,10 @@ import { FindOneMovimientoUseCase }          from './application/use-cases/find-
 import { UpdateMovimientoUseCase }           from './application/use-cases/update-movimiento.use-case';
 import { RemoveMovimientoUseCase }           from './application/use-cases/remove-movimiento.use-case';
 
-// Módulos relacionados (forwardRef para romper ciclo con PrestamosModule)
+// Módulos relacionados (forwardRef para romper ciclos)
 import { PrestamosModule }                   from 'src/prestamos/prestamos.module';
 import { Material_itemModule }               from 'src/material_item/material_item.module';
+import { Material_consumibleModule }         from 'src/material_consumible/material_consumible.module';
 
 const USE_CASES = [
   CreateMovimientoUseCase,
@@ -33,6 +34,7 @@ const USE_CASES = [
     TypeOrmModule.forFeature([MovimientoOrmEntity]),
     forwardRef(() => PrestamosModule),
     forwardRef(() => Material_itemModule),
+    forwardRef(() => Material_consumibleModule),
   ],
   controllers: [MovimientosController],
   providers: [
