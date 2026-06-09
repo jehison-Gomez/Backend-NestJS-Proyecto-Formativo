@@ -1,42 +1,42 @@
-import { IsArray, IsDateString, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsDateString, IsEnum, IsOptional, IsString, IsUUID, MinLength } from 'class-validator';
 import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
 
 export class UpdatePrestamoDto {
-  @IsString()
   @IsOptional()
+  @IsString()
+  @MinLength(5)
   motivo?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   observacion?: string;
 
-  @IsDateString()
   @IsOptional()
+  @IsDateString()
   fechaInicio?: string;
 
-  @IsDateString()
   @IsOptional()
+  @IsDateString()
   fechaFin?: string;
+
+  @IsOptional()
+  @IsDateString()
+  fechaDevolucionEsperada?: string;
 
   @IsOptional()
   @IsEnum(PrestamoEstado)
   estado?: PrestamoEstado;
 
-  @IsUUID('4', { message: 'El ID del usuario debe ser un UUID válido' })
   @IsOptional()
-  usuarioId?: string;
+  @IsUUID('4')
+  solicitanteId?: string;
 
-  @IsUUID('4', { message: 'El ID de la ficha debe ser un UUID válido' })
   @IsOptional()
+  @IsUUID('4')
   fichaId?: string;
 
   @IsOptional()
   @IsArray()
-  @IsUUID('4', { each: true, message: 'Cada ID de material_item debe ser un UUID válido' })
-  materialItemIds?: string[];
-
-  @IsOptional()
-  @IsArray()
-  @IsUUID('4', { each: true, message: 'Cada ID de beneficiario debe ser un UUID válido' })
+  @IsUUID('4', { each: true })
   beneficiariosIds?: string[];
 }

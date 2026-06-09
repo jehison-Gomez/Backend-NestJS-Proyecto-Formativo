@@ -6,15 +6,19 @@ export class CreateDevolucioneDto {
   @IsNotEmpty()
   fechaDevolucion: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   observacion?: string;
 
   @IsOptional()
   @IsEnum(DevolucioneEstado)
   estado?: DevolucioneEstado;
 
-  @IsUUID('4', { message: 'El ID del usuario debe ser un UUID válido' })
-  @IsNotEmpty({ message: 'El usuario es obligatorio' })
-  usuarioId: string;
+  @IsUUID('4')
+  @IsNotEmpty()
+  prestamoId: string;
+
+  @IsUUID('4')
+  @IsNotEmpty()
+  recibidoPorId: string;
 }

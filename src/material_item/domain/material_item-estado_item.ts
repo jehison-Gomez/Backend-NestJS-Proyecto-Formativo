@@ -1,5 +1,6 @@
 export enum Material_itemEstadoItem {
-  BUENO   = 'bueno',
-  REGULAR = 'regular',
-  MALO    = 'malo',
+  BUENO   = 'BUENO',
+  REGULAR = 'REGULAR',
+  MALO    = 'MALO',
+  DAÑADO  = 'DAÑADO',
 }

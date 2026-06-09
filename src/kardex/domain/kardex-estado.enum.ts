@@ -1,4 +1,4 @@
 export enum KardexEstado {
-  ACTIVO   = 'activo',
-  INACTIVO = 'inactivo',
+  ACTIVO  = 'ACTIVO',
+  ANULADO = 'ANULADO',
 }

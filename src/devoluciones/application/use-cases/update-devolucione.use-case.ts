@@ -20,7 +20,7 @@ export class UpdateDevolucioneUseCase {
     if (dto.fechaDevolucion !== undefined) partial.fechaDevolucion = new Date(dto.fechaDevolucion);
     if (dto.observacion     !== undefined) partial.observacion     = dto.observacion;
     if (dto.estado          !== undefined) partial.estado          = dto.estado;
-    if (dto.usuarioId       !== undefined) partial.usuario         = await this.findOneUsuario.execute(dto.usuarioId);
+    if (dto.recibidoPorId   !== undefined) partial.recibidoPor     = await this.findOneUsuario.execute(dto.recibidoPorId);
 
     try {
       return await this.devolucioneRepository.update(id, partial);

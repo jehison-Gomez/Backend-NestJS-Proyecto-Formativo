@@ -4,14 +4,6 @@ import { Repository } from 'typeorm';
 import { KardexRepository } from '../../domain/kardex.repository';
 import { Kardex } from '../../domain/kardex.entity';
 import { KardexOrmEntity } from './kardex.orm-entity';
-import { Ficha } from 'src/fichas/domain/ficha.entity';
-import { Prestamo } from 'src/prestamos/domain/prestamo.entity';
-import { Usuario } from 'src/usuarios/domain/usuario.entity';
-import { Materiale } from 'src/materiales/domain/materiale.entity';
-import { Ubicacion } from 'src/ubicacion/domain/ubicacion.entity';
-import { Movimiento } from 'src/movimientos/domain/movimiento.entity';
-
-const RELATIONS = ['ficha', 'prestamo', 'usuario', 'material', 'ubicacion', 'movimiento'];
 
 @Injectable()
 export class TypeOrmKardexRepository implements KardexRepository {
@@ -22,86 +14,83 @@ export class TypeOrmKardexRepository implements KardexRepository {
 
   private toDomain(orm: KardexOrmEntity): Kardex {
     return new Kardex({
-      id:               orm.id,
-      cantidad:         Number(orm.cantidad),
-      cantidadAnterior: Number(orm.cantidadAnterior),
-      cantidadActual:   Number(orm.cantidadActual),
-      estado:           orm.estado,
-      ficha: orm.ficha ? new Ficha({
-        id:          orm.ficha.id,
-        codigoFicha: orm.ficha.codigoFicha,
-        fechaInicio: orm.ficha.fechaInicio,
-        fechaFin:    orm.ficha.fechaFin,
-        estado:      orm.ficha.estado,
-      }) : undefined,
-      prestamo: orm.prestamo ? new Prestamo({
-        id:            orm.prestamo.id,
-        observacion:   orm.prestamo.observacion,
-        fechaRegistro: orm.prestamo.fechaRegistro,
-        fechaInicio:   orm.prestamo.fechaInicio,
-        fechaFin:      orm.prestamo.fechaFin,
-        estado:        orm.prestamo.estado,
-      }) : undefined,
-      usuario: orm.usuario ? new Usuario({
-        id:              orm.usuario.id,
-        nombre:          orm.usuario.nombre,
-        correo:          orm.usuario.correo,
-        numeroDocumento: orm.usuario.numeroDocumento,
-        telefono:        orm.usuario.telefono,
-        estado:          orm.usuario.estado,
-      }) : undefined,
-      material: orm.material ? new Materiale({
-        id:          orm.material.id,
-        nombre:      orm.material.nombre,
-        descripcion: orm.material.descripcion,
-        estado:      orm.material.estado,
-      }) : undefined,
-      ubicacion: orm.ubicacion ? new Ubicacion({
-        id:          orm.ubicacion.id,
-        nombre:      orm.ubicacion.nombre,
-        descripcion: orm.ubicacion.descripcion,
-        estado:      orm.ubicacion.estado,
-      }) : undefined,
-      movimiento: orm.movimiento ? new Movimiento({
-        id:          orm.movimiento.id,
-        tipo:        orm.movimiento.tipo,
-        cantidad:    Number(orm.movimiento.cantidad),
-        descripcion: orm.movimiento.descripcion,
-        estado:      orm.movimiento.estado,
-      }) : undefined,
-      creadoEn:      orm.creadoEn,
-      actualizadoEn: orm.actualizadoEn,
+      id:                   orm.id,
+      movimientoId:         orm.movimiento?.id,
+      fichaId:              orm.ficha?.id,
+      usuarioId:            orm.usuario?.id,
+      prestamoId:           orm.prestamo?.id ?? null,
+      devolucionId:         orm.devolucion?.id ?? null,
+      materialConsumibleId: orm.materialConsumible?.id ?? null,
+      materialItemId:       orm.materialItem?.id ?? null,
+      cantidad:             Number(orm.cantidad),
+      saldoAnterior:        orm.saldoAnterior !== null ? Number(orm.saldoAnterior) : null,
+      saldoActual:          orm.saldoActual   !== null ? Number(orm.saldoActual)   : null,
+      estado:               orm.estado,
+      creadoEn:             orm.creadoEn,
+      actualizadoEn:        orm.actualizadoEn,
     });
   }
 
   private toOrm(k: Partial<Kardex>): Partial<KardexOrmEntity> {
     return {
-      ...(k.cantidad         !== undefined && { cantidad:         k.cantidad }),
-      ...(k.cantidadAnterior !== undefined && { cantidadAnterior: k.cantidadAnterior }),
-      ...(k.cantidadActual   !== undefined && { cantidadActual:   k.cantidadActual }),
-      ...(k.estado           !== undefined && { estado:           k.estado }),
-      ...(k.ficha            !== undefined && { ficha:            { id: k.ficha.id } as any }),
-      ...(k.prestamo         !== undefined && { prestamo:         { id: k.prestamo.id } as any }),
-      ...(k.usuario          !== undefined && { usuario:          { id: k.usuario.id } as any }),
-      ...(k.material         !== undefined && { material:         { id: k.material.id } as any }),
-      ...(k.ubicacion        !== undefined && { ubicacion:        { id: k.ubicacion.id } as any }),
-      ...(k.movimiento       !== undefined && { movimiento:       { id: k.movimiento.id } as any }),
+      ...(k.movimientoId         !== undefined && { movimiento:         { id: k.movimientoId } as any }),
+      ...(k.fichaId              !== undefined && { ficha:              { id: k.fichaId } as any }),
+      ...(k.usuarioId            !== undefined && { usuario:            { id: k.usuarioId } as any }),
+      ...(k.prestamoId           !== undefined && { prestamo:           k.prestamoId ? { id: k.prestamoId } as any : null }),
+      ...(k.devolucionId         !== undefined && { devolucion:         k.devolucionId ? { id: k.devolucionId } as any : null }),
+      ...(k.materialConsumibleId !== undefined && { materialConsumible: k.materialConsumibleId ? { id: k.materialConsumibleId } as any : null }),
+      ...(k.materialItemId       !== undefined && { materialItem:       k.materialItemId ? { id: k.materialItemId } as any : null }),
+      ...(k.cantidad             !== undefined && { cantidad:           k.cantidad }),
+      ...(k.saldoAnterior        !== undefined && { saldoAnterior:      k.saldoAnterior }),
+      ...(k.saldoActual          !== undefined && { saldoActual:        k.saldoActual }),
+      ...(k.estado               !== undefined && { estado:             k.estado }),
     };
   }
 
   async create(kardex: Kardex): Promise<Kardex> {
-    const ormEntity = this.repo.create(this.toOrm(kardex));
-    const saved = await this.repo.save(ormEntity);
+    const orm = this.repo.create(this.toOrm(kardex));
+    const saved = await this.repo.save(orm);
     return (await this.findOne(saved.id))!;
   }
 
   async findAll(): Promise<Kardex[]> {
-    const list = await this.repo.find({ relations: RELATIONS });
+    const list = await this.repo.find({
+      relations: ['movimiento', 'ficha', 'usuario', 'prestamo', 'devolucion', 'materialConsumible', 'materialItem'],
+    });
     return list.map(this.toDomain.bind(this));
   }
 
+  async findByMaterialConsumible(materialConsumibleId: string): Promise<Kardex[]> {
+    const list = await this.repo.find({
+      where: { materialConsumible: { id: materialConsumibleId } },
+      relations: ['movimiento', 'ficha', 'usuario', 'prestamo', 'materialConsumible'],
+      order: { creadoEn: 'ASC' },
+    });
+    return list.map(this.toDomain.bind(this));
+  }
+
+  async findByMaterialItem(materialItemId: string): Promise<Kardex[]> {
+    const list = await this.repo.find({
+      where: { materialItem: { id: materialItemId } },
+      relations: ['movimiento', 'ficha', 'usuario', 'prestamo', 'devolucion', 'materialItem'],
+      order: { creadoEn: 'ASC' },
+    });
+    return list.map(this.toDomain.bind(this));
+  }
+
+  async getLastSaldo(materialConsumibleId: string): Promise<number> {
+    const last = await this.repo.findOne({
+      where: { materialConsumible: { id: materialConsumibleId } },
+      order: { creadoEn: 'DESC' },
+    });
+    return last?.saldoActual !== null && last?.saldoActual !== undefined ? Number(last.saldoActual) : 0;
+  }
+
   async findOne(id: string): Promise<Kardex | null> {
-    const found = await this.repo.findOne({ where: { id }, relations: RELATIONS });
+    const found = await this.repo.findOne({
+      where: { id },
+      relations: ['movimiento', 'ficha', 'usuario', 'prestamo', 'devolucion', 'materialConsumible', 'materialItem'],
+    });
     return found ? this.toDomain(found) : null;
   }
 

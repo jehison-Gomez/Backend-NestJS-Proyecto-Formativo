@@ -24,7 +24,7 @@ export class UpdateMaterialeUseCase {
     if (dto.nombre              !== undefined) partial.nombre            = dto.nombre;
     if (dto.descripcion         !== undefined) partial.descripcion       = dto.descripcion;
     if (dto.estado              !== undefined) partial.estado            = dto.estado;
-    if (dto.tipoMaterial        !== undefined) partial.tipoMaterial      = dto.tipoMaterial;
+    if (dto.tipo                !== undefined) partial.tipo              = dto.tipo;
     if (dto.categoriaMaterialId !== undefined) partial.categoriaMaterial = await this.findOneCategoriaMaterial.execute(dto.categoriaMaterialId);
     if (dto.fichaId             !== undefined) partial.ficha             = await this.findOneFicha.execute(dto.fichaId);
     if (dto.ubicacionId         !== undefined) partial.ubicacion         = await this.findOneUbicacion.execute(dto.ubicacionId);

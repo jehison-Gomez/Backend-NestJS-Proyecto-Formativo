@@ -10,12 +10,12 @@ export class Movimiento {
   tipo: MovimientoTipo;
   cantidad: number;
   descripcion: string;
-  saldo: number;
   estado: MovimientoEstado;
-  prestamo?: Prestamo;
-  materialItem?: Material_item;
-  materialConsumible?: Material_consumible;
-  usuario?: Usuario;
+  prestamo?: Prestamo | null;
+  devolucion?: any | null;
+  materialItem?: Material_item | null;
+  materialConsumible?: Material_consumible | null;
+  usuario?: Usuario | null;
   creadoEn: Date;
   actualizadoEn: Date;
 

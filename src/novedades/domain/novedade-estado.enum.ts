@@ -1,4 +1,5 @@
 export enum NovedadeEstado {
-  ACTIVO   = 'activo',
-  INACTIVO = 'inactivo',
+  PENDIENTE   = 'PENDIENTE',
+  EN_REVISION = 'EN_REVISION',
+  RESUELTO    = 'RESUELTO',
 }

@@ -18,7 +18,6 @@ import { RemoveNovedadeUseCase }           from './application/use-cases/remove-
 
 // Módulos relacionados
 import { UsuariosModule }                  from 'src/usuarios/usuarios.module';
-import { DevolucionesModule }              from 'src/devoluciones/devoluciones.module';
 
 const USE_CASES = [
   CreateNovedadeUseCase,
@@ -32,7 +31,6 @@ const USE_CASES = [
   imports: [
     TypeOrmModule.forFeature([NovedadeOrmEntity]),
     UsuariosModule,
-    DevolucionesModule,
   ],
   controllers: [NovedadesController],
   providers: [

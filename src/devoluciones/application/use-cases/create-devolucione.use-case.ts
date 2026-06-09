@@ -13,14 +13,15 @@ export class CreateDevolucioneUseCase {
   ) {}
 
   async execute(dto: CreateDevolucioneDto): Promise<Devolucione> {
-    const usuario = await this.findOneUsuario.execute(dto.usuarioId);
+    const recibidoPor = await this.findOneUsuario.execute(dto.recibidoPorId);
 
     try {
       const devolucione = new Devolucione({
         fechaDevolucion: new Date(dto.fechaDevolucion),
         observacion:     dto.observacion,
         estado:          dto.estado,
-        usuario,
+        prestamoId:      dto.prestamoId,
+        recibidoPor,
       });
       return await this.devolucioneRepository.create(devolucione);
     } catch (error) {

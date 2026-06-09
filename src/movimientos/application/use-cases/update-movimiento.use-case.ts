@@ -3,13 +3,11 @@ import { MovimientoRepository } from '../../domain/movimiento.repository';
 import { UpdateMovimientoDto } from '../dto/update-movimiento.dto';
 import { Movimiento } from '../../domain/movimiento.entity';
 import { handleDbErrors } from '../handle-db-errors';
-import { FindOnePrestamoUseCase } from 'src/prestamos/application/use-cases/find-one-prestamo.use-case';
 
 @Injectable()
 export class UpdateMovimientoUseCase {
   constructor(
     private readonly movimientoRepository: MovimientoRepository,
-    private readonly findOnePrestamo: FindOnePrestamoUseCase,
   ) {}
 
   async execute(id: string, dto: UpdateMovimientoDto): Promise<Movimiento> {
@@ -21,7 +19,6 @@ export class UpdateMovimientoUseCase {
     if (dto.cantidad    !== undefined) partial.cantidad    = dto.cantidad;
     if (dto.descripcion !== undefined) partial.descripcion = dto.descripcion;
     if (dto.estado      !== undefined) partial.estado      = dto.estado;
-    if (dto.prestamoId  !== undefined) partial.prestamo    = await this.findOnePrestamo.execute(dto.prestamoId);
 
     try {
       return await this.movimientoRepository.update(id, partial);

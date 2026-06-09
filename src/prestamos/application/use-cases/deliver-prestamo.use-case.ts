@@ -5,9 +5,7 @@ import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
 
 @Injectable()
 export class DeliverPrestamoUseCase {
-  constructor(
-    private readonly prestamoRepository: PrestamoRepository,
-  ) {}
+  constructor(private readonly prestamoRepository: PrestamoRepository) {}
 
   async execute(id: string): Promise<Prestamo> {
     const prestamo = await this.prestamoRepository.findOne(id);
@@ -20,7 +18,7 @@ export class DeliverPrestamoUseCase {
     }
 
     return this.prestamoRepository.update(id, {
-      estado:       PrestamoEstado.ACTIVO,
+      estado:       PrestamoEstado.ENTREGADO,
       fechaEntrega: new Date(),
     });
   }

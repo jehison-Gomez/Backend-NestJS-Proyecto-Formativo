@@ -20,15 +20,9 @@ export class IngresarStockUseCase {
 
     const nuevoStock = Number(consumible.stockActual) + Number(dto.cantidad);
 
-    const lastMovimiento = await this.dataSource
-      .getRepository(MovimientoOrmEntity)
-      .findOne({ where: { materialConsumible: { id } }, order: { creadoEn: 'DESC' } });
-    const saldo = (lastMovimiento ? Number(lastMovimiento.saldo) : 0) + Number(dto.cantidad);
-
     await this.dataSource.getRepository(MovimientoOrmEntity).save({
       tipo:               MovimientoTipo.ENTRADA,
       cantidad:           dto.cantidad,
-      saldo,
       descripcion:        dto.descripcion ?? `Ingreso de stock: +${dto.cantidad} ${consumible.unidadMedida}`,
       estado:             MovimientoEstado.ACTIVO,
       materialConsumible: { id },

@@ -2,7 +2,6 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGenerat
 import { NovedadeEstado } from '../../domain/novedade-estado.enum';
 import { NovedadeTipo } from '../../domain/novedade-tipo.enum';
 import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
-import { DevolucioneOrmEntity } from 'src/devoluciones/infrastructure/persistence/devolucione.orm-entity';
 
 @Entity('novedades')
 export class NovedadeOrmEntity {
@@ -15,16 +14,16 @@ export class NovedadeOrmEntity {
   @Column({ type: 'enum', enum: NovedadeTipo })
   tipo: NovedadeTipo;
 
-  @Column({ type: 'enum', enum: NovedadeEstado, default: NovedadeEstado.ACTIVO })
+  @Column({ type: 'enum', enum: NovedadeEstado, default: NovedadeEstado.PENDIENTE })
   estado: NovedadeEstado;
 
   @ManyToOne(() => UsuarioOrmEntity, { nullable: false, onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'usuario_id' })
-  usuario: UsuarioOrmEntity;
+  @JoinColumn({ name: 'reportado_por_id' })
+  reportadoPor: UsuarioOrmEntity;
 
-  @ManyToOne(() => DevolucioneOrmEntity, { nullable: false, onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'devolucion_id' })
-  devolucion: DevolucioneOrmEntity;
+  // devolucion_item_id se añadirá cuando DevolucionItemOrmEntity esté disponible
+  @Column({ type: 'uuid', nullable: true, name: 'devolucion_item_id' })
+  devolucionItemId: string | null;
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;

@@ -5,6 +5,7 @@ import { PrestamoOrmEntity } from 'src/prestamos/infrastructure/persistence/pres
 import { Material_itemOrmEntity } from 'src/material_item/infrastructure/persistence/material_item.orm-entity';
 import { Material_consumibleOrmEntity } from 'src/material_consumible/infrastructure/persistence/material_consumible.orm-entity';
 import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
+import { DevolucioneOrmEntity } from 'src/devoluciones/infrastructure/persistence/devolucione.orm-entity';
 
 @Entity('movimientos')
 export class MovimientoOrmEntity {
@@ -20,15 +21,16 @@ export class MovimientoOrmEntity {
   @Column({ type: 'text' })
   descripcion: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  saldo: number;
-
   @Column({ type: 'enum', enum: MovimientoEstado, default: MovimientoEstado.ACTIVO })
   estado: MovimientoEstado;
 
   @ManyToOne(() => PrestamoOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'prestamo_id' })
   prestamo: PrestamoOrmEntity | null;
+
+  @ManyToOne(() => DevolucioneOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'devolucion_id' })
+  devolucion: DevolucioneOrmEntity | null;
 
   @ManyToOne(() => Material_itemOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'material_item_id' })

@@ -16,6 +16,12 @@ export class MaterialeOrmEntity {
   @Column({ type: 'varchar', length: 255 })
   descripcion: string;
 
+  @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
+  sku: string | null;
+
+  @Column({ type: 'enum', enum: TipoMateriale, nullable: false, default: TipoMateriale.ITEM, name: 'tipo' })
+  tipo: TipoMateriale;
+
   @Column({ type: 'enum', enum: MaterialeEstado, default: MaterialeEstado.ACTIVO })
   estado: MaterialeEstado;
 
@@ -32,9 +38,6 @@ export class MaterialeOrmEntity {
   })
   @JoinColumn({ name: 'ficha_id' })
   ficha: FichaOrmEntity;
-
-  @Column({ type: 'enum', enum: TipoMateriale, nullable: false, default: TipoMateriale.ITEM })
-  tipoMaterial: TipoMateriale;
 
   @ManyToOne(() => UbicacionOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'ubicacion_id' })

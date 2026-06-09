@@ -4,9 +4,10 @@ import { Usuario } from 'src/usuarios/domain/usuario.entity';
 export class Devolucione {
   id: string;
   fechaDevolucion: Date;
-  observacion: string;
+  observacion?: string;
   estado: DevolucioneEstado;
-  usuario: Usuario;
+  prestamoId?: string;
+  recibidoPor?: Usuario;
   creadoEn: Date;
   actualizadoEn: Date;
 

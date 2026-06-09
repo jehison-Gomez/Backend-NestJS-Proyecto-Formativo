@@ -3,7 +3,7 @@ import { MovimientoEstado } from '../../domain/movimiento-estado.enum';
 import { MovimientoTipo } from '../../domain/movimiento-tipo.enum';
 
 export class CreateMovimientoDto {
-  @IsEnum(MovimientoTipo, { message: 'tipo debe ser "entrada" o "salida"' })
+  @IsEnum(MovimientoTipo)
   tipo: MovimientoTipo;
 
   @IsNumber()
@@ -19,14 +19,22 @@ export class CreateMovimientoDto {
   estado?: MovimientoEstado;
 
   @IsOptional()
-  @IsUUID('4', { message: 'El ID del préstamo debe ser un UUID válido' })
+  @IsUUID('4')
   prestamoId?: string;
 
   @IsOptional()
-  @IsUUID('4', { message: 'El ID del material_item debe ser un UUID válido' })
+  @IsUUID('4')
+  devolucionId?: string;
+
+  @IsOptional()
+  @IsUUID('4')
   materialItemId?: string;
 
   @IsOptional()
-  @IsUUID('4', { message: 'El ID del material_consumible debe ser un UUID válido' })
+  @IsUUID('4')
   materialConsumibleId?: string;
+
+  @IsOptional()
+  @IsUUID('4')
+  usuarioId?: string;
 }

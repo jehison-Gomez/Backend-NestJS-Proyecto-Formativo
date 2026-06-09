@@ -2,49 +2,35 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PrestamoRepository } from '../../domain/prestamo.repository';
-import { Prestamo, PrestamoConsumibleDetalle } from '../../domain/prestamo.entity';
+import { Prestamo } from '../../domain/prestamo.entity';
 import { PrestamoOrmEntity } from './prestamo.orm-entity';
-import { PrestamoMaterialConsumibleOrmEntity } from './prestamo-material-consumible.orm-entity';
 import { Usuario } from 'src/usuarios/domain/usuario.entity';
 import { Ficha } from 'src/fichas/domain/ficha.entity';
-import { Material_item } from 'src/material_item/domain/material_item.entity';
 
 @Injectable()
 export class TypeOrmPrestamoRepository implements PrestamoRepository {
   constructor(
     @InjectRepository(PrestamoOrmEntity)
     private readonly repo: Repository<PrestamoOrmEntity>,
-    @InjectRepository(PrestamoMaterialConsumibleOrmEntity)
-    private readonly pmcRepo: Repository<PrestamoMaterialConsumibleOrmEntity>,
   ) {}
 
   private toDomain(orm: PrestamoOrmEntity): Prestamo {
-    const materialConsumibles: PrestamoConsumibleDetalle[] = (orm.materialConsumibles ?? []).map((pmc) => ({
-      materiale:          { id: pmc.materiale?.id } as any,
-      materialConsumible: {
-        id:           pmc.materialConsumible?.id,
-        stockActual:  Number(pmc.materialConsumible?.stockActual ?? 0),
-        stockMinimo:  Number(pmc.materialConsumible?.stockMinimo ?? 0),
-        unidadMedida: pmc.materialConsumible?.unidadMedida,
-      } as any,
-      cantidadPrestada: Number(pmc.cantidadPrestada),
-    }));
-
     return new Prestamo({
-      id:            orm.id,
-      motivo:        orm.motivo,
-      observacion:   orm.observacion,
-      fechaRegistro: orm.fechaRegistro,
-      fechaInicio:   orm.fechaInicio,
-      fechaFin:      orm.fechaFin,
-      estado:        orm.estado,
-      usuario: orm.usuario ? new Usuario({
-        id:              orm.usuario.id,
-        nombre:          orm.usuario.nombre,
-        correo:          orm.usuario.correo,
-        numeroDocumento: orm.usuario.numeroDocumento,
-        telefono:        orm.usuario.telefono,
-        estado:          orm.usuario.estado,
+      id:                    orm.id,
+      motivo:                orm.motivo,
+      observacion:           orm.observacion,
+      fechaRegistro:         orm.fechaRegistro,
+      fechaInicio:           orm.fechaInicio,
+      fechaFin:              orm.fechaFin,
+      fechaDevolucionEsperada: orm.fechaDevolucionEsperada,
+      estado:                orm.estado,
+      solicitante: orm.solicitante ? new Usuario({
+        id:              orm.solicitante.id,
+        nombre:          orm.solicitante.nombre,
+        correo:          orm.solicitante.correo,
+        numeroDocumento: orm.solicitante.numeroDocumento,
+        telefono:        orm.solicitante.telefono,
+        estado:          orm.solicitante.estado,
       }) : undefined,
       ficha: orm.ficha ? new Ficha({
         id:          orm.ficha.id,
@@ -61,79 +47,41 @@ export class TypeOrmPrestamoRepository implements PrestamoRepository {
         telefono:        u.telefono,
         estado:          u.estado,
       })),
-      materialItems: (orm.materialItems ?? []).map((mi) => new Material_item({
-        id:         mi.id,
-        codigoSena: mi.codigoSena,
-        condicion:  mi.condicion,
-        estadoItem: mi.estadoItem,
-        estado:     mi.estado,
-      })),
-      materialConsumibles,
-      aprobadoPor: orm.aprobadoPor ? new Usuario({
-        id:     orm.aprobadoPor.id,
-        nombre: orm.aprobadoPor.nombre,
-      }) : undefined,
-      fechaAprobacion:  orm.fechaAprobacion,
-      rechazadoPor: orm.rechazadoPor ? new Usuario({
-        id:     orm.rechazadoPor.id,
-        nombre: orm.rechazadoPor.nombre,
-      }) : undefined,
-      fechaRechazo:    orm.fechaRechazo,
-      fechaEntrega:    orm.fechaEntrega,
-      fechaDevolucion: orm.fechaDevolucion,
-      creadoEn:      orm.creadoEn,
-      actualizadoEn: orm.actualizadoEn,
+      revisadoPor: orm.revisadoPor ? new Usuario({
+        id:     orm.revisadoPor.id,
+        nombre: orm.revisadoPor.nombre,
+      }) : null,
+      fechaRevision:       orm.fechaRevision,
+      observacionRevision: orm.observacionRevision,
+      fechaEntrega:        orm.fechaEntrega,
+      creadoEn:            orm.creadoEn,
+      actualizadoEn:       orm.actualizadoEn,
     });
   }
 
   private toOrm(prestamo: Partial<Prestamo>): Partial<PrestamoOrmEntity> {
     return {
-      ...(prestamo.motivo       !== undefined && { motivo:       prestamo.motivo }),
-      ...(prestamo.observacion  !== undefined && { observacion:  prestamo.observacion }),
-      ...(prestamo.fechaInicio  !== undefined && { fechaInicio:  prestamo.fechaInicio }),
-      ...(prestamo.fechaFin     !== undefined && { fechaFin:     prestamo.fechaFin }),
-      ...(prestamo.estado       !== undefined && { estado:       prestamo.estado }),
-      ...(prestamo.usuario      !== undefined && { usuario:      { id: prestamo.usuario.id } as any }),
-      ...(prestamo.ficha        !== undefined && { ficha:        { id: prestamo.ficha.id } as any }),
-      ...(prestamo.beneficiarios !== undefined && {
-        beneficiarios: prestamo.beneficiarios.map((u) => ({ id: u.id }) as any),
-      }),
-      ...(prestamo.materialItems !== undefined && {
-        materialItems: prestamo.materialItems.map((mi) => ({ id: mi.id }) as any),
-      }),
-      ...(prestamo.aprobadoPor      !== undefined && { aprobadoPor:     { id: prestamo.aprobadoPor.id } as any }),
-      ...(prestamo.fechaAprobacion  !== undefined && { fechaAprobacion:  prestamo.fechaAprobacion }),
-      ...(prestamo.rechazadoPor     !== undefined && { rechazadoPor:    { id: prestamo.rechazadoPor.id } as any }),
-      ...(prestamo.fechaRechazo     !== undefined && { fechaRechazo:     prestamo.fechaRechazo }),
-      ...(prestamo.fechaEntrega     !== undefined && { fechaEntrega:     prestamo.fechaEntrega }),
-      ...(prestamo.fechaDevolucion  !== undefined && { fechaDevolucion:  prestamo.fechaDevolucion }),
+      ...(prestamo.motivo                !== undefined && { motivo:                prestamo.motivo }),
+      ...(prestamo.observacion           !== undefined && { observacion:           prestamo.observacion }),
+      ...(prestamo.fechaInicio           !== undefined && { fechaInicio:           prestamo.fechaInicio }),
+      ...(prestamo.fechaFin              !== undefined && { fechaFin:              prestamo.fechaFin }),
+      ...(prestamo.fechaDevolucionEsperada !== undefined && { fechaDevolucionEsperada: prestamo.fechaDevolucionEsperada }),
+      ...(prestamo.estado                !== undefined && { estado:                prestamo.estado }),
+      ...(prestamo.solicitante           !== undefined && { solicitante:           { id: prestamo.solicitante.id } as any }),
+      ...(prestamo.ficha                 !== undefined && { ficha:                 { id: prestamo.ficha.id } as any }),
+      ...(prestamo.beneficiarios         !== undefined && { beneficiarios:         prestamo.beneficiarios.map((u) => ({ id: u.id }) as any) }),
+      ...(prestamo.revisadoPor           !== undefined && { revisadoPor:           prestamo.revisadoPor ? { id: prestamo.revisadoPor.id } as any : null }),
+      ...(prestamo.fechaRevision         !== undefined && { fechaRevision:         prestamo.fechaRevision }),
+      ...(prestamo.observacionRevision   !== undefined && { observacionRevision:   prestamo.observacionRevision }),
+      ...(prestamo.fechaEntrega          !== undefined && { fechaEntrega:          prestamo.fechaEntrega }),
     };
   }
 
-  private readonly RELATIONS = [
-    'usuario', 'ficha', 'beneficiarios',
-    'materialItems',
-    'materialConsumibles', 'materialConsumibles.materiale',
-    'materialConsumibles.materialConsumible',
-    'aprobadoPor', 'rechazadoPor',
-  ];
+  private readonly RELATIONS = ['solicitante', 'ficha', 'beneficiarios', 'revisadoPor'];
 
   async create(prestamo: Prestamo): Promise<Prestamo> {
     const ormEntity = this.repo.create(this.toOrm(prestamo));
     const saved = await this.repo.save(ormEntity);
-
-    if (prestamo.materialConsumibles?.length) {
-      for (const detalle of prestamo.materialConsumibles) {
-        const pmc = this.pmcRepo.create({
-          prestamo:           { id: saved.id } as any,
-          materiale:          { id: detalle.materiale.id } as any,
-          materialConsumible: { id: detalle.materialConsumible.id } as any,
-          cantidadPrestada:   detalle.cantidadPrestada,
-        });
-        await this.pmcRepo.save(pmc);
-      }
-    }
-
     return (await this.findOne(saved.id))!;
   }
 
@@ -144,16 +92,11 @@ export class TypeOrmPrestamoRepository implements PrestamoRepository {
 
   async findByUsuario(usuarioId: string): Promise<Prestamo[]> {
     const list = await this.repo.createQueryBuilder('prestamo')
-      .leftJoinAndSelect('prestamo.usuario',              'usuario')
-      .leftJoinAndSelect('prestamo.ficha',                'ficha')
-      .leftJoinAndSelect('prestamo.beneficiarios',        'beneficiarios')
-      .leftJoinAndSelect('prestamo.materialItems',        'materialItems')
-      .leftJoinAndSelect('prestamo.materialConsumibles',  'materialConsumibles')
-      .leftJoinAndSelect('materialConsumibles.materiale',          'mcMateriale')
-      .leftJoinAndSelect('materialConsumibles.materialConsumible', 'mcConsumible')
-      .leftJoinAndSelect('prestamo.aprobadoPor',          'aprobadoPor')
-      .leftJoinAndSelect('prestamo.rechazadoPor',         'rechazadoPor')
-      .where('usuario.id = :usuarioId', { usuarioId })
+      .leftJoinAndSelect('prestamo.solicitante',   'solicitante')
+      .leftJoinAndSelect('prestamo.ficha',         'ficha')
+      .leftJoinAndSelect('prestamo.beneficiarios', 'beneficiarios')
+      .leftJoinAndSelect('prestamo.revisadoPor',   'revisadoPor')
+      .where('solicitante.id = :usuarioId', { usuarioId })
       .orWhere('beneficiarios.id = :usuarioId', { usuarioId })
       .orderBy('prestamo.creadoEn', 'DESC')
       .getMany();

@@ -1,37 +1,23 @@
 import { PrestamoEstado } from './prestamo-estado.enum';
 import { Usuario } from 'src/usuarios/domain/usuario.entity';
 import { Ficha } from 'src/fichas/domain/ficha.entity';
-import { Material_item } from 'src/material_item/domain/material_item.entity';
-import { Materiale } from 'src/materiales/domain/materiale.entity';
-import { Material_consumible } from 'src/material_consumible/domain/material_consumible.entity';
-
-export class PrestamoConsumibleDetalle {
-  materiale: Materiale;
-  materialConsumible: Material_consumible;
-  cantidadPrestada: number;
-}
 
 export class Prestamo {
   id: string;
   motivo: string;
-  observacion: string;
+  observacion?: string;
   fechaRegistro: Date;
   fechaInicio: Date;
   fechaFin: Date;
+  fechaDevolucionEsperada?: Date | null;
   estado: PrestamoEstado;
-  usuario: Usuario;
+  solicitante: Usuario;
   ficha: Ficha;
-  beneficiarios: Usuario[];
-  materialItems: Material_item[];
-  materialConsumibles: PrestamoConsumibleDetalle[];
-  aprobadoPor?: Usuario;
-  aprobadoPorId?: string;
-  fechaAprobacion?: Date;
-  rechazadoPor?: Usuario;
-  rechazadoPorId?: string;
-  fechaRechazo?: Date;
-  fechaEntrega?: Date;
-  fechaDevolucion?: Date;
+  beneficiarios?: Usuario[];
+  revisadoPor?: Usuario | null;
+  fechaRevision?: Date | null;
+  observacionRevision?: string | null;
+  fechaEntrega?: Date | null;
   creadoEn: Date;
   actualizadoEn: Date;
 

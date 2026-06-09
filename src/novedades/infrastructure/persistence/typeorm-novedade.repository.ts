@@ -5,7 +5,6 @@ import { NovedadeRepository } from '../../domain/novedade.repository';
 import { Novedade } from '../../domain/novedade.entity';
 import { NovedadeOrmEntity } from './novedade.orm-entity';
 import { Usuario } from 'src/usuarios/domain/usuario.entity';
-import { Devolucione } from 'src/devoluciones/domain/devolucione.entity';
 
 @Injectable()
 export class TypeOrmNovedadeRepository implements NovedadeRepository {
@@ -16,23 +15,18 @@ export class TypeOrmNovedadeRepository implements NovedadeRepository {
 
   private toDomain(orm: NovedadeOrmEntity): Novedade {
     return new Novedade({
-      id:          orm.id,
-      descripcion: orm.descripcion,
-      tipo:        orm.tipo,
-      estado:      orm.estado,
-      usuario: orm.usuario ? new Usuario({
-        id:              orm.usuario.id,
-        nombre:          orm.usuario.nombre,
-        correo:          orm.usuario.correo,
-        numeroDocumento: orm.usuario.numeroDocumento,
-        telefono:        orm.usuario.telefono,
-        estado:          orm.usuario.estado,
-      }) : undefined,
-      devolucion: orm.devolucion ? new Devolucione({
-        id:              orm.devolucion.id,
-        fechaDevolucion: orm.devolucion.fechaDevolucion,
-        observacion:     orm.devolucion.observacion,
-        estado:          orm.devolucion.estado,
+      id:               orm.id,
+      descripcion:      orm.descripcion,
+      tipo:             orm.tipo,
+      estado:           orm.estado,
+      devolucionItemId: orm.devolucionItemId,
+      reportadoPor: orm.reportadoPor ? new Usuario({
+        id:              orm.reportadoPor.id,
+        nombre:          orm.reportadoPor.nombre,
+        correo:          orm.reportadoPor.correo,
+        numeroDocumento: orm.reportadoPor.numeroDocumento,
+        telefono:        orm.reportadoPor.telefono,
+        estado:          orm.reportadoPor.estado,
       }) : undefined,
       creadoEn:      orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
@@ -41,11 +35,11 @@ export class TypeOrmNovedadeRepository implements NovedadeRepository {
 
   private toOrm(n: Partial<Novedade>): Partial<NovedadeOrmEntity> {
     return {
-      ...(n.descripcion !== undefined && { descripcion: n.descripcion }),
-      ...(n.tipo        !== undefined && { tipo:        n.tipo }),
-      ...(n.estado      !== undefined && { estado:      n.estado }),
-      ...(n.usuario     !== undefined && { usuario:     { id: n.usuario.id } as any }),
-      ...(n.devolucion  !== undefined && { devolucion:  { id: n.devolucion.id } as any }),
+      ...(n.descripcion      !== undefined && { descripcion:      n.descripcion }),
+      ...(n.tipo             !== undefined && { tipo:             n.tipo }),
+      ...(n.estado           !== undefined && { estado:           n.estado }),
+      ...(n.devolucionItemId !== undefined && { devolucionItemId: n.devolucionItemId }),
+      ...(n.reportadoPor     !== undefined && { reportadoPor:     { id: n.reportadoPor.id } as any }),
     };
   }
 
@@ -56,12 +50,12 @@ export class TypeOrmNovedadeRepository implements NovedadeRepository {
   }
 
   async findAll(): Promise<Novedade[]> {
-    const list = await this.repo.find({ relations: ['usuario', 'devolucion'] });
+    const list = await this.repo.find({ relations: ['reportadoPor'] });
     return list.map(this.toDomain.bind(this));
   }
 
   async findOne(id: string): Promise<Novedade | null> {
-    const found = await this.repo.findOne({ where: { id }, relations: ['usuario', 'devolucion'] });
+    const found = await this.repo.findOne({ where: { id }, relations: ['reportadoPor'] });
     return found ? this.toDomain(found) : null;
   }
 

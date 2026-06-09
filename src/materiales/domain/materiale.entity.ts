@@ -8,11 +8,12 @@ export class Materiale {
   id: string;
   nombre: string;
   descripcion: string;
+  sku?: string | null;
+  tipo: TipoMateriale;
   estado: MaterialeEstado;
-  tipoMaterial: TipoMateriale;
   categoriaMaterial: Categoria_material;
   ficha: Ficha;
-  ubicacion: Ubicacion;
+  ubicacion?: Ubicacion;
   creadoEn: Date;
   actualizadoEn: Date;
 

@@ -1,4 +1,4 @@
 export enum DevolucioneEstado {
-  ACTIVO   = 'activo',
-  INACTIVO = 'inactivo',
+  COMPLETA = 'COMPLETA',
+  PARCIAL  = 'PARCIAL',
 }

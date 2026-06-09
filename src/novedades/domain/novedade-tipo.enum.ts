@@ -1,5 +1,6 @@
 export enum NovedadeTipo {
-  DAÑO   = 'daño',
-  PERDIDA = 'pérdida',
-  DESTRUIDO = 'destruido',
+  AVERIA      = 'AVERIA',
+  PERDIDA     = 'PERDIDA',
+  DAÑO_PARCIAL = 'DAÑO_PARCIAL',
+  OTRO        = 'OTRO',
 }

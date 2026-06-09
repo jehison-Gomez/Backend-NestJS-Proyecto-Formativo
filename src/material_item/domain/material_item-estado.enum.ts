@@ -1,7 +1,6 @@
 export enum Material_itemEstado {
-  ACTIVO        = 'activo',
-  INACTIVO      = 'inactivo',
-  PRESTADO      = 'prestado',
-  DANADO        = 'dañado',
-  DADO_DE_BAJA  = 'dado_de_baja',
+  DISPONIBLE       = 'DISPONIBLE',
+  PRESTADO         = 'PRESTADO',
+  EN_MANTENIMIENTO = 'EN_MANTENIMIENTO',
+  DADO_DE_BAJA     = 'DADO_DE_BAJA',
 }

@@ -16,19 +16,19 @@ export class RejectPrestamoUseCase {
     const prestamo = await this.prestamoRepository.findOne(id);
     if (!prestamo) throw new NotFoundException(`Prestamo #${id} no encontrado`);
 
-    if (prestamo.estado !== PrestamoEstado.PENDIENTE) {
+    if (prestamo.estado !== PrestamoEstado.PENDIENTE && prestamo.estado !== PrestamoEstado.MODIFICADO) {
       throw new BadRequestException(
-        `Solo se puede rechazar un préstamo en estado PENDIENTE. Estado actual: ${prestamo.estado}`,
+        `Solo se puede rechazar un préstamo en estado PENDIENTE o MODIFICADO. Estado actual: ${prestamo.estado}`,
       );
     }
 
     const partial: Partial<Prestamo> = {
-      estado:       PrestamoEstado.RECHAZADO,
-      observacion:  dto.motivo,
-      fechaRechazo: new Date(),
+      estado:              PrestamoEstado.RECHAZADO,
+      observacionRevision: dto.observacionRevision,
+      fechaRevision:       new Date(),
     };
 
-    if (dto.rechazadoPorId) partial.rechazadoPor = await this.findOneUsuario.execute(dto.rechazadoPorId);
+    if (dto.revisadoPorId) partial.revisadoPor = await this.findOneUsuario.execute(dto.revisadoPorId);
 
     return this.prestamoRepository.update(id, partial);
   }

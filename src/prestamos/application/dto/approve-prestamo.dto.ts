@@ -3,9 +3,9 @@ import { IsOptional, IsString, IsUUID } from 'class-validator';
 export class ApprovePrestamoDto {
   @IsOptional()
   @IsString()
-  observacion?: string;
+  observacionRevision?: string;
 
   @IsOptional()
   @IsUUID('4')
-  aprobadoPorId?: string;
+  revisadoPorId?: string;
 }

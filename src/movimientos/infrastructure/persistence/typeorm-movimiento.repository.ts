@@ -20,7 +20,6 @@ export class TypeOrmMovimientoRepository implements MovimientoRepository {
       tipo:        orm.tipo,
       cantidad:    Number(orm.cantidad),
       descripcion: orm.descripcion,
-      saldo:       Number(orm.saldo),
       estado:      orm.estado,
       prestamo: orm.prestamo ? new Prestamo({
         id:            orm.prestamo.id,
@@ -29,13 +28,11 @@ export class TypeOrmMovimientoRepository implements MovimientoRepository {
         fechaInicio:   orm.prestamo.fechaInicio,
         fechaFin:      orm.prestamo.fechaFin,
         estado:        orm.prestamo.estado,
-      }) : undefined,
-      materialItem:       orm.materialItem       ? { id: orm.materialItem.id }       as any : undefined,
-      materialConsumible: orm.materialConsumible ? { id: orm.materialConsumible.id } as any : undefined,
-      usuario: orm.usuario ? new Usuario({
-        id:     orm.usuario.id,
-        nombre: orm.usuario.nombre,
-      }) : undefined,
+      }) : null,
+      devolucion:         orm.devolucion         ? { id: orm.devolucion.id }         as any : null,
+      materialItem:       orm.materialItem        ? { id: orm.materialItem.id }       as any : null,
+      materialConsumible: orm.materialConsumible  ? { id: orm.materialConsumible.id } as any : null,
+      usuario: orm.usuario ? new Usuario({ id: orm.usuario.id, nombre: orm.usuario.nombre }) : null,
       creadoEn:      orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -43,25 +40,25 @@ export class TypeOrmMovimientoRepository implements MovimientoRepository {
 
   private toOrm(m: Partial<Movimiento>): Partial<MovimientoOrmEntity> {
     return {
-      ...(m.tipo         !== undefined && { tipo:         m.tipo }),
-      ...(m.cantidad     !== undefined && { cantidad:     m.cantidad }),
-      ...(m.descripcion  !== undefined && { descripcion:  m.descripcion }),
-      ...(m.saldo        !== undefined && { saldo:        m.saldo }),
-      ...(m.estado       !== undefined && { estado:       m.estado }),
-      ...(m.prestamo           !== undefined && { prestamo:           { id: m.prestamo.id }           as any }),
-      ...(m.materialItem       !== undefined && { materialItem:       { id: m.materialItem.id }       as any }),
-      ...(m.materialConsumible !== undefined && { materialConsumible: { id: m.materialConsumible.id } as any }),
-      ...(m.usuario            !== undefined && { usuario:            { id: m.usuario.id }            as any }),
+      ...(m.tipo               !== undefined && { tipo:              m.tipo }),
+      ...(m.cantidad           !== undefined && { cantidad:          m.cantidad }),
+      ...(m.descripcion        !== undefined && { descripcion:       m.descripcion }),
+      ...(m.estado             !== undefined && { estado:            m.estado }),
+      ...(m.prestamo           !== undefined && { prestamo:          m.prestamo ? { id: m.prestamo.id } as any : null }),
+      ...(m.devolucion         !== undefined && { devolucion:        m.devolucion ? { id: (m.devolucion as any).id } as any : null }),
+      ...(m.materialItem       !== undefined && { materialItem:      m.materialItem ? { id: m.materialItem.id } as any : null }),
+      ...(m.materialConsumible !== undefined && { materialConsumible: m.materialConsumible ? { id: m.materialConsumible.id } as any : null }),
+      ...(m.usuario            !== undefined && { usuario:           m.usuario ? { id: m.usuario.id } as any : null }),
     };
   }
+
+  private readonly RELATIONS = ['prestamo', 'devolucion', 'materialItem', 'materialConsumible', 'usuario'];
 
   async create(movimiento: Movimiento): Promise<Movimiento> {
     const ormEntity = this.repo.create(this.toOrm(movimiento));
     const saved = await this.repo.save(ormEntity);
     return (await this.findOne(saved.id))!;
   }
-
-  private readonly RELATIONS = ['prestamo', 'materialItem', 'materialConsumible', 'usuario'];
 
   async findAll(): Promise<Movimiento[]> {
     const list = await this.repo.find({ relations: this.RELATIONS });
@@ -92,18 +89,14 @@ export class TypeOrmMovimientoRepository implements MovimientoRepository {
   }
 
   async getLastSaldo(materialItemId?: string, materialConsumibleId?: string): Promise<number> {
-    if (!materialItemId && !materialConsumibleId) return 0;
-    const where: any = materialItemId
-      ? { materialItem: { id: materialItemId } }
-      : { materialConsumible: { id: materialConsumibleId } };
-    const last = await this.repo.findOne({ where, order: { creadoEn: 'DESC' } });
-    return last ? Number(last.saldo) : 0;
+    return 0;
   }
 
   async findByMateriale(materialeId: string): Promise<Movimiento[]> {
     const list = await this.repo
       .createQueryBuilder('mov')
       .leftJoinAndSelect('mov.prestamo',          'prestamo')
+      .leftJoinAndSelect('mov.devolucion',         'devolucion')
       .leftJoinAndSelect('mov.materialItem',       'mi')
       .leftJoinAndSelect('mov.materialConsumible', 'mc')
       .leftJoinAndSelect('mov.usuario',            'usuario')

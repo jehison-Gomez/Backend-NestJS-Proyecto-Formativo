@@ -3,45 +3,27 @@ import { KardexRepository } from '../../domain/kardex.repository';
 import { CreateKardexDto } from '../dto/create-kardex.dto';
 import { Kardex } from '../../domain/kardex.entity';
 import { handleDbErrors } from '../handle-db-errors';
-import { FindOneFichaUseCase } from 'src/fichas/application/use-cases/find-one-ficha.use-case';
-import { FindOnePrestamoUseCase } from 'src/prestamos/application/use-cases/find-one-prestamo.use-case';
-import { FindOneUsuarioUseCase } from 'src/usuarios/application/use-cases/find-one-usuario.use-case';
-import { FindOneMaterialeUseCase } from 'src/materiales/application/use-cases/find-one-materiale.use-case';
-import { FindOneUbicacionUseCase } from 'src/ubicacion/application/use-cases/find-one-ubicacion.use-case';
-import { FindOneMovimientoUseCase } from 'src/movimientos/application/use-cases/find-one-movimiento.use-case';
 
 @Injectable()
 export class CreateKardexUseCase {
-  constructor(
-    private readonly kardexRepository: KardexRepository,
-    private readonly findOneFicha: FindOneFichaUseCase,
-    private readonly findOnePrestamo: FindOnePrestamoUseCase,
-    private readonly findOneUsuario: FindOneUsuarioUseCase,
-    private readonly findOneMateriale: FindOneMaterialeUseCase,
-    private readonly findOneUbicacion: FindOneUbicacionUseCase,
-    private readonly findOneMovimiento: FindOneMovimientoUseCase,
-  ) {}
+  constructor(private readonly kardexRepository: KardexRepository) {}
 
   async execute(dto: CreateKardexDto): Promise<Kardex> {
-    const ficha      = await this.findOneFicha.execute(dto.fichaId);
-    const prestamo   = await this.findOnePrestamo.execute(dto.prestamoId);
-    const usuario    = await this.findOneUsuario.execute(dto.usuarioId);
-    const material   = await this.findOneMateriale.execute(dto.materialId);
-    const ubicacion  = await this.findOneUbicacion.execute(dto.ubicacionId);
-    const movimiento = await this.findOneMovimiento.execute(dto.movimientoId);
-
     try {
+      // Si es CONSUMIBLE: llena materialConsumibleId, saldoAnterior y saldoActual
+      // Si es ITEM: llena materialItemId, cantidad siempre = 1, saldos son null
       const kardex = new Kardex({
-        cantidad:         dto.cantidad,
-        cantidadAnterior: dto.cantidadAnterior,
-        cantidadActual:   dto.cantidadActual,
-        estado:           dto.estado,
-        ficha,
-        prestamo,
-        usuario,
-        material,
-        ubicacion,
-        movimiento,
+        movimientoId:         dto.movimientoId,
+        fichaId:              dto.fichaId,
+        usuarioId:            dto.usuarioId,
+        prestamoId:           dto.prestamoId ?? null,
+        devolucionId:         dto.devolucionId ?? null,
+        materialConsumibleId: dto.materialConsumibleId ?? null,
+        materialItemId:       dto.materialItemId ?? null,
+        cantidad:             dto.materialItemId ? 1 : dto.cantidad,
+        saldoAnterior:        dto.materialItemId ? null : (dto.saldoAnterior ?? null),
+        saldoActual:          dto.materialItemId ? null : (dto.saldoActual ?? null),
+        estado:               dto.estado,
       });
       return await this.kardexRepository.create(kardex);
     } catch (error) {

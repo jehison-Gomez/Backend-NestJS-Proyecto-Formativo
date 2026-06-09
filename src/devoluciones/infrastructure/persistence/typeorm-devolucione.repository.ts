@@ -19,13 +19,14 @@ export class TypeOrmDevolucioneRepository implements DevolucioneRepository {
       fechaDevolucion: orm.fechaDevolucion,
       observacion:     orm.observacion,
       estado:          orm.estado,
-      usuario: orm.usuario ? new Usuario({
-        id:              orm.usuario.id,
-        nombre:          orm.usuario.nombre,
-        correo:          orm.usuario.correo,
-        numeroDocumento: orm.usuario.numeroDocumento,
-        telefono:        orm.usuario.telefono,
-        estado:          orm.usuario.estado,
+      prestamoId:      orm.prestamo?.id,
+      recibidoPor: orm.recibidoPor ? new Usuario({
+        id:              orm.recibidoPor.id,
+        nombre:          orm.recibidoPor.nombre,
+        correo:          orm.recibidoPor.correo,
+        numeroDocumento: orm.recibidoPor.numeroDocumento,
+        telefono:        orm.recibidoPor.telefono,
+        estado:          orm.recibidoPor.estado,
       }) : undefined,
       creadoEn:      orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
@@ -37,7 +38,8 @@ export class TypeOrmDevolucioneRepository implements DevolucioneRepository {
       ...(d.fechaDevolucion !== undefined && { fechaDevolucion: d.fechaDevolucion }),
       ...(d.observacion     !== undefined && { observacion:     d.observacion }),
       ...(d.estado          !== undefined && { estado:          d.estado }),
-      ...(d.usuario         !== undefined && { usuario:         { id: d.usuario.id } as any }),
+      ...(d.prestamoId      !== undefined && { prestamo:        { id: d.prestamoId } as any }),
+      ...(d.recibidoPor     !== undefined && { recibidoPor:     { id: d.recibidoPor.id } as any }),
     };
   }
 
@@ -48,12 +50,12 @@ export class TypeOrmDevolucioneRepository implements DevolucioneRepository {
   }
 
   async findAll(): Promise<Devolucione[]> {
-    const list = await this.repo.find({ relations: ['usuario'] });
+    const list = await this.repo.find({ relations: ['prestamo', 'recibidoPor'] });
     return list.map(this.toDomain.bind(this));
   }
 
   async findOne(id: string): Promise<Devolucione | null> {
-    const found = await this.repo.findOne({ where: { id }, relations: ['usuario'] });
+    const found = await this.repo.findOne({ where: { id }, relations: ['prestamo', 'recibidoPor'] });
     return found ? this.toDomain(found) : null;
   }
 

@@ -1,9 +1,7 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
 import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
 import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
-import { Material_itemOrmEntity } from 'src/material_item/infrastructure/persistence/material_item.orm-entity';
-import { PrestamoMaterialConsumibleOrmEntity } from './prestamo-material-consumible.orm-entity';
 
 @Entity('prestamos')
 export class PrestamoOrmEntity {
@@ -25,12 +23,15 @@ export class PrestamoOrmEntity {
   @Column({ type: 'date', name: 'fecha_fin' })
   fechaFin: Date;
 
+  @Column({ type: 'date', nullable: true, name: 'fecha_devolucion_esperada' })
+  fechaDevolucionEsperada: Date | null;
+
   @Column({ type: 'enum', enum: PrestamoEstado, default: PrestamoEstado.PENDIENTE })
   estado: PrestamoEstado;
 
   @ManyToOne(() => UsuarioOrmEntity, { nullable: false, onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'usuario_id' })
-  usuario: UsuarioOrmEntity;
+  @JoinColumn({ name: 'solicitante_id' })
+  solicitante: UsuarioOrmEntity;
 
   @ManyToOne(() => FichaOrmEntity, { nullable: false, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'ficha_id' })
@@ -44,36 +45,18 @@ export class PrestamoOrmEntity {
   })
   beneficiarios: UsuarioOrmEntity[];
 
-  @ManyToMany(() => Material_itemOrmEntity)
-  @JoinTable({
-    name: 'prestamo_material_item',
-    joinColumn: { name: 'prestamo_id' },
-    inverseJoinColumn: { name: 'material_item_id' },
-  })
-  materialItems: Material_itemOrmEntity[];
-
-  @OneToMany(() => PrestamoMaterialConsumibleOrmEntity, (pmc) => pmc.prestamo, { cascade: true })
-  materialConsumibles: PrestamoMaterialConsumibleOrmEntity[];
-
   @ManyToOne(() => UsuarioOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'aprobado_por_id' })
-  aprobadoPor: UsuarioOrmEntity;
+  @JoinColumn({ name: 'revisado_por_id' })
+  revisadoPor: UsuarioOrmEntity | null;
 
-  @Column({ type: 'timestamp', nullable: true, name: 'fecha_aprobacion' })
-  fechaAprobacion: Date;
+  @Column({ type: 'timestamp', nullable: true, name: 'fecha_revision' })
+  fechaRevision: Date | null;
 
-  @ManyToOne(() => UsuarioOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'rechazado_por_id' })
-  rechazadoPor: UsuarioOrmEntity;
-
-  @Column({ type: 'timestamp', nullable: true, name: 'fecha_rechazo' })
-  fechaRechazo: Date;
+  @Column({ type: 'text', nullable: true, name: 'observacion_revision' })
+  observacionRevision: string | null;
 
   @Column({ type: 'timestamp', nullable: true, name: 'fecha_entrega' })
-  fechaEntrega: Date;
-
-  @Column({ type: 'timestamp', nullable: true, name: 'fecha_devolucion' })
-  fechaDevolucion: Date;
+  fechaEntrega: Date | null;
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;
