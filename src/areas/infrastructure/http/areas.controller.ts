@@ -6,6 +6,8 @@ import { UpdateAreaUseCase }    from '../../application/use-cases/update-area.us
 import { RemoveAreaUseCase }    from '../../application/use-cases/remove-area.use-case';
 import { CreateAreaDto }        from '../../application/dto/create-area.dto';
 import { UpdateAreaDto }        from '../../application/dto/update-area.dto';
+import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
 
 @Controller('areas')
 export class AreasController {
@@ -23,8 +25,9 @@ export class AreasController {
   }
 
   @Get()
-  findAll() {
-    return this.findAllAreasUseCase.execute();
+  findAll(@CurrentUser() user: JwtPayload) {
+    const sedeId = user.rol === 'super_admin' ? undefined : user.sedeId;
+    return this.findAllAreasUseCase.execute(sedeId);
   }
 
   @Get(':id')

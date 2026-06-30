@@ -54,10 +54,16 @@ export class TypeOrmAreaRepository implements AreaRepository {
     return result!;
   }
 
-  async findAll(): Promise<Area[]> {
-    const list = await this.repo.find({
-      relations: ['sede', 'usuarioLider'],
-    });
+  async findAll(sedeId?: string | null): Promise<Area[]> {
+    const query = this.repo.createQueryBuilder('area')
+      .leftJoinAndSelect('area.sede', 'sede')
+      .leftJoinAndSelect('area.usuarioLider', 'usuarioLider');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

@@ -1,4 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
 import { CreatePrestamoUseCase }              from '../../application/use-cases/create-prestamo.use-case';
 import { FindAllPrestamosUseCase }            from '../../application/use-cases/find-all-prestamos.use-case';
 import { FindOnePrestamoUseCase }             from '../../application/use-cases/find-one-prestamo.use-case';
@@ -38,8 +40,9 @@ export class PrestamosController {
   }
 
   @Get()
-  findAll() {
-    return this.findAllPrestamosUseCase.execute();
+  findAll(@CurrentUser() user: JwtPayload) {
+    const sedeId = user.rol === 'super_admin' ? undefined : user.sedeId;
+    return this.findAllPrestamosUseCase.execute(sedeId);
   }
 
   @Get('usuario/:usuarioId')

@@ -66,8 +66,20 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
     return (await this.findOne(saved.id))!;
   }
 
-  async findAll(): Promise<Materiale[]> {
-    const list = await this.repo.find({ relations: ['categoriaMaterial', 'ficha', 'ubicacion'] });
+  async findAll(sedeId?: string | null): Promise<Materiale[]> {
+    const query = this.repo.createQueryBuilder('m')
+      .leftJoinAndSelect('m.categoriaMaterial', 'categoriaMaterial')
+      .leftJoinAndSelect('m.ficha', 'ficha')
+      .leftJoinAndSelect('m.ubicacion', 'ubicacion')
+      .leftJoin('ficha.programa', 'programa')
+      .leftJoin('programa.area', 'area')
+      .leftJoin('area.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

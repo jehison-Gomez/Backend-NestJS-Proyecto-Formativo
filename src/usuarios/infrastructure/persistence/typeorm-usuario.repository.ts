@@ -7,6 +7,7 @@ import { Usuario } from '../../domain/usuario.entity';
 import { UsuarioOrmEntity } from './usuario.orm-entity';
 import { Ficha } from 'src/fichas/domain/ficha.entity';
 import { Role } from 'src/roles/domain/role.entity';
+import { Sede } from 'src/sedes/domain/sede.entity';
 
 @Injectable()
 export class TypeOrmUsuarioRepository implements UsuarioRepository {
@@ -39,6 +40,12 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
         nivelAcceso: orm.role.nivelAcceso,
         estado: orm.role.estado,
       }) : undefined,
+      sede: orm.sede ? new Sede({
+        id: orm.sede.id,
+        nombre: orm.sede.nombre,
+        direccion: orm.sede.direccion,
+        estado: orm.sede.estado,
+      }) : null,
       creadoEn: orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -54,6 +61,7 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
       ...(usuario.estado !== undefined && { estado: usuario.estado }),
       ...(usuario.ficha !== undefined && { ficha: { id: usuario.ficha.id } as any }),
       ...(usuario.role !== undefined && { role: { id: usuario.role.id } as any }),
+      ...(usuario.sede !== undefined && { sede: usuario.sede ? { id: usuario.sede.id } as any : null }),
     };
   }
 
@@ -64,19 +72,31 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
     return result!;
   }
 
-  async findAll(): Promise<Usuario[]> {
-    const list = await this.repo.find({
-      relations: ['ficha', 'role'],
-    });
+  async findAll(sedeId?: string | null): Promise<Usuario[]> {
+    const query = this.repo.createQueryBuilder('usuario')
+      .leftJoinAndSelect('usuario.ficha', 'ficha')
+      .leftJoinAndSelect('usuario.role', 'role')
+      .leftJoinAndSelect('usuario.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 
   async findWithFilters(filters: UsuarioFilters): Promise<UsuariosPaginados> {
-    const { search, rolId, estado, page = 1, limit = 10 } = filters;
+    const { search, rolId, estado, sedeId, soloRoles, page = 1, limit = 10 } = filters;
 
     const query = this.repo.createQueryBuilder('usuario')
       .leftJoinAndSelect('usuario.ficha', 'ficha')
-      .leftJoinAndSelect('usuario.role', 'role');
+      .leftJoinAndSelect('usuario.role', 'role')
+      .leftJoinAndSelect('usuario.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.andWhere(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
 
     if (search) {
       query.andWhere(
@@ -91,6 +111,10 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
 
     if (estado) {
       query.andWhere('usuario.estado = :estado', { estado });
+    }
+
+    if (soloRoles && soloRoles.length > 0) {
+      query.andWhere('role.nombre IN (:...soloRoles)', { soloRoles });
     }
 
     const total = await query.getCount();
@@ -112,16 +136,19 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
   async findOne(id: string): Promise<Usuario | null> {
     const found = await this.repo.findOne({
       where: { id },
-      relations: ['ficha', 'role'],
+      relations: ['ficha', 'role', 'sede'],
     });
     return found ? this.toDomain(found) : null;
   }
 
   async findByCorreo(correo: string): Promise<Usuario | null> {
-    const found = await this.repo.findOne({
-      where: { correo: correo.trim() },
-      relations: ['ficha', 'role'],
-    });
+    const found = await this.repo
+      .createQueryBuilder('usuario')
+      .leftJoinAndSelect('usuario.ficha', 'ficha')
+      .leftJoinAndSelect('usuario.role', 'role')
+      .leftJoinAndSelect('usuario.sede', 'sede')
+      .where('LOWER(usuario.correo) = LOWER(:correo)', { correo: correo.trim() })
+      .getOne();
     return found ? this.toDomain(found) : null;
   }
 

@@ -18,11 +18,15 @@ export class LoginUseCase {
     const passwordValida = await bcrypt.compare(dto.contrasena, usuario.contrasena);
     if (!passwordValida) throw new UnauthorizedException('Credenciales incorrectas');
 
+    if (usuario.estado === 'inactivo')
+      throw new UnauthorizedException('Usuario desactivado');
+
     const payload = {
       sub:    usuario.id,
       correo: usuario.correo,
       nombre: usuario.nombre,
       rol:    usuario.role?.nombre,
+      sedeId: usuario.sede?.id ?? null,
     };
 
     return { access_token: this.jwtService.sign(payload) };

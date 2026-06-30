@@ -1,4 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
 import { CreateFichaUseCase }                  from '../../application/use-cases/create-ficha.use-case';
 import { FindAllFichasUseCase }                from '../../application/use-cases/find-all-fichas.use-case';
 import { FindOneFichaUseCase }                 from '../../application/use-cases/find-one-ficha.use-case';
@@ -27,8 +29,9 @@ export class FichasController {
   }
 
   @Get()
-  findAll() {
-    return this.findAllFichasUseCase.execute();
+  findAll(@CurrentUser() user: JwtPayload) {
+    const sedeId = user.rol === 'super_admin' ? undefined : user.sedeId;
+    return this.findAllFichasUseCase.execute(sedeId);
   }
 
   @Get(':id')

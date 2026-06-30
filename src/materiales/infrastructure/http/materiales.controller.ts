@@ -7,6 +7,8 @@ import { RemoveMaterialeUseCase }      from '../../application/use-cases/remove-
 import { FindKardexMaterialeUseCase }  from '../../application/use-cases/find-kardex-materiale.use-case';
 import { CreateMaterialeDto }          from '../../application/dto/create-materiale.dto';
 import { UpdateMaterialeDto }          from '../../application/dto/update-materiale.dto';
+import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
 
 @Controller('materiales')
 export class MaterialesController {
@@ -25,8 +27,9 @@ export class MaterialesController {
   }
 
   @Get()
-  findAll() {
-    return this.findAllMaterialesUseCase.execute();
+  findAll(@CurrentUser() user: JwtPayload) {
+    const sedeId = user.rol === 'super_admin' ? undefined : user.sedeId;
+    return this.findAllMaterialesUseCase.execute(sedeId);
   }
 
   @Get(':id/kardex')
