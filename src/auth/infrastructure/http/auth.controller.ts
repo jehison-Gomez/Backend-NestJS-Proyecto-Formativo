@@ -1,7 +1,10 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { LoginDto } from '../../application/dto/login.dto';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import type { JwtPayload } from '../decorators/current-user.decorator';
 
 const COOKIE_NAME = 'access_token';
 const COOKIE_MAX_AGE = 8 * 60 * 60 * 1000; // 8 horas en ms
@@ -23,6 +26,19 @@ export class AuthController {
     });
 
     return { message: 'Login exitoso' };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  me(@CurrentUser() user: JwtPayload) {
+    return {
+      id:       user.sub,
+      nombre:   user.nombre,
+      correo:   user.correo,
+      rol:      user.rol,
+      sedeId:   user.sedeId ?? null,
+      permisos: [],
+    };
   }
 
   @Post('logout')
