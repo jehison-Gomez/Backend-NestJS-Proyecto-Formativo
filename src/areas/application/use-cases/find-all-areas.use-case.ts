@@ -6,7 +6,7 @@ import { Area } from '../../domain/area.entity';
 export class FindAllAreasUseCase {
   constructor(private readonly areaRepository: AreaRepository) {}
 
-  async execute(): Promise<Area[]> {
+  async execute(_sedeId?: string | null): Promise<Area[]> {
     return this.areaRepository.findAll();
   }
 }

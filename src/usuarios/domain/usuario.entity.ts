@@ -2,6 +2,7 @@ import { Ficha } from 'src/fichas/domain/ficha.entity';
 import { Role } from 'src/roles/domain/role.entity';
 import { UsuarioEstado } from './usuario-estado.enum';
 import type { Area } from 'src/areas/domain/area.entity';
+import type { Sede } from 'src/sedes/domain/sede.entity';
 
 export class Usuario {
   id: string;
@@ -16,6 +17,7 @@ export class Usuario {
   fichasLideradas?: Ficha[];
   areaLiderada?: Area;
   role: Role;
+  sede?: Sede | null;
   creadoEn: Date;
   actualizadoEn: Date;
 

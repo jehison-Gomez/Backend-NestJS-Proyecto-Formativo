@@ -6,7 +6,7 @@ import { Prestamo } from '../../domain/prestamo.entity';
 export class FindAllPrestamosUseCase {
   constructor(private readonly prestamoRepository: PrestamoRepository) {}
 
-  async execute(): Promise<Prestamo[]> {
+  async execute(_sedeId?: string | null): Promise<Prestamo[]> {
     return this.prestamoRepository.findAll();
   }
 }

@@ -4,6 +4,7 @@ import * as bcrypt from 'bcryptjs';
 import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
 import { RoleOrmEntity } from 'src/roles/infrastructure/persistence/role.orm-entity';
 import { AreaOrmEntity } from 'src/areas/infrastructure/persistence/area.orm-entity';
+import { SedeOrmEntity } from 'src/sedes/infrastructure/persistence/sede.orm-entity';
 
 @Entity('usuarios')
 export class UsuarioOrmEntity {
@@ -50,6 +51,13 @@ export class UsuarioOrmEntity {
   })
   @JoinColumn({ name: 'role_id' })
   role: RoleOrmEntity;
+
+  @ManyToOne(() => SedeOrmEntity, {
+    nullable: true,
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn({ name: 'sede_id' })
+  sede: SedeOrmEntity;
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;

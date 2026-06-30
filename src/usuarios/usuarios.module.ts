@@ -16,6 +16,7 @@ import { FindUsuariosConFiltrosUseCase }     from './application/use-cases/find-
 import { FindOneUsuarioUseCase }             from './application/use-cases/find-one-usuario.use-case';
 import { UpdateUsuarioUseCase }              from './application/use-cases/update-usuario.use-case';
 import { RemoveUsuarioUseCase }              from './application/use-cases/remove-usuario.use-case';
+import { CalculateUserPermissionsUseCase }   from './application/use-cases/calculate-user-permissions.use-case';
 import { FichasModule }                      from 'src/fichas/fichas.module';
 import { RolesModule }                       from 'src/roles/roles.module';
 
@@ -26,6 +27,7 @@ const USE_CASES = [
   FindOneUsuarioUseCase,
   UpdateUsuarioUseCase,
   RemoveUsuarioUseCase,
+  CalculateUserPermissionsUseCase,
 ];
 
 @Module({
