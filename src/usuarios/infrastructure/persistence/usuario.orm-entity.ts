@@ -1,0 +1,86 @@
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { UsuarioEstado } from '../../domain/usuario-estado.enum';
+import { TipoDocumento } from '../../domain/tipo-documento.enum';
+import * as bcrypt from 'bcryptjs';
+import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
+import { RoleOrmEntity } from 'src/roles/infrastructure/persistence/role.orm-entity';
+import { AreaOrmEntity } from 'src/areas/infrastructure/persistence/area.orm-entity';
+import { SedeOrmEntity } from 'src/sedes/infrastructure/persistence/sede.orm-entity';
+
+@Entity('usuarios')
+export class UsuarioOrmEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  nombre: string;
+
+  @Column({ type: 'varchar', length: 255, unique: true })
+  correo: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  contrasena: string;
+
+  @Column({ type: 'varchar', length: 20 })
+  telefono: string;
+
+  @Column({ type: 'varchar', length: 20, unique: true, name: 'numero_documento' })
+  numeroDocumento: string;
+
+  @Column({ type: 'enum', enum: TipoDocumento, nullable: true, name: 'tipo_documento' })
+  tipoDocumento: TipoDocumento | null;
+
+  @Column({ type: 'enum', enum: UsuarioEstado, default: UsuarioEstado.ACTIVO })
+  estado: UsuarioEstado;
+
+  @Column({ type: 'date', default: () => 'CURRENT_DATE', name: 'fecha_registro' })
+  fechaRegistro: Date;
+
+  @ManyToOne(() => FichaOrmEntity, (ficha) => ficha.aprendices, {
+    nullable: true,
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn({ name: 'ficha_id' })
+  ficha: FichaOrmEntity;
+
+  @OneToMany(() => FichaOrmEntity, (ficha) => ficha.usuarioLider)
+  fichasLideradas: FichaOrmEntity[];
+
+  @OneToOne(() => AreaOrmEntity, (area) => area.usuarioLider)
+  areaLiderada: AreaOrmEntity;
+
+  @ManyToOne(() => RoleOrmEntity, (role) => role.usuarios, {
+    nullable: false,
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn({ name: 'role_id' })
+  role: RoleOrmEntity;
+
+  @ManyToOne(() => SedeOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'sede_id' })
+  sede: SedeOrmEntity | null;
+
+  @CreateDateColumn({ name: 'creado_en' })
+  creadoEn: Date;
+
+  @UpdateDateColumn({ name: 'actualizado_en' })
+  actualizadoEn: Date;
+
+  @BeforeInsert()
+  async hashPasswordOnInsert() {
+    this.nombre = this.nombre.trim();
+    this.correo = this.correo.trim();
+    if (this.contrasena) {
+      this.contrasena = await bcrypt.hash(this.contrasena, 10);
+    }
+  }
+
+  @BeforeUpdate()
+  async hashPasswordOnUpdate() {
+    this.nombre = this.nombre?.trim();
+    this.correo = this.correo?.trim();
+    if (this.contrasena && !this.contrasena.startsWith('$2')) {
+      this.contrasena = await bcrypt.hash(this.contrasena, 10);
+    }
+  }
+}

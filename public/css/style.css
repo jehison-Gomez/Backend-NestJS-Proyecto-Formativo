@@ -1,0 +1,108 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #006837, #002d19);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    overflow: hidden;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: moveBg 20s linear infinite;
+}
+
+@keyframes moveBg {
+    from { transform: translate(0, 0); }
+    to { transform: translate(-200px, -200px); }
+}
+
+.container {
+    position: relative;
+    text-align: center;
+    padding: 50px;
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.logo {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 20px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,255,136,0.4);
+}
+
+.figure {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-left: 4px solid #00ff88;
+    border-bottom: 4px solid #00ff88;
+    transform: rotate(-45deg);
+    top: 25px;
+    left: 25px;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: 700;
+    color: #00ff88;
+    text-shadow: 0 0 15px rgba(0,255,136,0.7);
+}
+
+.title {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+}
+
+.message {
+    font-size: 1rem;
+    margin-bottom: 30px;
+    color: #c7f9dd;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 30px;
+    background: transparent;
+    border: 2px solid #00ff88;
+    color: #00ff88;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #00ff88;
+    color: #002d19;
+    box-shadow: 0 0 15px rgba(0,255,136,0.8);
+    transform: scale(1.05);
+}
