@@ -19,6 +19,7 @@ import { FindMaterialesDisponiblesUseCase }        from './application/use-cases
 import { FindAprendicesByFichaUseCase }            from './application/use-cases/find-aprendices-by-ficha.use-case';
 import { ProgramasModule }                         from 'src/programas/programas.module';
 import { UsuariosModule }                          from 'src/usuarios/usuarios.module';
+import { AuthModule }                              from 'src/auth/auth.module';
 
 const USE_CASES = [
   CreateFichaUseCase,
@@ -35,6 +36,7 @@ const USE_CASES = [
     TypeOrmModule.forFeature([FichaOrmEntity]),
     forwardRef(() => ProgramasModule),
     forwardRef(() => UsuariosModule),
+    AuthModule,
   ],
   controllers: [FichasController],
   providers: [

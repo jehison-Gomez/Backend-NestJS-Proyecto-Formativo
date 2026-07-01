@@ -21,6 +21,7 @@ import { FindKardexMaterialeUseCase }       from './application/use-cases/find-k
 import { Categoria_materialModule }         from 'src/categoria_material/categoria_material.module';
 import { FichasModule }                     from 'src/fichas/fichas.module';
 import { UbicacionModule }                  from 'src/ubicacion/ubicacion.module';
+import { AuthModule }                       from 'src/auth/auth.module';
 
 const USE_CASES = [
   CreateMaterialeUseCase,
@@ -37,6 +38,7 @@ const USE_CASES = [
     Categoria_materialModule,
     FichasModule,
     UbicacionModule,
+    AuthModule,
   ],
   controllers: [MaterialesController],
   providers: [

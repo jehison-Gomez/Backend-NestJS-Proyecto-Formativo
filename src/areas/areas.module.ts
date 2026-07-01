@@ -17,6 +17,7 @@ import { UpdateAreaUseCase }           from './application/use-cases/update-area
 import { RemoveAreaUseCase }           from './application/use-cases/remove-area.use-case';
 import { SedesModule }                 from 'src/sedes/sedes.module';
 import { UsuariosModule }               from 'src/usuarios/usuarios.module';
+import { AuthModule }                  from 'src/auth/auth.module';
 
 const USE_CASES = [
   CreateAreaUseCase,
@@ -31,6 +32,7 @@ const USE_CASES = [
     TypeOrmModule.forFeature([AreaOrmEntity]),
     SedesModule,
     forwardRef(() => UsuariosModule),
+    AuthModule,
   ],
   controllers: [AreasController],
   providers: [

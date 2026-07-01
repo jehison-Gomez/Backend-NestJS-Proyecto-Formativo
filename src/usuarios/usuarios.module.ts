@@ -19,6 +19,7 @@ import { RemoveUsuarioUseCase }              from './application/use-cases/remov
 import { CalculateUserPermissionsUseCase }   from './application/use-cases/calculate-user-permissions.use-case';
 import { FichasModule }                      from 'src/fichas/fichas.module';
 import { RolesModule }                       from 'src/roles/roles.module';
+import { AuthModule }                        from 'src/auth/auth.module';
 
 const USE_CASES = [
   CreateUsuarioUseCase,
@@ -35,6 +36,7 @@ const USE_CASES = [
     TypeOrmModule.forFeature([UsuarioOrmEntity]),
     forwardRef(() => FichasModule),
     RolesModule,
+    forwardRef(() => AuthModule),
   ],
   controllers: [UsuariosController],
   providers: [
