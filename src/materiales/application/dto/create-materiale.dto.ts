@@ -18,6 +18,10 @@ export class CreateMaterialeDto {
   sku?: string;
 
   @IsOptional()
+  @IsString()
+  codigoUnspsc?: string;
+
+  @IsOptional()
   @IsEnum(MaterialeEstado)
   estado?: MaterialeEstado;
 

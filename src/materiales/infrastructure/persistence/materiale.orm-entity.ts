@@ -19,6 +19,9 @@ export class MaterialeOrmEntity {
   @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
   sku: string | null;
 
+  @Column({ type: 'varchar', length: 20, nullable: true, name: 'codigo_unspsc' })
+  codigoUnspsc: string | null;
+
   @Column({ type: 'enum', enum: TipoMateriale, nullable: false, default: TipoMateriale.ITEM, name: 'tipo' })
   tipo: TipoMateriale;
 

@@ -25,6 +25,7 @@ export class CreateMaterialeUseCase {
       nombre:          dto.nombre,
       descripcion:     dto.descripcion,
       sku:             dto.sku ?? null,
+      codigoUnspsc:    dto.codigoUnspsc ?? null,
       tipo:            dto.tipo,
       estado:          dto.estado,
       categoriaMaterial,

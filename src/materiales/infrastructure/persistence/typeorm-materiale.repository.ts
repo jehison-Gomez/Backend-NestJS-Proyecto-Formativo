@@ -17,11 +17,12 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
 
   private toDomain(orm: MaterialeOrmEntity): Materiale {
     return new Materiale({
-      id:           orm.id,
-      nombre:       orm.nombre,
-      descripcion:  orm.descripcion,
-      sku:          orm.sku,
-      tipo:         orm.tipo,
+      id:            orm.id,
+      nombre:        orm.nombre,
+      descripcion:   orm.descripcion,
+      sku:           orm.sku,
+      codigoUnspsc:  orm.codigoUnspsc,
+      tipo:          orm.tipo,
       estado:       orm.estado,
       categoriaMaterial: orm.categoriaMaterial ? new Categoria_material({
         id:          orm.categoriaMaterial.id,
@@ -52,6 +53,7 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
       ...(materiale.nombre            !== undefined && { nombre:            materiale.nombre }),
       ...(materiale.descripcion       !== undefined && { descripcion:       materiale.descripcion }),
       ...(materiale.sku               !== undefined && { sku:               materiale.sku }),
+      ...(materiale.codigoUnspsc      !== undefined && { codigoUnspsc:      materiale.codigoUnspsc }),
       ...(materiale.tipo              !== undefined && { tipo:              materiale.tipo }),
       ...(materiale.estado            !== undefined && { estado:            materiale.estado }),
       ...(materiale.categoriaMaterial !== undefined && { categoriaMaterial: { id: materiale.categoriaMaterial.id } as any }),

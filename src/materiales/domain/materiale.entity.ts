@@ -9,6 +9,7 @@ export class Materiale {
   nombre: string;
   descripcion: string;
   sku?: string | null;
+  codigoUnspsc?: string | null;
   tipo: TipoMateriale;
   estado: MaterialeEstado;
   categoriaMaterial: Categoria_material;
