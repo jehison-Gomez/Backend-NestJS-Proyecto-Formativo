@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
 import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 import { CreatePrestamoUseCase }              from '../../application/use-cases/create-prestamo.use-case';
 import { FindAllPrestamosUseCase }            from '../../application/use-cases/find-all-prestamos.use-case';
 import { FindOnePrestamoUseCase }             from '../../application/use-cases/find-one-prestamo.use-case';
@@ -18,6 +19,7 @@ import { ApprovePrestamoDto }                 from '../../application/dto/approv
 import { RejectPrestamoDto }                  from '../../application/dto/reject-prestamo.dto';
 import { CambiarUbicacionMaterialDto }        from '../../application/dto/cambiar-ubicacion-material.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('prestamos')
 export class PrestamosController {
   constructor(

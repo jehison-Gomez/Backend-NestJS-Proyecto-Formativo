@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
 import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 import { CreateFichaUseCase }                  from '../../application/use-cases/create-ficha.use-case';
 import { FindAllFichasUseCase }                from '../../application/use-cases/find-all-fichas.use-case';
 import { FindOneFichaUseCase }                 from '../../application/use-cases/find-one-ficha.use-case';
@@ -11,6 +12,7 @@ import { FindAprendicesByFichaUseCase }        from '../../application/use-cases
 import { CreateFichaDto }                      from '../../application/dto/create-ficha.dto';
 import { UpdateFichaDto }                      from '../../application/dto/update-ficha.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('fichas')
 export class FichasController {
   constructor(

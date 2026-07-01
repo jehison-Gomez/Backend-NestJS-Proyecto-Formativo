@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
 import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 import { CreateUsuarioUseCase }              from '../../application/use-cases/create-usuario.use-case';
 import { FindAllUsuariosUseCase }            from '../../application/use-cases/find-all-usuarios.use-case';
 import { FindUsuariosConFiltrosUseCase }     from '../../application/use-cases/find-usuarios-con-filtros.use-case';
@@ -12,6 +13,7 @@ import { CreateUsuarioDto }                  from '../../application/dto/create-
 import { UpdateUsuarioDto }                  from '../../application/dto/update-usuario.dto';
 import { GetUsuariosDto }                    from '../../application/dto/get-usuarios.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('usuarios')
 export class UsuariosController {
   constructor(
