@@ -48,6 +48,6 @@ const USE_CASES = [
       useClass: TypeOrmMaterial_consumibleRepository,
     },
   ],
-  exports: [...USE_CASES],
+  exports: [...USE_CASES, Material_consumibleRepository],
 })
 export class Material_consumibleModule {}

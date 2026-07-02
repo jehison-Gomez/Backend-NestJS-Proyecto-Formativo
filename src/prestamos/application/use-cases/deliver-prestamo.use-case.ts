@@ -8,6 +8,8 @@ import { Material_itemEstado } from 'src/material_item/domain/material_item-esta
 import { FindByPrestamoPrestamoConsumibleUseCase } from 'src/prestamo_consumible/application/use-cases/find-by-prestamo-prestamo_consumible.use-case';
 import { FindOneMaterial_consumibleUseCase } from 'src/material_consumible/application/use-cases/find-one-material_consumible.use-case';
 import { UpdateMaterial_consumibleUseCase } from 'src/material_consumible/application/use-cases/update-material_consumible.use-case';
+import { CreateNotificacionUseCase } from 'src/notificaciones/application/use-cases/create-notificacion.use-case';
+import { NotificacionTipo } from 'src/notificaciones/domain/notificacion-tipo.enum';
 
 @Injectable()
 export class DeliverPrestamoUseCase {
@@ -18,6 +20,7 @@ export class DeliverPrestamoUseCase {
     private readonly findConsumiblesByPrestamo: FindByPrestamoPrestamoConsumibleUseCase,
     private readonly findOneConsumible: FindOneMaterial_consumibleUseCase,
     private readonly updateConsumible: UpdateMaterial_consumibleUseCase,
+    private readonly createNotificacion: CreateNotificacionUseCase,
   ) {}
 
   async execute(id: string): Promise<Prestamo> {
@@ -51,9 +54,24 @@ export class DeliverPrestamoUseCase {
       }
     }
 
-    return this.prestamoRepository.update(id, {
+    const updated = await this.prestamoRepository.update(id, {
       estado:       PrestamoEstado.ENTREGADO,
       fechaEntrega: new Date(),
     });
+
+    // Notificar al solicitante que su préstamo fue entregado
+    try {
+      if (prestamo.solicitante?.id) {
+        await this.createNotificacion.execute({
+          destinatarioId: prestamo.solicitante.id,
+          tipo:           NotificacionTipo.PRESTAMO_ENTREGADO,
+          titulo:         '¡Tu préstamo fue entregado!',
+          mensaje:        `Los materiales de tu préstamo ya están disponibles para retirar. Motivo: ${prestamo.motivo}`,
+          ruta:           '/app/prestamos',
+        });
+      }
+    } catch { /* no interrumpir si falla la notificación */ }
+
+    return updated;
   }
 }

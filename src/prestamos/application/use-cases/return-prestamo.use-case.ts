@@ -5,6 +5,8 @@ import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
 import { PrestamoItemRepository } from 'src/prestamo_item/domain/prestamo_item.repository';
 import { Material_itemRepository } from 'src/material_item/domain/material_item.repository';
 import { Material_itemEstado } from 'src/material_item/domain/material_item-estado.enum';
+import { CreateNotificacionUseCase } from 'src/notificaciones/application/use-cases/create-notificacion.use-case';
+import { NotificacionTipo } from 'src/notificaciones/domain/notificacion-tipo.enum';
 
 @Injectable()
 export class ReturnPrestamoUseCase {
@@ -12,6 +14,7 @@ export class ReturnPrestamoUseCase {
     private readonly prestamoRepository: PrestamoRepository,
     private readonly prestamoItemRepository: PrestamoItemRepository,
     private readonly materialItemRepository: Material_itemRepository,
+    private readonly createNotificacion: CreateNotificacionUseCase,
   ) {}
 
   async execute(id: string): Promise<Prestamo> {
@@ -34,6 +37,21 @@ export class ReturnPrestamoUseCase {
       }
     }
 
-    return this.prestamoRepository.update(id, { estado: PrestamoEstado.DEVUELTO });
+    const updated = await this.prestamoRepository.update(id, { estado: PrestamoEstado.DEVUELTO });
+
+    // Notificar al solicitante que la devolución fue registrada
+    try {
+      if (prestamo.solicitante?.id) {
+        await this.createNotificacion.execute({
+          destinatarioId: prestamo.solicitante.id,
+          tipo:           NotificacionTipo.PRESTAMO_DEVUELTO,
+          titulo:         'Devolución registrada',
+          mensaje:        `La devolución de tu préstamo ha sido registrada exitosamente. ¡Gracias!`,
+          ruta:           '/app/prestamos',
+        });
+      }
+    } catch { /* no interrumpir si falla la notificación */ }
+
+    return updated;
   }
 }

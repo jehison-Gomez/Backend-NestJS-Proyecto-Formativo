@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Material_itemModule } from 'src/material_item/material_item.module';
 
 import { PrestamoItemOrmEntity }              from './infrastructure/persistence/prestamo_item.orm-entity';
 import { TypeOrmPrestamoItemRepository }      from './infrastructure/persistence/typeorm-prestamo_item.repository';
@@ -22,7 +23,7 @@ const USE_CASES = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PrestamoItemOrmEntity])],
+  imports: [TypeOrmModule.forFeature([PrestamoItemOrmEntity]), Material_itemModule],
   controllers: [PrestamoItemController],
   providers: [
     ...USE_CASES,
