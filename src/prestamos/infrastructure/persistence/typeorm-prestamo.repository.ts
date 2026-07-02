@@ -85,8 +85,21 @@ export class TypeOrmPrestamoRepository implements PrestamoRepository {
     return (await this.findOne(saved.id))!;
   }
 
-  async findAll(): Promise<Prestamo[]> {
-    const list = await this.repo.find({ relations: this.RELATIONS });
+  async findAll(sedeId?: string | null): Promise<Prestamo[]> {
+    const query = this.repo.createQueryBuilder('prestamo')
+      .leftJoinAndSelect('prestamo.solicitante', 'solicitante')
+      .leftJoinAndSelect('prestamo.ficha', 'ficha')
+      .leftJoinAndSelect('prestamo.beneficiarios', 'beneficiarios')
+      .leftJoinAndSelect('prestamo.revisadoPor', 'revisadoPor')
+      .leftJoin('ficha.programa', 'programa')
+      .leftJoin('programa.area', 'area')
+      .leftJoin('area.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

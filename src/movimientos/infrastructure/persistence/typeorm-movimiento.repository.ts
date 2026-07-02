@@ -60,8 +60,35 @@ export class TypeOrmMovimientoRepository implements MovimientoRepository {
     return (await this.findOne(saved.id))!;
   }
 
-  async findAll(): Promise<Movimiento[]> {
-    const list = await this.repo.find({ relations: this.RELATIONS });
+  async findAll(sedeId?: string | null): Promise<Movimiento[]> {
+    const query = this.repo.createQueryBuilder('movimiento')
+      .leftJoinAndSelect('movimiento.prestamo',           'prestamo')
+      .leftJoinAndSelect('movimiento.devolucion',         'devolucion')
+      .leftJoinAndSelect('movimiento.materialItem',       'mi')
+      .leftJoinAndSelect('movimiento.materialConsumible', 'mc')
+      .leftJoinAndSelect('movimiento.usuario',            'usuario')
+      // cadena sede via materialItem
+      .leftJoin('mi.materiale',     'mat_i')
+      .leftJoin('mat_i.ficha',      'ficha_i')
+      .leftJoin('ficha_i.programa', 'prog_i')
+      .leftJoin('prog_i.area',      'area_i')
+      .leftJoin('area_i.sede',      'sede_i')
+      // cadena sede via materialConsumible
+      .leftJoin('mc.materiale',     'mat_c')
+      .leftJoin('mat_c.ficha',      'ficha_c')
+      .leftJoin('ficha_c.programa', 'prog_c')
+      .leftJoin('prog_c.area',      'area_c')
+      .leftJoin('area_c.sede',      'sede_c');
+
+    if (sedeId !== undefined) {
+      if (sedeId) {
+        query.where('(sede_i.id = :sedeId OR sede_c.id = :sedeId)', { sedeId });
+      } else {
+        query.where('1 = 0');
+      }
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

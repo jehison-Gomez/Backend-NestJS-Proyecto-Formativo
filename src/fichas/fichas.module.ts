@@ -46,6 +46,6 @@ const USE_CASES = [
       useClass: TypeOrmFichaRepository,
     },
   ],
-  exports: [...USE_CASES],
+  exports: [...USE_CASES, FichaRepository],
 })
 export class FichasModule {}

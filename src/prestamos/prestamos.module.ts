@@ -24,6 +24,7 @@ import { Material_itemModule }     from 'src/material_item/material_item.module'
 import { Material_ubicacionModule } from 'src/material_ubicacion/material_ubicacion.module';
 import { MaterialesModule }        from 'src/materiales/materiales.module';
 import { AuthModule }              from 'src/auth/auth.module';
+import { NotificacionesModule }    from 'src/notificaciones/notificaciones.module';
 
 const USE_CASES = [
   CreatePrestamoUseCase,
@@ -48,6 +49,7 @@ const USE_CASES = [
     Material_ubicacionModule,
     MaterialesModule,
     AuthModule,
+    NotificacionesModule,
   ],
   controllers: [PrestamosController],
   providers: [

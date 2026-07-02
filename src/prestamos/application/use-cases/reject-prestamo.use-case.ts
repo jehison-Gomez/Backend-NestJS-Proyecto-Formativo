@@ -4,12 +4,15 @@ import { RejectPrestamoDto } from '../dto/reject-prestamo.dto';
 import { Prestamo } from '../../domain/prestamo.entity';
 import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
 import { FindOneUsuarioUseCase } from 'src/usuarios/application/use-cases/find-one-usuario.use-case';
+import { CreateNotificacionUseCase } from 'src/notificaciones/application/use-cases/create-notificacion.use-case';
+import { NotificacionTipo } from 'src/notificaciones/domain/notificacion-tipo.enum';
 
 @Injectable()
 export class RejectPrestamoUseCase {
   constructor(
     private readonly prestamoRepository: PrestamoRepository,
     private readonly findOneUsuario: FindOneUsuarioUseCase,
+    private readonly createNotificacion: CreateNotificacionUseCase,
   ) {}
 
   async execute(id: string, dto: RejectPrestamoDto): Promise<Prestamo> {
@@ -30,6 +33,21 @@ export class RejectPrestamoUseCase {
 
     if (dto.revisadoPorId) partial.revisadoPor = await this.findOneUsuario.execute(dto.revisadoPorId);
 
-    return this.prestamoRepository.update(id, partial);
+    const updated = await this.prestamoRepository.update(id, partial);
+
+    // Notificar al solicitante
+    try {
+      if (prestamo.solicitante?.id) {
+        await this.createNotificacion.execute({
+          destinatarioId: prestamo.solicitante.id,
+          tipo:           NotificacionTipo.PRESTAMO_RECHAZADO,
+          titulo:         'Tu préstamo fue rechazado',
+          mensaje:        `Tu solicitud de préstamo ha sido rechazada.${dto.observacionRevision ? ' Motivo: ' + dto.observacionRevision : ''}`,
+          ruta:           '/app/prestamos',
+        });
+      }
+    } catch { /* no interrumpir si falla la notificación */ }
+
+    return updated;
   }
 }

@@ -18,6 +18,7 @@ export class TypeOrmCategoria_materialRepository implements Categoria_materialRe
       nombre: orm.nombre,
       descripcion: orm.descripcion,
       estado: orm.estado,
+      sedeId: orm.sede?.id ?? null,
       creadoEn: orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -28,6 +29,7 @@ export class TypeOrmCategoria_materialRepository implements Categoria_materialRe
       ...(categoria_material.nombre !== undefined && { nombre: categoria_material.nombre }),
       ...(categoria_material.descripcion !== undefined && { descripcion: categoria_material.descripcion }),
       ...(categoria_material.estado !== undefined && { estado: categoria_material.estado }),
+      ...(categoria_material.sedeId !== undefined && { sede: categoria_material.sedeId ? { id: categoria_material.sedeId } as any : null }),
     };
   }
 
@@ -38,8 +40,15 @@ export class TypeOrmCategoria_materialRepository implements Categoria_materialRe
     return result!;
   }
 
-  async findAll(): Promise<Categoria_material[]> {
-    const list = await this.repo.find();
+  async findAll(sedeId?: string | null): Promise<Categoria_material[]> {
+    const query = this.repo.createQueryBuilder('cat')
+      .leftJoinAndSelect('cat.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

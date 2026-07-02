@@ -54,10 +54,17 @@ export class TypeOrmUbicacionRepository implements UbicacionRepository {
     return result!;
   }
 
-  async findAll(): Promise<Ubicacion[]> {
-    const list = await this.repo.find({
-      relations: ['tipoUbicacion', 'area'],
-    });
+  async findAll(sedeId?: string | null): Promise<Ubicacion[]> {
+    const query = this.repo.createQueryBuilder('ubicacion')
+      .leftJoinAndSelect('ubicacion.tipoUbicacion', 'tipoUbicacion')
+      .leftJoinAndSelect('ubicacion.area', 'area')
+      .leftJoin('area.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

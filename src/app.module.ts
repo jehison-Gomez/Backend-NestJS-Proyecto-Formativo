@@ -28,6 +28,7 @@ import { PrestamoConsumibleModule }   from './prestamo_consumible/prestamo_consu
 import { DevolucionesModule }         from './devoluciones/devoluciones.module';
 import { DevolucionItemModule }       from './devolucion_item/devolucion_item.module';
 import { NovedadesModule }            from './novedades/novedades.module';
+import { NotificacionesModule }       from './notificaciones/notificaciones.module';
 import { KardexModule }               from './kardex/kardex.module';
 import { AuthModule }                 from './auth/auth.module';
 import { Usuario_permisosModule }     from './usuario_permisos/usuario_permisos.module';
@@ -73,6 +74,7 @@ import { Usuario_permisosModule }     from './usuario_permisos/usuario_permisos.
     DevolucionesModule,
     DevolucionItemModule,
     NovedadesModule,
+    NotificacionesModule,
     KardexModule,
     AuthModule,
     Usuario_permisosModule,

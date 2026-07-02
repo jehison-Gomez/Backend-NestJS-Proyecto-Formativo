@@ -19,6 +19,7 @@ import { RemoveUbicacionUseCase }           from './application/use-cases/remove
 // Módulos relacionados
 import { Tipo_ubicacionModule }             from 'src/tipo_ubicacion/tipo_ubicacion.module';
 import { AreasModule }                      from 'src/areas/areas.module';
+import { AuthModule }                       from 'src/auth/auth.module';
 
 const USE_CASES = [
   CreateUbicacionUseCase,
@@ -33,6 +34,7 @@ const USE_CASES = [
     TypeOrmModule.forFeature([UbicacionOrmEntity]),
     Tipo_ubicacionModule,
     AreasModule,
+    AuthModule,
   ],
   controllers: [UbicacionController],
   providers: [

@@ -16,6 +16,7 @@ import { FindOneProgramaUseCase }          from './application/use-cases/find-on
 import { UpdateProgramaUseCase }           from './application/use-cases/update-programa.use-case';
 import { RemoveProgramaUseCase }           from './application/use-cases/remove-programa.use-case';
 import { AreasModule }                     from 'src/areas/areas.module';
+import { AuthModule }                      from 'src/auth/auth.module';
 
 const USE_CASES = [
   CreateProgramaUseCase,
@@ -29,6 +30,7 @@ const USE_CASES = [
   imports: [
     TypeOrmModule.forFeature([ProgramaOrmEntity]),
     forwardRef(() => AreasModule),
+    AuthModule,
   ],
   controllers: [ProgramasController],
   providers: [

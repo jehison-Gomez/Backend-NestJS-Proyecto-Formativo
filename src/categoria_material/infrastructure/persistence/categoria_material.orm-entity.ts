@@ -1,13 +1,14 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Categoria_materialEstado } from '../../domain/categoria_material-estado.enum';
 import { MaterialeOrmEntity } from 'src/materiales/infrastructure/persistence/materiale.orm-entity';
+import { SedeOrmEntity } from 'src/sedes/infrastructure/persistence/sede.orm-entity';
 
 @Entity('categoria_material')
 export class Categoria_materialOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255 })
   nombre: string;
 
   @Column({ type: 'varchar', length: 255 })
@@ -15,6 +16,10 @@ export class Categoria_materialOrmEntity {
 
   @Column({ type: 'enum', enum: Categoria_materialEstado, default: Categoria_materialEstado.ACTIVO })
   estado: Categoria_materialEstado;
+
+  @ManyToOne(() => SedeOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'sede_id' })
+  sede: SedeOrmEntity | null;
 
   @OneToMany(() => MaterialeOrmEntity, (m) => m.categoriaMaterial)
   materiales: MaterialeOrmEntity[];

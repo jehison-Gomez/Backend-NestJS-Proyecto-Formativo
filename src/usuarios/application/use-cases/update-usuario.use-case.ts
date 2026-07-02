@@ -5,6 +5,7 @@ import { Usuario } from '../../domain/usuario.entity';
 import { handleDbErrors } from '../handle-db-errors';
 import { FindOneFichaUseCase } from 'src/fichas/application/use-cases/find-one-ficha.use-case';
 import { FindOneRoleUseCase } from 'src/roles/application/use-cases/find-one-role.use-case';
+import type { Sede } from 'src/sedes/domain/sede.entity';
 
 @Injectable()
 export class UpdateUsuarioUseCase {
@@ -27,6 +28,9 @@ export class UpdateUsuarioUseCase {
     if (dto.estado          !== undefined) partial.estado          = dto.estado;
     if (dto.fichaId         !== undefined) partial.ficha           = await this.findOneFicha.execute(dto.fichaId);
     if (dto.rolId           !== undefined) partial.role            = await this.findOneRole.execute(dto.rolId);
+    if (dto.sedeId          !== undefined) partial.sede            = dto.sedeId
+      ? { id: dto.sedeId } as Sede
+      : null;
 
     try {
       return await this.usuarioRepository.update(id, partial);

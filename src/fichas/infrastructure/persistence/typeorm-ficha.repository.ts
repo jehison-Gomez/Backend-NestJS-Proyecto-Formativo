@@ -63,10 +63,19 @@ export class TypeOrmFichaRepository implements FichaRepository {
     return result!;
   }
 
-  async findAll(): Promise<Ficha[]> {
-    const list = await this.repo.find({
-      relations: ['programa', 'usuarioLider', 'aprendices'],
-    });
+  async findAll(sedeId?: string | null): Promise<Ficha[]> {
+    const query = this.repo.createQueryBuilder('ficha')
+      .leftJoinAndSelect('ficha.programa', 'programa')
+      .leftJoinAndSelect('ficha.usuarioLider', 'usuarioLider')
+      .leftJoinAndSelect('ficha.aprendices', 'aprendices')
+      .leftJoin('programa.area', 'area')
+      .leftJoin('area.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 
@@ -76,6 +85,17 @@ export class TypeOrmFichaRepository implements FichaRepository {
       relations: ['programa', 'usuarioLider', 'aprendices'],
     });
     return found ? this.toDomain(found) : null;
+  }
+
+  async findSedeIdByFichaId(fichaId: string): Promise<string | null> {
+    const result = await this.repo.createQueryBuilder('ficha')
+      .leftJoin('ficha.programa', 'programa')
+      .leftJoin('programa.area', 'area')
+      .leftJoin('area.sede', 'sede')
+      .select('sede.id', 'sedeId')
+      .where('ficha.id = :fichaId', { fichaId })
+      .getRawOne();
+    return result?.sedeId ?? null;
   }
 
   async update(id: string, ficha: Partial<Ficha>): Promise<Ficha> {

@@ -6,6 +6,7 @@ export class Categoria_material {
   nombre: string;
   descripcion: string;
   estado: Categoria_materialEstado;
+  sedeId?: string | null;
   materiales?: Materiale[];
   creadoEn: Date;
   actualizadoEn: Date;

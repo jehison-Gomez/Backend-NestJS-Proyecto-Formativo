@@ -1,4 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 import { CreateTipo_ubicacionUseCase }    from '../../application/use-cases/create-tipo_ubicacion.use-case';
 import { FindAllTipo_ubicacionUseCase }  from '../../application/use-cases/find-all-tipo_ubicacion.use-case';
 import { FindOneTipo_ubicacionUseCase }   from '../../application/use-cases/find-one-tipo_ubicacion.use-case';
@@ -7,6 +10,7 @@ import { RemoveTipo_ubicacionUseCase }    from '../../application/use-cases/remo
 import { CreateTipo_ubicacionDto }        from '../../application/dto/create-tipo_ubicacion.dto';
 import { UpdateTipo_ubicacionDto }        from '../../application/dto/update-tipo_ubicacion.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('tipo_ubicacion')
 export class Tipo_ubicacionController {
   constructor(
@@ -18,13 +22,17 @@ export class Tipo_ubicacionController {
   ) {}
 
   @Post()
-  create(@Body() dto: CreateTipo_ubicacionDto) {
+  create(@Body() dto: CreateTipo_ubicacionDto, @CurrentUser() user: JwtPayload) {
+    if (user.rol !== 'super_admin' && user.sedeId) {
+      (dto as any).sedeId = user.sedeId;
+    }
     return this.createTipo_ubicacionUseCase.execute(dto);
   }
 
   @Get()
-  findAll() {
-    return this.findAllTipo_ubicacionUseCase.execute();
+  findAll(@CurrentUser() user: JwtPayload) {
+    const sedeId = user.rol === 'super_admin' ? undefined : user.sedeId;
+    return this.findAllTipo_ubicacionUseCase.execute(sedeId);
   }
 
   @Get(':id')

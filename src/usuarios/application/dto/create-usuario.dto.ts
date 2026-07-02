@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum, MinLength, IsEmail, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum, MinLength, IsEmail, IsUUID, IsArray } from 'class-validator';
 import { UsuarioEstado } from '../../domain/usuario-estado.enum';
 
 export class CreateUsuarioDto {
@@ -35,4 +35,17 @@ export class CreateUsuarioDto {
   @IsUUID('4', { message: 'El ID del rol debe ser un UUID válido' })
   @IsNotEmpty({ message: 'El rol es obligatorio' })
   rolId: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID de la sede debe ser un UUID válido' })
+  sedeId?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true, message: 'Cada permiso debe ser un UUID válido' })
+  permisosAdicionalesIds?: string[];
+
+  @IsOptional()
+  @IsString()
+  tipoDocumento?: string;
 }

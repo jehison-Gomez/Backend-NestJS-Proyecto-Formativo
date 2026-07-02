@@ -10,13 +10,13 @@ export class MaterialeOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255 })
   nombre: string;
 
   @Column({ type: 'varchar', length: 255 })
   descripcion: string;
 
-  @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   sku: string | null;
 
   @Column({ type: 'varchar', length: 20, nullable: true, name: 'codigo_unspsc' })

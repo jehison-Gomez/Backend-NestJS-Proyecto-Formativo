@@ -22,7 +22,10 @@ export class AreasController {
   ) {}
 
   @Post()
-  create(@Body() dto: CreateAreaDto) {
+  create(@Body() dto: CreateAreaDto, @CurrentUser() user: JwtPayload) {
+    if (user.rol !== 'super_admin' && user.sedeId) {
+      dto.sedeId = user.sedeId;
+    }
     return this.createAreaUseCase.execute(dto);
   }
 

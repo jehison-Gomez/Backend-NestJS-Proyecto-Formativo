@@ -152,6 +152,16 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
     return found ? this.toDomain(found) : null;
   }
 
+  async findAdminsBySedeId(sedeId: string): Promise<Usuario[]> {
+    const list = await this.repo.createQueryBuilder('usuario')
+      .leftJoinAndSelect('usuario.role', 'role')
+      .leftJoinAndSelect('usuario.sede', 'sede')
+      .where('sede.id = :sedeId', { sedeId })
+      .andWhere('role.nombre = :rol', { rol: 'administrador' })
+      .getMany();
+    return list.map(this.toDomain.bind(this));
+  }
+
   async update(id: string, usuario: Partial<Usuario>): Promise<Usuario> {
     const data = this.toOrm(usuario);
     if (data.contrasena) {

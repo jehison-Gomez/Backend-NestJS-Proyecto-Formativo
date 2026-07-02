@@ -5,6 +5,7 @@ import { MovimientoOrmEntity }               from './infrastructure/persistence/
 import { TypeOrmMovimientoRepository }       from './infrastructure/persistence/typeorm-movimiento.repository';
 import { MovimientosController }             from './infrastructure/http/movimientos.controller';
 import { MovimientoRepository }              from './domain/movimiento.repository';
+import { AuthModule }                        from 'src/auth/auth.module';
 
 import { CreateMovimientoUseCase }           from './application/use-cases/create-movimiento.use-case';
 import { FindAllMovimientosUseCase }         from './application/use-cases/find-all-movimientos.use-case';
@@ -21,7 +22,7 @@ const USE_CASES = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MovimientoOrmEntity])],
+  imports: [TypeOrmModule.forFeature([MovimientoOrmEntity]), AuthModule],
   controllers: [MovimientosController],
   providers: [
     ...USE_CASES,

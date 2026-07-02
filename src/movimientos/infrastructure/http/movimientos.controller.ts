@@ -1,4 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 import { CreateMovimientoUseCase }    from '../../application/use-cases/create-movimiento.use-case';
 import { FindAllMovimientosUseCase }  from '../../application/use-cases/find-all-movimientos.use-case';
 import { FindOneMovimientoUseCase }   from '../../application/use-cases/find-one-movimiento.use-case';
@@ -7,6 +10,7 @@ import { RemoveMovimientoUseCase }    from '../../application/use-cases/remove-m
 import { CreateMovimientoDto }        from '../../application/dto/create-movimiento.dto';
 import { UpdateMovimientoDto }        from '../../application/dto/update-movimiento.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('movimientos')
 export class MovimientosController {
   constructor(
@@ -23,8 +27,9 @@ export class MovimientosController {
   }
 
   @Get()
-  findAll() {
-    return this.findAllMovimientosUseCase.execute();
+  findAll(@CurrentUser() user: JwtPayload) {
+    const sedeId = user.rol === 'super_admin' ? undefined : user.sedeId;
+    return this.findAllMovimientosUseCase.execute(sedeId);
   }
 
   @Get(':id')

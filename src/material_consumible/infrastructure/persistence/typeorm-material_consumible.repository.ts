@@ -20,7 +20,7 @@ export class TypeOrmMaterial_consumibleRepository implements Material_consumible
       unidadMedida:     orm.unidadMedida,
       fechaVencimiento: orm.fechaVencimiento,
       estado:           orm.estado,
-      materiale:        orm.materiale ? { id: orm.materiale.id } as any : undefined,
+      materiale:        orm.materiale ? { id: orm.materiale.id, nombre: orm.materiale.nombre } as any : undefined,
       creadoEn:         orm.creadoEn,
       actualizadoEn:    orm.actualizadoEn,
     });
@@ -43,8 +43,19 @@ export class TypeOrmMaterial_consumibleRepository implements Material_consumible
     return (await this.findOne(saved.id))!;
   }
 
-  async findAll(): Promise<Material_consumible[]> {
-    const list = await this.repo.find({ relations: ['materiale'] });
+  async findAll(sedeId?: string | null): Promise<Material_consumible[]> {
+    const query = this.repo.createQueryBuilder('mc')
+      .leftJoinAndSelect('mc.materiale',      'materiale')
+      .leftJoin('materiale.ficha',            'ficha')
+      .leftJoin('ficha.programa',             'programa')
+      .leftJoin('programa.area',              'area')
+      .leftJoin('area.sede',                  'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

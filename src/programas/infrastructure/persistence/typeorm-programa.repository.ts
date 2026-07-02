@@ -48,10 +48,16 @@ export class TypeOrmProgramaRepository implements ProgramaRepository {
     return result!;
   }
 
-  async findAll(): Promise<Programa[]> {
-    const list = await this.repo.find({
-      relations: ['area'],
-    });
+  async findAll(sedeId?: string | null): Promise<Programa[]> {
+    const query = this.repo.createQueryBuilder('programa')
+      .leftJoinAndSelect('programa.area', 'area')
+      .leftJoin('area.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

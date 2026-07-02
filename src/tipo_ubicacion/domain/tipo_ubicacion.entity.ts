@@ -6,6 +6,7 @@ export class Tipo_ubicacion {
   nombre: string;
   descripcion: string;
   estado: Tipo_ubicacionEstado;
+  sedeId?: string | null;
   ubicaciones?: Ubicacion[];
   creadoEn: Date;
   actualizadoEn: Date;

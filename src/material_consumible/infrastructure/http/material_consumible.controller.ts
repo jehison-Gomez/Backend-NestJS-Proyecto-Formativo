@@ -1,4 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 import { CreateMaterial_consumibleUseCase }    from '../../application/use-cases/create-material_consumible.use-case';
 import { FindAllMaterial_consumibleUseCase }   from '../../application/use-cases/find-all-material_consumible.use-case';
 import { FindOneMaterial_consumibleUseCase }   from '../../application/use-cases/find-one-material_consumible.use-case';
@@ -10,6 +13,7 @@ import { CreateMaterial_consumibleDto }        from '../../application/dto/creat
 import { UpdateMaterial_consumibleDto }        from '../../application/dto/update-material_consumible.dto';
 import { IngresarStockDto }                    from '../../application/dto/ingresar-stock.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('material_consumible')
 export class Material_consumibleController {
   constructor(
@@ -28,8 +32,9 @@ export class Material_consumibleController {
   }
 
   @Get()
-  findAll() {
-    return this.findAllMaterial_consumibleUseCase.execute();
+  findAll(@CurrentUser() user: JwtPayload) {
+    const sedeId = user.rol === 'super_admin' ? undefined : user.sedeId;
+    return this.findAllMaterial_consumibleUseCase.execute(sedeId);
   }
 
   @Get(':id')

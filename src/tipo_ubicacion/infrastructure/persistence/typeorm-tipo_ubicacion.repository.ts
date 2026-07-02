@@ -18,6 +18,7 @@ export class TypeOrmTipo_ubicacionRepository implements Tipo_ubicacionRepository
       nombre: orm.nombre,
       descripcion: orm.descripcion,
       estado: orm.estado,
+      sedeId: orm.sede?.id ?? null,
       creadoEn: orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -28,6 +29,7 @@ export class TypeOrmTipo_ubicacionRepository implements Tipo_ubicacionRepository
       ...(tipo_ubicacion.nombre !== undefined && { nombre: tipo_ubicacion.nombre }),
       ...(tipo_ubicacion.descripcion !== undefined && { descripcion: tipo_ubicacion.descripcion }),
       ...(tipo_ubicacion.estado !== undefined && { estado: tipo_ubicacion.estado }),
+      ...(tipo_ubicacion.sedeId !== undefined && { sede: tipo_ubicacion.sedeId ? { id: tipo_ubicacion.sedeId } as any : null }),
     };
   }
 
@@ -38,8 +40,15 @@ export class TypeOrmTipo_ubicacionRepository implements Tipo_ubicacionRepository
     return result!;
   }
 
-  async findAll(): Promise<Tipo_ubicacion[]> {
-    const list = await this.repo.find();
+  async findAll(sedeId?: string | null): Promise<Tipo_ubicacion[]> {
+    const query = this.repo.createQueryBuilder('tu')
+      .leftJoinAndSelect('tu.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

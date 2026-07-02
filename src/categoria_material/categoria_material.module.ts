@@ -8,6 +8,7 @@ import { Categoria_materialController }                from './infrastructure/ht
 
 // Domain
 import { Categoria_materialRepository }              from './domain/categoria_material.repository';
+import { AuthModule }                                from 'src/auth/auth.module';
 
 // Use Cases
 import { CreateCategoria_materialUseCase }           from './application/use-cases/create-categoria_material.use-case';
@@ -25,7 +26,7 @@ const USE_CASES = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Categoria_materialOrmEntity])],
+  imports: [TypeOrmModule.forFeature([Categoria_materialOrmEntity]), AuthModule],
   controllers: [Categoria_materialController],
   providers: [
     ...USE_CASES,

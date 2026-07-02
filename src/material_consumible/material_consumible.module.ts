@@ -21,6 +21,7 @@ import { FindKardexMaterial_consumibleUseCase }        from './application/use-c
 // Módulos relacionados
 import { MaterialesModule }                           from 'src/materiales/materiales.module';
 import { MovimientosModule }                          from 'src/movimientos/movimientos.module';
+import { AuthModule }                                 from 'src/auth/auth.module';
 
 const USE_CASES = [
   CreateMaterial_consumibleUseCase,
@@ -37,6 +38,7 @@ const USE_CASES = [
     TypeOrmModule.forFeature([Material_consumibleOrmEntity]),
     MaterialesModule,
     forwardRef(() => MovimientosModule),
+    AuthModule,
   ],
   controllers: [Material_consumibleController],
   providers: [

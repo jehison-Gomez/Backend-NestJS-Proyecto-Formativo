@@ -9,10 +9,10 @@ export class ProgramaOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255 })
   nombre: string;
 
-  @Column({ type: 'varchar', length: 20, unique: true })
+  @Column({ type: 'varchar', length: 20 })
   codigo: string;
 
   @Column({ type: 'enum', enum: ProgramaNivelFormacion })
