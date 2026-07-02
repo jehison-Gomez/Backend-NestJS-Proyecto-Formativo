@@ -2,10 +2,23 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { PrestamoRepository } from '../../domain/prestamo.repository';
 import { Prestamo } from '../../domain/prestamo.entity';
 import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
+import { PrestamoItemRepository } from 'src/prestamo_item/domain/prestamo_item.repository';
+import { Material_itemRepository } from 'src/material_item/domain/material_item.repository';
+import { Material_itemEstado } from 'src/material_item/domain/material_item-estado.enum';
+import { FindByPrestamoPrestamoConsumibleUseCase } from 'src/prestamo_consumible/application/use-cases/find-by-prestamo-prestamo_consumible.use-case';
+import { FindOneMaterial_consumibleUseCase } from 'src/material_consumible/application/use-cases/find-one-material_consumible.use-case';
+import { UpdateMaterial_consumibleUseCase } from 'src/material_consumible/application/use-cases/update-material_consumible.use-case';
 
 @Injectable()
 export class DeliverPrestamoUseCase {
-  constructor(private readonly prestamoRepository: PrestamoRepository) {}
+  constructor(
+    private readonly prestamoRepository: PrestamoRepository,
+    private readonly prestamoItemRepository: PrestamoItemRepository,
+    private readonly materialItemRepository: Material_itemRepository,
+    private readonly findConsumiblesByPrestamo: FindByPrestamoPrestamoConsumibleUseCase,
+    private readonly findOneConsumible: FindOneMaterial_consumibleUseCase,
+    private readonly updateConsumible: UpdateMaterial_consumibleUseCase,
+  ) {}
 
   async execute(id: string): Promise<Prestamo> {
     const prestamo = await this.prestamoRepository.findOne(id);
@@ -15,6 +28,27 @@ export class DeliverPrestamoUseCase {
       throw new BadRequestException(
         `Solo se puede entregar un préstamo en estado APROBADO. Estado actual: ${prestamo.estado}`,
       );
+    }
+
+    // Marcar cada material_item como PRESTADO
+    const items = await this.prestamoItemRepository.findByPrestamo(id);
+    for (const pi of items) {
+      if (pi.materialItemId) {
+        await this.materialItemRepository.update(pi.materialItemId, {
+          estado: Material_itemEstado.PRESTADO,
+        });
+      }
+    }
+
+    // Descontar stock de cada consumible (cantidadAprobada tiene prioridad)
+    const consumibles = await this.findConsumiblesByPrestamo.execute(id);
+    for (const pc of consumibles) {
+      if (pc.materialConsumibleId) {
+        const consumible = await this.findOneConsumible.execute(pc.materialConsumibleId);
+        const cantidad   = Number(pc.cantidadAprobada ?? pc.cantidadSolicitada ?? 0);
+        const nuevoStock = Math.max(0, Number(consumible.stockActual) - cantidad);
+        await this.updateConsumible.execute(pc.materialConsumibleId, { stockActual: nuevoStock });
+      }
     }
 
     return this.prestamoRepository.update(id, {

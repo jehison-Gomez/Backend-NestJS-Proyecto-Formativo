@@ -18,13 +18,16 @@ import { DeliverPrestamoUseCase }         from './application/use-cases/deliver-
 import { ReturnPrestamoUseCase }          from './application/use-cases/return-prestamo.use-case';
 import { CambiarUbicacionMaterialUseCase } from './application/use-cases/cambiar-ubicacion-material.use-case';
 
-import { UsuariosModule }          from 'src/usuarios/usuarios.module';
-import { FichasModule }            from 'src/fichas/fichas.module';
-import { Material_itemModule }     from 'src/material_item/material_item.module';
-import { Material_ubicacionModule } from 'src/material_ubicacion/material_ubicacion.module';
-import { MaterialesModule }        from 'src/materiales/materiales.module';
-import { AuthModule }              from 'src/auth/auth.module';
-import { NotificacionesModule }    from 'src/notificaciones/notificaciones.module';
+import { UsuariosModule }               from 'src/usuarios/usuarios.module';
+import { FichasModule }                from 'src/fichas/fichas.module';
+import { Material_itemModule }         from 'src/material_item/material_item.module';
+import { Material_ubicacionModule }    from 'src/material_ubicacion/material_ubicacion.module';
+import { MaterialesModule }            from 'src/materiales/materiales.module';
+import { AuthModule }                  from 'src/auth/auth.module';
+import { NotificacionesModule }        from 'src/notificaciones/notificaciones.module';
+import { PrestamoItemModule }          from 'src/prestamo_item/prestamo_item.module';
+import { PrestamoConsumibleModule }    from 'src/prestamo_consumible/prestamo_consumible.module';
+import { Material_consumibleModule }   from 'src/material_consumible/material_consumible.module';
 
 const USE_CASES = [
   CreatePrestamoUseCase,
@@ -50,6 +53,9 @@ const USE_CASES = [
     MaterialesModule,
     AuthModule,
     NotificacionesModule,
+    PrestamoItemModule,
+    PrestamoConsumibleModule,
+    Material_consumibleModule,
   ],
   controllers: [PrestamosController],
   providers: [

@@ -5,6 +5,7 @@ import { LoginDto } from '../../application/dto/login.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import type { JwtPayload } from '../decorators/current-user.decorator';
+import { Public } from '../decorators/public.decorator';
 
 const COOKIE_NAME = 'access_token';
 const COOKIE_MAX_AGE = 8 * 60 * 60 * 1000; // 8 horas en ms
@@ -13,6 +14,7 @@ const COOKIE_MAX_AGE = 8 * 60 * 60 * 1000; // 8 horas en ms
 export class AuthController {
   constructor(private readonly loginUseCase: LoginUseCase) {}
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
@@ -41,6 +43,7 @@ export class AuthController {
     };
   }
 
+  @Public()
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response): { message: string } {
