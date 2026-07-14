@@ -6,6 +6,4 @@ export abstract class UsuarioPermisoRepository {
   abstract findOne(id: string): Promise<UsuarioPermiso | null>;
   abstract findByUsuario(usuarioId: string): Promise<UsuarioPermiso[]>;
   abstract remove(id: string): Promise<void>;
-  abstract removeByUsuarioId(usuarioId: string): Promise<void>;
-  abstract createBulk(usuarioId: string, permisosIds: string[]): Promise<UsuarioPermiso[]>;
 }

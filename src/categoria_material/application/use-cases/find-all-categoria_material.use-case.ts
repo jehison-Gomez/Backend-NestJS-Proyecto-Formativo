@@ -6,7 +6,7 @@ import { Categoria_material } from '../../domain/categoria_material.entity';
 export class FindAllCategoria_materialUseCase {
   constructor(private readonly categoria_materialRepository: Categoria_materialRepository) {}
 
-  async execute(): Promise<Categoria_material[]> {
-    return this.categoria_materialRepository.findAll();
+  async execute(sedeId?: string | null): Promise<Categoria_material[]> {
+    return this.categoria_materialRepository.findAll(sedeId);
   }
 }

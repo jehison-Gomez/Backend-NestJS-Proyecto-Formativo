@@ -4,19 +4,17 @@ import { RejectPrestamoDto } from '../dto/reject-prestamo.dto';
 import { Prestamo } from '../../domain/prestamo.entity';
 import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
 import { FindOneUsuarioUseCase } from 'src/usuarios/application/use-cases/find-one-usuario.use-case';
-import { FindByPrestamoPrestamoItemUseCase } from 'src/prestamo_item/application/use-cases/find-by-prestamo-prestamo_item.use-case';
-import { Material_itemRepository } from 'src/material_item/domain/material_item.repository';
-import { Material_itemEstado } from 'src/material_item/domain/material_item-estado.enum';
-import { NotificacionesService } from 'src/notificaciones/notificaciones.service';
+import { CreateNotificacionUseCase } from 'src/notificaciones/application/use-cases/create-notificacion.use-case';
+import { NotificacionTipo } from 'src/notificaciones/domain/notificacion-tipo.enum';
+import { CreatePrestamoHistorialUseCase } from 'src/prestamo_historial/application/use-cases/create-prestamo_historial.use-case';
 
 @Injectable()
 export class RejectPrestamoUseCase {
   constructor(
-    private readonly prestamoRepository:        PrestamoRepository,
-    private readonly findOneUsuario:             FindOneUsuarioUseCase,
-    private readonly findByPrestamoPrestamoItem: FindByPrestamoPrestamoItemUseCase,
-    private readonly materialItemRepository:     Material_itemRepository,
-    private readonly notificaciones:             NotificacionesService,
+    private readonly prestamoRepository: PrestamoRepository,
+    private readonly findOneUsuario: FindOneUsuarioUseCase,
+    private readonly createNotificacion: CreateNotificacionUseCase,
+    private readonly createHistorial: CreatePrestamoHistorialUseCase,
   ) {}
 
   async execute(id: string, dto: RejectPrestamoDto): Promise<Prestamo> {
@@ -27,11 +25,6 @@ export class RejectPrestamoUseCase {
       throw new BadRequestException(
         `Solo se puede rechazar un préstamo en estado PENDIENTE o MODIFICADO. Estado actual: ${prestamo.estado}`,
       );
-    }
-
-    const items = await this.findByPrestamoPrestamoItem.execute(id);
-    for (const item of items) {
-      await this.materialItemRepository.update(item.materialItemId, { estado: Material_itemEstado.DISPONIBLE });
     }
 
     const partial: Partial<Prestamo> = {
@@ -45,17 +38,27 @@ export class RejectPrestamoUseCase {
     const updated = await this.prestamoRepository.update(id, partial);
 
     // Notificar al solicitante
-    if (prestamo.solicitante?.id) {
-      const motivo = dto.observacionRevision ? ` Motivo: ${dto.observacionRevision}` : ''
-      await this.notificaciones.crearParaUsuario(
-        prestamo.solicitante.id,
-        'Préstamo rechazado',
-        `Tu solicitud "${prestamo.motivo}" fue rechazada.${motivo}`,
-        'prestamo_rechazado',
-        id,
-        '/app/mis-prestamos',
-      ).catch(() => {});
-    }
+    try {
+      if (prestamo.solicitante?.id) {
+        await this.createNotificacion.execute({
+          destinatarioId: prestamo.solicitante.id,
+          tipo:           NotificacionTipo.PRESTAMO_RECHAZADO,
+          titulo:         'Tu préstamo fue rechazado',
+          mensaje:        `Tu solicitud de préstamo ha sido rechazada.${dto.observacionRevision ? ' Motivo: ' + dto.observacionRevision : ''}`,
+          ruta:           '/app/prestamos',
+        });
+      }
+    } catch { /* no interrumpir si falla la notificación */ }
+
+    try {
+      await this.createHistorial.execute({
+        prestamoId:     id,
+        estadoAnterior: prestamo.estado,
+        estadoNuevo:    PrestamoEstado.RECHAZADO,
+        usuarioId:      dto.revisadoPorId ?? null,
+        observacion:    dto.observacionRevision ?? null,
+      });
+    } catch { /* no interrumpir si falla el historial */ }
 
     return updated;
   }

@@ -14,7 +14,7 @@ export class RoleOrmEntity {
   @Column({ type: 'text' })
   descripcion: string;
 
-  @Column({ type: 'int', name: 'nivel_acceso', default: 0 })
+  @Column({ type: 'int', name: 'nivel_acceso' })
   nivelAcceso: number;
 
   @Column({ type: 'enum', enum: RoleEstado, default: RoleEstado.ACTIVO })

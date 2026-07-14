@@ -13,16 +13,7 @@ export class UpdateCategoria_materialUseCase {
     if (!exists) throw new NotFoundException(`Categoria_material #${id} no encontrado`);
 
     try {
-      const partial: Partial<Categoria_material> = {
-        ...(dto.nombre !== undefined && { nombre: dto.nombre }),
-        ...(dto.descripcion !== undefined && { descripcion: dto.descripcion }),
-        ...(dto.nivel !== undefined && { nivel: dto.nivel }),
-        ...(dto.estado !== undefined && { estado: dto.estado }),
-        ...(dto.categoriaPadreId !== undefined && {
-          categoriaPadre: dto.categoriaPadreId ? ({ id: dto.categoriaPadreId } as any) : null,
-        }),
-      };
-      return await this.categoria_materialRepository.update(id, partial);
+      return await this.categoria_materialRepository.update(id, dto);
     } catch (error) {
       handleDbErrors(error);
     }

@@ -10,13 +10,7 @@ export class CreateCategoria_materialUseCase {
 
   async execute(dto: CreateCategoria_materialDto): Promise<Categoria_material> {
     try {
-      const categoria_material = new Categoria_material({
-        nombre:          dto.nombre,
-        descripcion:     dto.descripcion,
-        nivel:           dto.nivel ?? 1,
-        estado:          dto.estado,
-        categoriaPadre:  dto.categoriaPadreId ? { id: dto.categoriaPadreId } as any : null,
-      });
+      const categoria_material = new Categoria_material({ ...dto });
       return await this.categoria_materialRepository.create(categoria_material);
     } catch (error) {
       handleDbErrors(error);

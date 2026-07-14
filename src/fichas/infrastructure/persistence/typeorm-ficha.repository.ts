@@ -87,6 +87,17 @@ export class TypeOrmFichaRepository implements FichaRepository {
     return found ? this.toDomain(found) : null;
   }
 
+  async findSedeIdByFichaId(fichaId: string): Promise<string | null> {
+    const result = await this.repo.createQueryBuilder('ficha')
+      .leftJoin('ficha.programa', 'programa')
+      .leftJoin('programa.area', 'area')
+      .leftJoin('area.sede', 'sede')
+      .select('sede.id', 'sedeId')
+      .where('ficha.id = :fichaId', { fichaId })
+      .getRawOne();
+    return result?.sedeId ?? null;
+  }
+
   async update(id: string, ficha: Partial<Ficha>): Promise<Ficha> {
     await this.repo.update(id, this.toOrm(ficha));
     const result = await this.findOne(id);

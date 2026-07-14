@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum, MinLength, IsInt, Min, IsArray, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum, MinLength, IsInt, Min } from 'class-validator';
 import { RoleEstado } from '../../domain/role-estado.enum';
 
 export class CreateRoleDto {
@@ -18,9 +18,4 @@ export class CreateRoleDto {
   @IsOptional()
   @IsEnum(RoleEstado)
   estado?: RoleEstado;
-
-  @IsOptional()
-  @IsArray()
-  @IsUUID('4', { each: true })
-  permisosIds?: string[];
 }

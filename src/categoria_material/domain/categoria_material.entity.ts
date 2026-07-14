@@ -5,11 +5,9 @@ export class Categoria_material {
   id: string;
   nombre: string;
   descripcion: string;
-  nivel?: number;
   estado: Categoria_materialEstado;
+  sedeId?: string | null;
   materiales?: Materiale[];
-  categoriaPadre?: Categoria_material | null;
-  subcategorias?: Categoria_material[];
   creadoEn: Date;
   actualizadoEn: Date;
 

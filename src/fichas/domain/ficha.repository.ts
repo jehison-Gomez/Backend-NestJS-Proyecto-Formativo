@@ -6,4 +6,5 @@ export abstract class FichaRepository {
   abstract findOne(id: string): Promise<Ficha | null>;
   abstract update(id: string, ficha: Partial<Ficha>): Promise<Ficha>;
   abstract remove(id: string): Promise<void>;
+  abstract findSedeIdByFichaId(fichaId: string): Promise<string | null>;
 }

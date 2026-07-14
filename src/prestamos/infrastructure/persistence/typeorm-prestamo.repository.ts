@@ -6,12 +6,14 @@ import { Prestamo } from '../../domain/prestamo.entity';
 import { PrestamoOrmEntity } from './prestamo.orm-entity';
 import { Usuario } from 'src/usuarios/domain/usuario.entity';
 import { Ficha } from 'src/fichas/domain/ficha.entity';
+import { TenantContext } from 'src/tenant/tenant.context';
 
 @Injectable()
 export class TypeOrmPrestamoRepository implements PrestamoRepository {
   constructor(
     @InjectRepository(PrestamoOrmEntity)
     private readonly repo: Repository<PrestamoOrmEntity>,
+    private readonly tenantContext: TenantContext,
   ) {}
 
   private toDomain(orm: PrestamoOrmEntity): Prestamo {
@@ -86,20 +88,36 @@ export class TypeOrmPrestamoRepository implements PrestamoRepository {
   }
 
   async findAll(sedeId?: string | null): Promise<Prestamo[]> {
+    const centroId = this.tenantContext.getCentroId();
     const query = this.repo.createQueryBuilder('prestamo')
-      .leftJoinAndSelect('prestamo.solicitante',   'solicitante')
-      .leftJoinAndSelect('prestamo.ficha',         'ficha')
+      .leftJoinAndSelect('prestamo.solicitante', 'solicitante')
+      .leftJoinAndSelect('prestamo.ficha', 'ficha')
       .leftJoinAndSelect('prestamo.beneficiarios', 'beneficiarios')
-      .leftJoinAndSelect('prestamo.revisadoPor',   'revisadoPor')
+      .leftJoinAndSelect('prestamo.revisadoPor', 'revisadoPor')
       .leftJoin('ficha.programa', 'programa')
       .leftJoin('programa.area', 'area')
-      .leftJoin('area.sede', 'sede');
+      .leftJoin('area.sede', 'sede')
+      .leftJoin('sede.centro', 'centro');
 
+    if (centroId) {
+      query.andWhere('centro.id = :centroId', { centroId });
+    }
     if (sedeId !== undefined) {
-      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+      query.andWhere(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
     }
 
     const list = await query.getMany();
+    return list.map(this.toDomain.bind(this));
+  }
+
+  async findOverdue(): Promise<Prestamo[]> {
+    const activeStates = ['PENDIENTE', 'APROBADO', 'MODIFICADO', 'ENTREGADO'];
+    const list = await this.repo.createQueryBuilder('prestamo')
+      .leftJoinAndSelect('prestamo.solicitante', 'solicitante')
+      .leftJoinAndSelect('prestamo.ficha',       'ficha')
+      .where('prestamo.fechaFin < CURRENT_DATE')
+      .andWhere('prestamo.estado IN (:...estados)', { estados: activeStates })
+      .getMany();
     return list.map(this.toDomain.bind(this));
   }
 
@@ -113,6 +131,32 @@ export class TypeOrmPrestamoRepository implements PrestamoRepository {
       .orWhere('beneficiarios.id = :usuarioId', { usuarioId })
       .orderBy('prestamo.creadoEn', 'DESC')
       .getMany();
+    return list.map(this.toDomain.bind(this));
+  }
+
+  async findByEncargado(userId: string): Promise<Prestamo[]> {
+    const rows: Array<{ id: string }> = await this.repo.manager.query(`
+      SELECT DISTINCT p.id
+      FROM prestamos p
+      INNER JOIN prestamo_item pi ON pi.prestamo_id = p.id
+      INNER JOIN material_item mi ON mi.id = pi.material_item_id
+      INNER JOIN materiales mat ON mat.id = mi.materiale_id
+      INNER JOIN ubicacion ub ON ub.id = mat.ubicacion_id
+      WHERE ub.encargado_id = $1
+    `, [userId]);
+
+    if (!rows.length) return [];
+
+    const ids = rows.map(r => r.id);
+    const list = await this.repo.createQueryBuilder('prestamo')
+      .leftJoinAndSelect('prestamo.solicitante', 'solicitante')
+      .leftJoinAndSelect('prestamo.ficha', 'ficha')
+      .leftJoinAndSelect('prestamo.beneficiarios', 'beneficiarios')
+      .leftJoinAndSelect('prestamo.revisadoPor', 'revisadoPor')
+      .where('prestamo.id IN (:...ids)', { ids })
+      .orderBy('prestamo.creadoEn', 'DESC')
+      .getMany();
+
     return list.map(this.toDomain.bind(this));
   }
 

@@ -18,29 +18,18 @@ export class TypeOrmCategoria_materialRepository implements Categoria_materialRe
       nombre: orm.nombre,
       descripcion: orm.descripcion,
       estado: orm.estado,
-      nivel: orm.nivel,
-      categoriaPadre: orm.categoriaPadre
-        ? new Categoria_material({
-            id: orm.categoriaPadre.id,
-            nombre: orm.categoriaPadre.nombre,
-          })
-        : null,
+      sedeId: orm.sede?.id ?? null,
       creadoEn: orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
   }
 
-  private toOrm(categoria_material: Partial<Categoria_material> & { categoriaPadreId?: string }): Partial<Categoria_materialOrmEntity> {
+  private toOrm(categoria_material: Partial<Categoria_material>): Partial<Categoria_materialOrmEntity> {
     return {
       ...(categoria_material.nombre !== undefined && { nombre: categoria_material.nombre }),
       ...(categoria_material.descripcion !== undefined && { descripcion: categoria_material.descripcion }),
       ...(categoria_material.estado !== undefined && { estado: categoria_material.estado }),
-      ...(categoria_material.nivel !== undefined && { nivel: categoria_material.nivel }),
-      ...(categoria_material.categoriaPadre !== undefined && {
-        categoriaPadre: categoria_material.categoriaPadre
-          ? ({ id: categoria_material.categoriaPadre.id } as Categoria_materialOrmEntity)
-          : null,
-      }),
+      ...(categoria_material.sedeId !== undefined && { sede: categoria_material.sedeId ? { id: categoria_material.sedeId } as any : null }),
     };
   }
 
@@ -51,15 +40,21 @@ export class TypeOrmCategoria_materialRepository implements Categoria_materialRe
     return result!;
   }
 
-  async findAll(): Promise<Categoria_material[]> {
-    const list = await this.repo.find({ relations: ['categoriaPadre'] });
+  async findAll(sedeId?: string | null): Promise<Categoria_material[]> {
+    const query = this.repo.createQueryBuilder('cat')
+      .leftJoinAndSelect('cat.sede', 'sede');
+
+    if (sedeId !== undefined) {
+      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 
   async findOne(id: string): Promise<Categoria_material | null> {
     const found = await this.repo.findOne({
-      where: { id },
-      relations: ['categoriaPadre'],
+      where: { id }
     });
     return found ? this.toDomain(found) : null;
   }

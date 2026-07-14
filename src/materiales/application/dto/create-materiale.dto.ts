@@ -19,11 +19,7 @@ export class CreateMaterialeDto {
 
   @IsOptional()
   @IsString()
-  marca?: string;
-
-  @IsOptional()
-  @IsString()
-  modelo?: string;
+  codigoUnspsc?: string;
 
   @IsOptional()
   @IsEnum(MaterialeEstado)
@@ -33,9 +29,9 @@ export class CreateMaterialeDto {
   @IsNotEmpty()
   categoriaMaterialId: string;
 
+  @IsOptional()
   @IsUUID('4')
-  @IsNotEmpty()
-  fichaId: string;
+  fichaId?: string;
 
   @IsEnum(TipoMateriale)
   @IsNotEmpty()

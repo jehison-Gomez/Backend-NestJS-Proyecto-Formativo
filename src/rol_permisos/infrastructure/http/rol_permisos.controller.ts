@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { CreateRol_permisoUseCase }    from '../../application/use-cases/create-rol_permiso.use-case';
 import { FindAllRol_permisosUseCase }  from '../../application/use-cases/find-all-rol_permisos.use-case';
 import { FindOneRol_permisoUseCase }   from '../../application/use-cases/find-one-rol_permiso.use-case';
@@ -6,9 +6,8 @@ import { UpdateRol_permisoUseCase }    from '../../application/use-cases/update-
 import { RemoveRol_permisoUseCase }    from '../../application/use-cases/remove-rol_permiso.use-case';
 import { CreateRol_permisoDto }        from '../../application/dto/create-rol_permiso.dto';
 import { UpdateRol_permisoDto }        from '../../application/dto/update-rol_permiso.dto';
-import { Rol_permisoRepository }       from '../../domain/rol_permiso.repository';
 
-@Controller('rol-permisos')
+@Controller('rol_permisos')
 export class Rol_permisosController {
   constructor(
     private readonly createRol_permisoUseCase:   CreateRol_permisoUseCase,
@@ -16,7 +15,6 @@ export class Rol_permisosController {
     private readonly findOneRol_permisoUseCase:  FindOneRol_permisoUseCase,
     private readonly updateRol_permisoUseCase:   UpdateRol_permisoUseCase,
     private readonly removeRol_permisoUseCase:   RemoveRol_permisoUseCase,
-    private readonly rolPermisoRepository:       Rol_permisoRepository,
   ) {}
 
   @Post()
@@ -25,10 +23,7 @@ export class Rol_permisosController {
   }
 
   @Get()
-  findAll(@Query('roleId') roleId?: string) {
-    if (roleId) {
-      return this.rolPermisoRepository.findByRoleId(roleId);
-    }
+  findAll() {
     return this.findAllRol_permisosUseCase.execute();
   }
 

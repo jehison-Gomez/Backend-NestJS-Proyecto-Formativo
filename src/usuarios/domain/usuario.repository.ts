@@ -24,6 +24,7 @@ export abstract class UsuarioRepository {
   abstract findWithFilters(filters: UsuarioFilters): Promise<UsuariosPaginados>;
   abstract findOne(id: string): Promise<Usuario | null>;
   abstract findByCorreo(correo: string): Promise<Usuario | null>;
+  abstract findAdminsBySedeId(sedeId: string): Promise<Usuario[]>;
   abstract update(id: string, usuario: Partial<Usuario>): Promise<Usuario>;
   abstract remove(id: string): Promise<void>;
 }

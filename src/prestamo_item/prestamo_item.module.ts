@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Material_itemModule } from 'src/material_item/material_item.module';
+import { UbicacionModule } from 'src/ubicacion/ubicacion.module';
+import { NotificacionesModule } from 'src/notificaciones/notificaciones.module';
 
 import { PrestamoItemOrmEntity }              from './infrastructure/persistence/prestamo_item.orm-entity';
 import { TypeOrmPrestamoItemRepository }      from './infrastructure/persistence/typeorm-prestamo_item.repository';
@@ -11,7 +14,6 @@ import { FindOnePrestamoItemUseCase }         from './application/use-cases/find
 import { FindByPrestamoPrestamoItemUseCase }  from './application/use-cases/find-by-prestamo-prestamo_item.use-case';
 import { UpdatePrestamoItemUseCase }          from './application/use-cases/update-prestamo_item.use-case';
 import { RemovePrestamoItemUseCase }          from './application/use-cases/remove-prestamo_item.use-case';
-import { Material_itemModule }                from 'src/material_item/material_item.module';
 
 const USE_CASES = [
   CreatePrestamoItemUseCase,
@@ -23,7 +25,12 @@ const USE_CASES = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PrestamoItemOrmEntity]), Material_itemModule],
+  imports: [
+    TypeOrmModule.forFeature([PrestamoItemOrmEntity]),
+    Material_itemModule,
+    UbicacionModule,
+    NotificacionesModule,
+  ],
   controllers: [PrestamoItemController],
   providers: [
     ...USE_CASES,

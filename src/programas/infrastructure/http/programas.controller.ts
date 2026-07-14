@@ -1,4 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 import { CreateProgramaUseCase }    from '../../application/use-cases/create-programa.use-case';
 import { FindAllProgramasUseCase }  from '../../application/use-cases/find-all-programas.use-case';
 import { FindOneProgramaUseCase }   from '../../application/use-cases/find-one-programa.use-case';
@@ -7,6 +10,7 @@ import { RemoveProgramaUseCase }    from '../../application/use-cases/remove-pro
 import { CreateProgramaDto }        from '../../application/dto/create-programa.dto';
 import { UpdateProgramaDto }        from '../../application/dto/update-programa.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('programas')
 export class ProgramasController {
   constructor(
@@ -23,8 +27,9 @@ export class ProgramasController {
   }
 
   @Get()
-  findAll() {
-    return this.findAllProgramasUseCase.execute();
+  findAll(@CurrentUser() user: JwtPayload) {
+    const sedeId = user.rol === 'super_admin' ? undefined : user.sedeId;
+    return this.findAllProgramasUseCase.execute(sedeId);
   }
 
   @Get(':id')

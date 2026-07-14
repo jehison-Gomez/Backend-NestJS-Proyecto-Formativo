@@ -1,6 +1,5 @@
 import { IsString, IsNotEmpty, IsOptional, IsEnum, MinLength, IsEmail, IsUUID, IsArray } from 'class-validator';
 import { UsuarioEstado } from '../../domain/usuario-estado.enum';
-import { TipoDocumento } from '../../domain/tipo-documento.enum';
 
 export class CreateUsuarioDto {
   @IsString({ message: 'El nombre debe ser texto' })
@@ -26,10 +25,6 @@ export class CreateUsuarioDto {
   numeroDocumento: string;
 
   @IsOptional()
-  @IsEnum(TipoDocumento, { message: 'Tipo de documento inválido (CC, TI, CE, PP)' })
-  tipoDocumento?: TipoDocumento;
-
-  @IsOptional()
   @IsEnum(UsuarioEstado)
   estado?: UsuarioEstado;
 
@@ -47,6 +42,10 @@ export class CreateUsuarioDto {
 
   @IsOptional()
   @IsArray()
-  @IsUUID('4', { each: true })
+  @IsUUID('4', { each: true, message: 'Cada permiso debe ser un UUID válido' })
   permisosAdicionalesIds?: string[];
+
+  @IsOptional()
+  @IsString()
+  tipoDocumento?: string;
 }

@@ -1,6 +1,5 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { UsuarioEstado } from '../../domain/usuario-estado.enum';
-import { TipoDocumento } from '../../domain/tipo-documento.enum';
 import * as bcrypt from 'bcryptjs';
 import { FichaOrmEntity } from 'src/fichas/infrastructure/persistence/ficha.orm-entity';
 import { RoleOrmEntity } from 'src/roles/infrastructure/persistence/role.orm-entity';
@@ -26,9 +25,6 @@ export class UsuarioOrmEntity {
 
   @Column({ type: 'varchar', length: 20, unique: true, name: 'numero_documento' })
   numeroDocumento: string;
-
-  @Column({ type: 'enum', enum: TipoDocumento, nullable: true, name: 'tipo_documento' })
-  tipoDocumento: TipoDocumento | null;
 
   @Column({ type: 'enum', enum: UsuarioEstado, default: UsuarioEstado.ACTIVO })
   estado: UsuarioEstado;
@@ -56,9 +52,12 @@ export class UsuarioOrmEntity {
   @JoinColumn({ name: 'role_id' })
   role: RoleOrmEntity;
 
-  @ManyToOne(() => SedeOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
+  @ManyToOne(() => SedeOrmEntity, {
+    nullable: true,
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'sede_id' })
-  sede: SedeOrmEntity | null;
+  sede: SedeOrmEntity;
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;

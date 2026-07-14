@@ -18,15 +18,14 @@ export class CreateMaterialeUseCase {
 
   async execute(dto: CreateMaterialeDto): Promise<Materiale> {
     const categoriaMaterial = await this.findOneCategoriaMaterial.execute(dto.categoriaMaterialId);
-    const ficha             = await this.findOneFicha.execute(dto.fichaId);
+    const ficha             = dto.fichaId ? await this.findOneFicha.execute(dto.fichaId) : undefined;
     const ubicacion         = dto.ubicacionId ? await this.findOneUbicacion.execute(dto.ubicacionId) : undefined;
 
     const materiale = new Materiale({
       nombre:          dto.nombre,
       descripcion:     dto.descripcion,
       sku:             dto.sku ?? null,
-      marca:           dto.marca ?? null,
-      modelo:          dto.modelo ?? null,
+      codigoUnspsc:    dto.codigoUnspsc ?? null,
       tipo:            dto.tipo,
       estado:          dto.estado,
       categoriaMaterial,

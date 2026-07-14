@@ -8,6 +8,7 @@ import { Tipo_ubicacionController }                from './infrastructure/http/t
 
 // Domain
 import { Tipo_ubicacionRepository }              from './domain/tipo_ubicacion.repository';
+import { AuthModule }                            from 'src/auth/auth.module';
 
 // Use Cases
 import { CreateTipo_ubicacionUseCase }           from './application/use-cases/create-tipo_ubicacion.use-case';
@@ -25,7 +26,7 @@ const USE_CASES = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Tipo_ubicacionOrmEntity])],
+  imports: [TypeOrmModule.forFeature([Tipo_ubicacionOrmEntity]), AuthModule],
   controllers: [Tipo_ubicacionController],
   providers: [
     ...USE_CASES,

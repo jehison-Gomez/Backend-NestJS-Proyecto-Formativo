@@ -6,7 +6,7 @@ import { Movimiento } from '../../domain/movimiento.entity';
 export class FindAllMovimientosUseCase {
   constructor(private readonly movimientoRepository: MovimientoRepository) {}
 
-  async execute(): Promise<Movimiento[]> {
-    return this.movimientoRepository.findAll();
+  async execute(sedeId?: string | null): Promise<Movimiento[]> {
+    return this.movimientoRepository.findAll(sedeId);
   }
 }

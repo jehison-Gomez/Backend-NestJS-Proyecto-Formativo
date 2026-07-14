@@ -7,21 +7,24 @@ import { MaterialeOrmEntity } from './materiale.orm-entity';
 import { Categoria_material } from 'src/categoria_material/domain/categoria_material.entity';
 import { Ficha } from 'src/fichas/domain/ficha.entity';
 import { Ubicacion } from 'src/ubicacion/domain/ubicacion.entity';
+import { TenantContext } from 'src/tenant/tenant.context';
 
 @Injectable()
 export class TypeOrmMaterialeRepository implements MaterialeRepository {
   constructor(
     @InjectRepository(MaterialeOrmEntity)
     private readonly repo: Repository<MaterialeOrmEntity>,
+    private readonly tenantContext: TenantContext,
   ) {}
 
   private toDomain(orm: MaterialeOrmEntity): Materiale {
     return new Materiale({
-      id:           orm.id,
-      nombre:       orm.nombre,
-      descripcion:  orm.descripcion,
-      sku:          orm.sku,
-      tipo:         orm.tipo,
+      id:            orm.id,
+      nombre:        orm.nombre,
+      descripcion:   orm.descripcion,
+      sku:           orm.sku,
+      codigoUnspsc:  orm.codigoUnspsc,
+      tipo:          orm.tipo,
       estado:       orm.estado,
       categoriaMaterial: orm.categoriaMaterial ? new Categoria_material({
         id:          orm.categoriaMaterial.id,
@@ -52,6 +55,7 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
       ...(materiale.nombre            !== undefined && { nombre:            materiale.nombre }),
       ...(materiale.descripcion       !== undefined && { descripcion:       materiale.descripcion }),
       ...(materiale.sku               !== undefined && { sku:               materiale.sku }),
+      ...(materiale.codigoUnspsc      !== undefined && { codigoUnspsc:      materiale.codigoUnspsc }),
       ...(materiale.tipo              !== undefined && { tipo:              materiale.tipo }),
       ...(materiale.estado            !== undefined && { estado:            materiale.estado }),
       ...(materiale.categoriaMaterial !== undefined && { categoriaMaterial: { id: materiale.categoriaMaterial.id } as any }),
@@ -67,16 +71,27 @@ export class TypeOrmMaterialeRepository implements MaterialeRepository {
   }
 
   async findAll(sedeId?: string | null): Promise<Materiale[]> {
+    const centroId = this.tenantContext.getCentroId();
     const query = this.repo.createQueryBuilder('m')
       .leftJoinAndSelect('m.categoriaMaterial', 'categoriaMaterial')
       .leftJoinAndSelect('m.ficha', 'ficha')
       .leftJoinAndSelect('m.ubicacion', 'ubicacion')
       .leftJoin('ficha.programa', 'programa')
       .leftJoin('programa.area', 'area')
-      .leftJoin('area.sede', 'sede');
+      .leftJoin('area.sede', 'sede')
+      .leftJoin('sede.centro', 'centro');
 
+    if (centroId) {
+      // Incluir materiales de este centro O materiales sin ficha asignada
+      query.andWhere('(centro.id = :centroId OR ficha.id IS NULL)', { centroId });
+    }
     if (sedeId !== undefined) {
-      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+      if (sedeId) {
+        // Incluir materiales de esta sede O materiales sin ficha asignada
+        query.andWhere('(sede.id = :sedeId OR ficha.id IS NULL)', { sedeId });
+      } else {
+        query.andWhere('1 = 0');
+      }
     }
 
     const list = await query.getMany();

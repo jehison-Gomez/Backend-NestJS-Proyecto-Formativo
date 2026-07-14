@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { CreateAreaUseCase }    from '../../application/use-cases/create-area.use-case';
 import { FindAllAreasUseCase }  from '../../application/use-cases/find-all-areas.use-case';
 import { FindOneAreaUseCase }   from '../../application/use-cases/find-one-area.use-case';
@@ -8,7 +8,9 @@ import { CreateAreaDto }        from '../../application/dto/create-area.dto';
 import { UpdateAreaDto }        from '../../application/dto/update-area.dto';
 import { CurrentUser } from 'src/auth/infrastructure/decorators/current-user.decorator';
 import type { JwtPayload } from 'src/auth/infrastructure/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('areas')
 export class AreasController {
   constructor(
@@ -20,7 +22,10 @@ export class AreasController {
   ) {}
 
   @Post()
-  create(@Body() dto: CreateAreaDto) {
+  create(@Body() dto: CreateAreaDto, @CurrentUser() user: JwtPayload) {
+    if (user.rol !== 'super_admin' && user.sedeId) {
+      dto.sedeId = user.sedeId;
+    }
     return this.createAreaUseCase.execute(dto);
   }
 

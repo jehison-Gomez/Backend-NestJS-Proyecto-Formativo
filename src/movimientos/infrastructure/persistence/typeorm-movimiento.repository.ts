@@ -30,16 +30,8 @@ export class TypeOrmMovimientoRepository implements MovimientoRepository {
         estado:        orm.prestamo.estado,
       }) : null,
       devolucion:         orm.devolucion         ? { id: orm.devolucion.id }         as any : null,
-      materialItem:       orm.materialItem        ? {
-        id: orm.materialItem.id,
-        codigoSena: orm.materialItem.codigoSena,
-        materiale: orm.materialItem.materiale ? { id: orm.materialItem.materiale.id, nombre: orm.materialItem.materiale.nombre } : undefined,
-      } as any : null,
-      materialConsumible: orm.materialConsumible  ? {
-        id: orm.materialConsumible.id,
-        unidadMedida: orm.materialConsumible.unidadMedida,
-        materiale: orm.materialConsumible.materiale ? { id: orm.materialConsumible.materiale.id, nombre: orm.materialConsumible.materiale.nombre } : undefined,
-      } as any : null,
+      materialItem:       orm.materialItem        ? { id: orm.materialItem.id }       as any : null,
+      materialConsumible: orm.materialConsumible  ? { id: orm.materialConsumible.id } as any : null,
       usuario: orm.usuario ? new Usuario({ id: orm.usuario.id, nombre: orm.usuario.nombre }) : null,
       creadoEn:      orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
@@ -60,12 +52,7 @@ export class TypeOrmMovimientoRepository implements MovimientoRepository {
     };
   }
 
-  private readonly RELATIONS = [
-    'prestamo', 'devolucion',
-    'materialItem', 'materialItem.materiale',
-    'materialConsumible', 'materialConsumible.materiale',
-    'usuario',
-  ];
+  private readonly RELATIONS = ['prestamo', 'devolucion', 'materialItem', 'materialConsumible', 'usuario'];
 
   async create(movimiento: Movimiento): Promise<Movimiento> {
     const ormEntity = this.repo.create(this.toOrm(movimiento));
@@ -73,8 +60,35 @@ export class TypeOrmMovimientoRepository implements MovimientoRepository {
     return (await this.findOne(saved.id))!;
   }
 
-  async findAll(): Promise<Movimiento[]> {
-    const list = await this.repo.find({ relations: this.RELATIONS });
+  async findAll(sedeId?: string | null): Promise<Movimiento[]> {
+    const query = this.repo.createQueryBuilder('movimiento')
+      .leftJoinAndSelect('movimiento.prestamo',           'prestamo')
+      .leftJoinAndSelect('movimiento.devolucion',         'devolucion')
+      .leftJoinAndSelect('movimiento.materialItem',       'mi')
+      .leftJoinAndSelect('movimiento.materialConsumible', 'mc')
+      .leftJoinAndSelect('movimiento.usuario',            'usuario')
+      // cadena sede via materialItem
+      .leftJoin('mi.materiale',     'mat_i')
+      .leftJoin('mat_i.ficha',      'ficha_i')
+      .leftJoin('ficha_i.programa', 'prog_i')
+      .leftJoin('prog_i.area',      'area_i')
+      .leftJoin('area_i.sede',      'sede_i')
+      // cadena sede via materialConsumible
+      .leftJoin('mc.materiale',     'mat_c')
+      .leftJoin('mat_c.ficha',      'ficha_c')
+      .leftJoin('ficha_c.programa', 'prog_c')
+      .leftJoin('prog_c.area',      'area_c')
+      .leftJoin('area_c.sede',      'sede_c');
+
+    if (sedeId !== undefined) {
+      if (sedeId) {
+        query.where('(sede_i.id = :sedeId OR sede_c.id = :sedeId)', { sedeId });
+      } else {
+        query.where('1 = 0');
+      }
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

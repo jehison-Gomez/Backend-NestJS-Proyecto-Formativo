@@ -5,13 +5,13 @@ import { MovimientoOrmEntity }               from './infrastructure/persistence/
 import { TypeOrmMovimientoRepository }       from './infrastructure/persistence/typeorm-movimiento.repository';
 import { MovimientosController }             from './infrastructure/http/movimientos.controller';
 import { MovimientoRepository }              from './domain/movimiento.repository';
+import { AuthModule }                        from 'src/auth/auth.module';
 
 import { CreateMovimientoUseCase }           from './application/use-cases/create-movimiento.use-case';
 import { FindAllMovimientosUseCase }         from './application/use-cases/find-all-movimientos.use-case';
 import { FindOneMovimientoUseCase }          from './application/use-cases/find-one-movimiento.use-case';
 import { UpdateMovimientoUseCase }           from './application/use-cases/update-movimiento.use-case';
 import { RemoveMovimientoUseCase }           from './application/use-cases/remove-movimiento.use-case';
-import { KardexModule }                      from 'src/kardex/kardex.module';
 
 const USE_CASES = [
   CreateMovimientoUseCase,
@@ -22,10 +22,7 @@ const USE_CASES = [
 ];
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([MovimientoOrmEntity]),
-    KardexModule,
-  ],
+  imports: [TypeOrmModule.forFeature([MovimientoOrmEntity]), AuthModule],
   controllers: [MovimientosController],
   providers: [
     ...USE_CASES,

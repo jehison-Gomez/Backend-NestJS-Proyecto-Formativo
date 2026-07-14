@@ -1,25 +1,19 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { UsuariosModule }                   from 'src/usuarios/usuarios.module';
-import { MailModule }                        from 'src/mail/mail.module';
+import { UsuariosModule } from 'src/usuarios/usuarios.module';
 
-import { LoginUseCase }                     from './application/use-cases/login.use-case';
-import { SolicitarRecuperacionUseCase }     from './application/use-cases/solicitar-recuperacion.use-case';
-import { VerificarCodigoUseCase }           from './application/use-cases/verificar-codigo.use-case';
-import { RestablecerContrasenaUseCase }     from './application/use-cases/restablecer-contrasena.use-case';
-import { ResetCodeStore }                   from './application/reset-code.store';
-import { AuthController }                   from './infrastructure/http/auth.controller';
-import { JwtAuthGuard }                     from './infrastructure/guards/jwt-auth.guard';
+import { LoginUseCase }    from './application/use-cases/login.use-case';
+import { AuthController }  from './infrastructure/http/auth.controller';
+import { JwtAuthGuard }    from './infrastructure/guards/jwt-auth.guard';
 
 @Module({
   imports: [
-    UsuariosModule,
-    MailModule,
+    forwardRef(() => UsuariosModule),
     JwtModule.registerAsync({
-      imports:    [ConfigModule],
-      inject:     [ConfigService],
+      imports: [ConfigModule],
+      inject:  [ConfigService],
       useFactory: (config: ConfigService) => ({
         secret:      config.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: '8h' },
@@ -27,14 +21,7 @@ import { JwtAuthGuard }                     from './infrastructure/guards/jwt-au
     }),
   ],
   controllers: [AuthController],
-  providers: [
-    LoginUseCase,
-    SolicitarRecuperacionUseCase,
-    VerificarCodigoUseCase,
-    RestablecerContrasenaUseCase,
-    ResetCodeStore,
-    JwtAuthGuard,
-  ],
-  exports: [JwtAuthGuard, JwtModule],
+  providers:   [LoginUseCase, JwtAuthGuard],
+  exports:     [JwtAuthGuard, JwtModule],
 })
 export class AuthModule {}

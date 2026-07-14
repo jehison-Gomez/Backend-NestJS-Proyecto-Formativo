@@ -10,20 +10,17 @@ export class MaterialeOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255 })
   nombre: string;
 
   @Column({ type: 'varchar', length: 255 })
   descripcion: string;
 
-  @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   sku: string | null;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  marca: string | null;
-
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  modelo: string | null;
+  @Column({ type: 'varchar', length: 20, nullable: true, name: 'codigo_unspsc' })
+  codigoUnspsc: string | null;
 
   @Column({ type: 'enum', enum: TipoMateriale, nullable: false, default: TipoMateriale.ITEM, name: 'tipo' })
   tipo: TipoMateriale;
@@ -39,11 +36,11 @@ export class MaterialeOrmEntity {
   categoriaMaterial: Categoria_materialOrmEntity;
 
   @ManyToOne(() => FichaOrmEntity, (ficha) => ficha.materiales, {
-    nullable: false,
-    onDelete: 'RESTRICT',
+    nullable: true,
+    onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'ficha_id' })
-  ficha: FichaOrmEntity;
+  ficha: FichaOrmEntity | null;
 
   @ManyToOne(() => UbicacionOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'ubicacion_id' })

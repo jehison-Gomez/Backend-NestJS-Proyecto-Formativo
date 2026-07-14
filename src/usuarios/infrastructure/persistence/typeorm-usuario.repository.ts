@@ -8,12 +8,15 @@ import { UsuarioOrmEntity } from './usuario.orm-entity';
 import { Ficha } from 'src/fichas/domain/ficha.entity';
 import { Role } from 'src/roles/domain/role.entity';
 import { Sede } from 'src/sedes/domain/sede.entity';
+import { Centro } from 'src/centros/domain/centro.entity';
+import { TenantContext } from 'src/tenant/tenant.context';
 
 @Injectable()
 export class TypeOrmUsuarioRepository implements UsuarioRepository {
   constructor(
     @InjectRepository(UsuarioOrmEntity)
     private readonly repo: Repository<UsuarioOrmEntity>,
+    private readonly tenantContext: TenantContext,
   ) {}
 
   private toDomain(orm: UsuarioOrmEntity): Usuario {
@@ -45,6 +48,15 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
         nombre: orm.sede.nombre,
         direccion: orm.sede.direccion,
         estado: orm.sede.estado,
+        ...(orm.sede.centro ? {
+          centro: new Centro({
+            id: orm.sede.centro.id,
+            nombre: orm.sede.centro.nombre,
+            codigo: orm.sede.centro.codigo,
+            direccion: orm.sede.centro.direccion,
+            estado: orm.sede.centro.estado,
+          }),
+        } : {}),
       }) : null,
       creadoEn: orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
@@ -73,13 +85,18 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
   }
 
   async findAll(sedeId?: string | null): Promise<Usuario[]> {
+    const centroId = this.tenantContext.getCentroId();
     const query = this.repo.createQueryBuilder('usuario')
       .leftJoinAndSelect('usuario.ficha', 'ficha')
       .leftJoinAndSelect('usuario.role', 'role')
-      .leftJoinAndSelect('usuario.sede', 'sede');
+      .leftJoinAndSelect('usuario.sede', 'sede')
+      .leftJoin('sede.centro', 'centro');
 
+    if (centroId) {
+      query.andWhere('centro.id = :centroId', { centroId });
+    }
     if (sedeId !== undefined) {
-      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+      query.andWhere(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
     }
 
     const list = await query.getMany();
@@ -88,31 +105,32 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
 
   async findWithFilters(filters: UsuarioFilters): Promise<UsuariosPaginados> {
     const { search, rolId, estado, sedeId, soloRoles, page = 1, limit = 10 } = filters;
+    const centroId = this.tenantContext.getCentroId();
 
     const query = this.repo.createQueryBuilder('usuario')
       .leftJoinAndSelect('usuario.ficha', 'ficha')
       .leftJoinAndSelect('usuario.role', 'role')
-      .leftJoinAndSelect('usuario.sede', 'sede');
+      .leftJoinAndSelect('usuario.sede', 'sede')
+      .leftJoin('sede.centro', 'centro');
 
+    if (centroId) {
+      query.andWhere('centro.id = :centroId', { centroId });
+    }
     if (sedeId !== undefined) {
       query.andWhere(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
     }
-
     if (search) {
       query.andWhere(
         '(LOWER(usuario.nombre) LIKE :search OR LOWER(usuario.correo) LIKE :search)',
         { search: `%${search.toLowerCase()}%` },
       );
     }
-
     if (rolId) {
       query.andWhere('role.id = :rolId', { rolId });
     }
-
     if (estado) {
       query.andWhere('usuario.estado = :estado', { estado });
     }
-
     if (soloRoles && soloRoles.length > 0) {
       query.andWhere('role.nombre IN (:...soloRoles)', { soloRoles });
     }
@@ -147,9 +165,20 @@ export class TypeOrmUsuarioRepository implements UsuarioRepository {
       .leftJoinAndSelect('usuario.ficha', 'ficha')
       .leftJoinAndSelect('usuario.role', 'role')
       .leftJoinAndSelect('usuario.sede', 'sede')
+      .leftJoinAndSelect('sede.centro', 'centro')
       .where('LOWER(usuario.correo) = LOWER(:correo)', { correo: correo.trim() })
       .getOne();
     return found ? this.toDomain(found) : null;
+  }
+
+  async findAdminsBySedeId(sedeId: string): Promise<Usuario[]> {
+    const list = await this.repo.createQueryBuilder('usuario')
+      .leftJoinAndSelect('usuario.role', 'role')
+      .leftJoinAndSelect('usuario.sede', 'sede')
+      .where('sede.id = :sedeId', { sedeId })
+      .andWhere('role.nombre = :rol', { rol: 'administrador' })
+      .getMany();
+    return list.map(this.toDomain.bind(this));
   }
 
   async update(id: string, usuario: Partial<Usuario>): Promise<Usuario> {

@@ -4,7 +4,7 @@ import { UbicacionEstado } from '../../domain/ubicacion-estado.enum';
 export class CreateUbicacionDto {
   @IsString({ message: 'El nombre debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'El nombre es requerido' })
-  @MinLength(3, { message: 'El nombre debe tener al menos 3 caracteres' })
+  @MinLength(5, { message: 'El nombre debe tener al menos 5 caracteres' })
   nombre: string;
 
   @IsString({ message: 'La descripción debe ser una cadena de texto' })
@@ -23,4 +23,8 @@ export class CreateUbicacionDto {
   @IsUUID('4', { message: 'El ID del área debe ser un UUID válido' })
   @IsNotEmpty({ message: 'El área es obligatoria' })
   areaId: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del encargado debe ser un UUID válido' })
+  encargadoId?: string;
 }

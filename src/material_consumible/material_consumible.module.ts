@@ -17,14 +17,17 @@ import { UpdateMaterial_consumibleUseCase }           from './application/use-ca
 import { RemoveMaterial_consumibleUseCase }           from './application/use-cases/remove-material_consumible.use-case';
 import { IngresarStockUseCase }                       from './application/use-cases/ingresar-stock.use-case';
 import { FindKardexMaterial_consumibleUseCase }        from './application/use-cases/find-kardex-material_consumible.use-case';
+import { FindBajoStockMaterial_consumibleUseCase }    from './application/use-cases/find-bajo-stock-material_consumible.use-case';
 
 // Módulos relacionados
 import { MaterialesModule }                           from 'src/materiales/materiales.module';
 import { MovimientosModule }                          from 'src/movimientos/movimientos.module';
+import { AuthModule }                                 from 'src/auth/auth.module';
 
 const USE_CASES = [
   CreateMaterial_consumibleUseCase,
   FindAllMaterial_consumibleUseCase,
+  FindBajoStockMaterial_consumibleUseCase,
   FindOneMaterial_consumibleUseCase,
   UpdateMaterial_consumibleUseCase,
   RemoveMaterial_consumibleUseCase,
@@ -37,6 +40,7 @@ const USE_CASES = [
     TypeOrmModule.forFeature([Material_consumibleOrmEntity]),
     MaterialesModule,
     forwardRef(() => MovimientosModule),
+    AuthModule,
   ],
   controllers: [Material_consumibleController],
   providers: [
@@ -46,6 +50,6 @@ const USE_CASES = [
       useClass: TypeOrmMaterial_consumibleRepository,
     },
   ],
-  exports: [...USE_CASES],
+  exports: [...USE_CASES, Material_consumibleRepository],
 })
 export class Material_consumibleModule {}

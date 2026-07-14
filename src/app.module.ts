@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { TenantModule } from './tenant/tenant.module';
+import { TenantInterceptor } from './tenant/tenant.interceptor';
 import { JwtAuthGuard } from './auth/infrastructure/guards/jwt-auth.guard';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -30,11 +32,10 @@ import { PrestamoConsumibleModule }   from './prestamo_consumible/prestamo_consu
 import { DevolucionesModule }         from './devoluciones/devoluciones.module';
 import { DevolucionItemModule }       from './devolucion_item/devolucion_item.module';
 import { NovedadesModule }            from './novedades/novedades.module';
+import { NotificacionesModule }       from './notificaciones/notificaciones.module';
 import { KardexModule }               from './kardex/kardex.module';
 import { AuthModule }                 from './auth/auth.module';
 import { Usuario_permisosModule }     from './usuario_permisos/usuario_permisos.module';
-import { SeederModule }               from './seeder/seeder.module';
-import { NotificacionesModule }       from './notificaciones/notificaciones.module';
 
 @Module({
   imports: [
@@ -77,18 +78,16 @@ import { NotificacionesModule }       from './notificaciones/notificaciones.modu
     DevolucionesModule,
     DevolucionItemModule,
     NovedadesModule,
+    NotificacionesModule,
     KardexModule,
     AuthModule,
     Usuario_permisosModule,
-    SeederModule,
-    NotificacionesModule,
+    TenantModule,
   ],
   controllers: [],
   providers: [
-    {
-      provide:  APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    { provide: APP_GUARD,        useClass: JwtAuthGuard },
+    { provide: APP_INTERCEPTOR,  useClass: TenantInterceptor },
   ],
 })
 export class AppModule {}

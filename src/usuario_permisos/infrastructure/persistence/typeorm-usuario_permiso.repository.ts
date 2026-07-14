@@ -70,23 +70,4 @@ export class TypeOrmUsuario_permisoRepository implements UsuarioPermisoRepositor
   async remove(id: string): Promise<void> {
     await this.repo.delete(id);
   }
-
-  async removeByUsuarioId(usuarioId: string): Promise<void> {
-    await this.repo.delete({ usuario: { id: usuarioId } as any });
-  }
-
-  async createBulk(usuarioId: string, permisosIds: string[]): Promise<UsuarioPermiso[]> {
-    const entities = permisosIds.map((permisoId) =>
-      this.repo.create({
-        usuario: { id: usuarioId } as any,
-        permiso: { id: permisoId } as any,
-      }),
-    );
-    const saved = await this.repo.save(entities);
-    const reloaded = await this.repo.find({
-      where: saved.map((s) => ({ id: s.id })),
-      relations: this.RELATIONS,
-    });
-    return reloaded.map(this.toDomain.bind(this));
-  }
 }

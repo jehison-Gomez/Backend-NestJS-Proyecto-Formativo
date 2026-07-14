@@ -23,8 +23,6 @@ export class UpdateMaterialeUseCase {
     const partial: Partial<Materiale> = {};
     if (dto.nombre              !== undefined) partial.nombre            = dto.nombre;
     if (dto.descripcion         !== undefined) partial.descripcion       = dto.descripcion;
-    if (dto.marca               !== undefined) partial.marca             = dto.marca ?? null;
-    if (dto.modelo              !== undefined) partial.modelo            = dto.modelo ?? null;
     if (dto.estado              !== undefined) partial.estado            = dto.estado;
     if (dto.tipo                !== undefined) partial.tipo              = dto.tipo;
     if (dto.categoriaMaterialId !== undefined) partial.categoriaMaterial = await this.findOneCategoriaMaterial.execute(dto.categoriaMaterialId);

@@ -70,31 +70,4 @@ export class TypeOrmRol_permisoRepository implements Rol_permisoRepository {
   async remove(id: string): Promise<void> {
     await this.repo.delete(id);
   }
-
-  async findByRoleId(roleId: string): Promise<Rol_permiso[]> {
-    const list = await this.repo.find({
-      where: { role: { id: roleId } },
-      relations: ['role', 'permiso'],
-    });
-    return list.map(this.toDomain.bind(this));
-  }
-
-  async removeByRoleId(roleId: string): Promise<void> {
-    await this.repo.delete({ role: { id: roleId } as any });
-  }
-
-  async createBulk(roleId: string, permisosIds: string[]): Promise<Rol_permiso[]> {
-    const entities = permisosIds.map((permisoId) =>
-      this.repo.create({
-        role:    { id: roleId }    as any,
-        permiso: { id: permisoId } as any,
-      }),
-    );
-    const saved = await this.repo.save(entities);
-    const reloaded = await this.repo.find({
-      where: saved.map((s) => ({ id: s.id })),
-      relations: ['role', 'permiso'],
-    });
-    return reloaded.map(this.toDomain.bind(this));
-  }
 }

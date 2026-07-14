@@ -42,6 +42,6 @@ const USE_CASES = [
       useClass: TypeOrmRol_permisoRepository,
     },
   ],
-  exports: [...USE_CASES, Rol_permisoRepository],
+  exports: [...USE_CASES],
 })
 export class Rol_permisosModule {}

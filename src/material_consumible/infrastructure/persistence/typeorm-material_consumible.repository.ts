@@ -4,12 +4,14 @@ import { Repository } from 'typeorm';
 import { Material_consumibleRepository } from '../../domain/material_consumible.repository';
 import { Material_consumible } from '../../domain/material_consumible.entity';
 import { Material_consumibleOrmEntity } from './material_consumible.orm-entity';
+import { TenantContext } from 'src/tenant/tenant.context';
 
 @Injectable()
 export class TypeOrmMaterial_consumibleRepository implements Material_consumibleRepository {
   constructor(
     @InjectRepository(Material_consumibleOrmEntity)
     private readonly repo: Repository<Material_consumibleOrmEntity>,
+    private readonly tenantContext: TenantContext,
   ) {}
 
   private toDomain(orm: Material_consumibleOrmEntity): Material_consumible {
@@ -20,7 +22,7 @@ export class TypeOrmMaterial_consumibleRepository implements Material_consumible
       unidadMedida:     orm.unidadMedida,
       fechaVencimiento: orm.fechaVencimiento,
       estado:           orm.estado,
-      materiale:        orm.materiale ? { id: orm.materiale.id } as any : undefined,
+      materiale:        orm.materiale ? { id: orm.materiale.id, nombre: orm.materiale.nombre } as any : undefined,
       creadoEn:         orm.creadoEn,
       actualizadoEn:    orm.actualizadoEn,
     });
@@ -43,8 +45,46 @@ export class TypeOrmMaterial_consumibleRepository implements Material_consumible
     return (await this.findOne(saved.id))!;
   }
 
-  async findAll(): Promise<Material_consumible[]> {
-    const list = await this.repo.find({ relations: ['materiale'] });
+  async findAll(sedeId?: string | null): Promise<Material_consumible[]> {
+    const centroId = this.tenantContext.getCentroId();
+    const query = this.repo.createQueryBuilder('mc')
+      .leftJoinAndSelect('mc.materiale',      'materiale')
+      .leftJoin('materiale.ficha',            'ficha')
+      .leftJoin('ficha.programa',             'programa')
+      .leftJoin('programa.area',              'area')
+      .leftJoin('area.sede',                  'sede')
+      .leftJoin('sede.centro',                'centro');
+
+    if (centroId) {
+      query.andWhere('centro.id = :centroId', { centroId });
+    }
+    if (sedeId !== undefined) {
+      query.andWhere(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
+    return list.map(this.toDomain.bind(this));
+  }
+
+  async findBajoStock(sedeId?: string | null): Promise<Material_consumible[]> {
+    const centroId = this.tenantContext.getCentroId();
+    const query = this.repo.createQueryBuilder('mc')
+      .leftJoinAndSelect('mc.materiale',      'materiale')
+      .leftJoin('materiale.ficha',            'ficha')
+      .leftJoin('ficha.programa',             'programa')
+      .leftJoin('programa.area',              'area')
+      .leftJoin('area.sede',                  'sede')
+      .leftJoin('sede.centro',                'centro')
+      .where('mc.stockActual <= mc.stockMinimo');
+
+    if (centroId) {
+      query.andWhere('centro.id = :centroId', { centroId });
+    }
+    if (sedeId !== undefined) {
+      query.andWhere(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

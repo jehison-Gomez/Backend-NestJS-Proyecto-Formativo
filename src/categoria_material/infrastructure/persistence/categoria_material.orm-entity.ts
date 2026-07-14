@@ -1,30 +1,25 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Categoria_materialEstado } from '../../domain/categoria_material-estado.enum';
 import { MaterialeOrmEntity } from 'src/materiales/infrastructure/persistence/materiale.orm-entity';
+import { SedeOrmEntity } from 'src/sedes/infrastructure/persistence/sede.orm-entity';
 
 @Entity('categoria_material')
 export class Categoria_materialOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255 })
   nombre: string;
 
   @Column({ type: 'varchar', length: 255 })
   descripcion: string;
 
-  @Column({ type: 'int', default: 1 })
-  nivel: number;
-
   @Column({ type: 'enum', enum: Categoria_materialEstado, default: Categoria_materialEstado.ACTIVO })
   estado: Categoria_materialEstado;
 
-  @ManyToOne(() => Categoria_materialOrmEntity, (c) => c.subcategorias, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'categoria_padre_id' })
-  categoriaPadre: Categoria_materialOrmEntity | null;
-
-  @OneToMany(() => Categoria_materialOrmEntity, (c) => c.categoriaPadre)
-  subcategorias: Categoria_materialOrmEntity[];
+  @ManyToOne(() => SedeOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'sede_id' })
+  sede: SedeOrmEntity | null;
 
   @OneToMany(() => MaterialeOrmEntity, (m) => m.categoriaMaterial)
   materiales: MaterialeOrmEntity[];

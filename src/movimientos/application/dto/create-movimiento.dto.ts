@@ -10,10 +10,9 @@ export class CreateMovimientoDto {
   @Min(0)
   cantidad: number;
 
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  descripcion?: string;
+  descripcion: string;
 
   @IsOptional()
   @IsEnum(MovimientoEstado)
@@ -38,8 +37,4 @@ export class CreateMovimientoDto {
   @IsOptional()
   @IsUUID('4')
   usuarioId?: string;
-
-  @IsOptional()
-  @IsUUID('4')
-  fichaId?: string;
 }
