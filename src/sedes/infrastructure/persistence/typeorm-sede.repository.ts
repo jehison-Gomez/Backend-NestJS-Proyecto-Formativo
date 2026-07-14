@@ -5,12 +5,14 @@ import { SedeRepository } from '../../domain/sede.repository';
 import { Sede } from '../../domain/sede.entity';
 import { SedeOrmEntity } from './sede.orm-entity';
 import { Centro } from 'src/centros/domain/centro.entity';
+import { TenantContext } from 'src/tenant/tenant.context';
 
 @Injectable()
 export class TypeOrmSedeRepository implements SedeRepository {
   constructor(
     @InjectRepository(SedeOrmEntity)
     private readonly repo: Repository<SedeOrmEntity>,
+    private readonly tenantContext: TenantContext,
   ) {}
 
   private toDomain(orm: SedeOrmEntity): Sede {
@@ -48,9 +50,15 @@ export class TypeOrmSedeRepository implements SedeRepository {
   }
 
   async findAll(): Promise<Sede[]> {
-    const list = await this.repo.find({
-      relations: ['centro'],
-    });
+    const centroId = this.tenantContext.getCentroId();
+    const query = this.repo.createQueryBuilder('sede')
+      .leftJoinAndSelect('sede.centro', 'centro');
+
+    if (centroId) {
+      query.where('centro.id = :centroId', { centroId });
+    }
+
+    const list = await query.getMany();
     return list.map(this.toDomain.bind(this));
   }
 

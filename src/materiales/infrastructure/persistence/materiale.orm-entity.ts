@@ -36,11 +36,11 @@ export class MaterialeOrmEntity {
   categoriaMaterial: Categoria_materialOrmEntity;
 
   @ManyToOne(() => FichaOrmEntity, (ficha) => ficha.materiales, {
-    nullable: false,
-    onDelete: 'RESTRICT',
+    nullable: true,
+    onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'ficha_id' })
-  ficha: FichaOrmEntity;
+  ficha: FichaOrmEntity | null;
 
   @ManyToOne(() => UbicacionOrmEntity, { nullable: true, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'ubicacion_id' })

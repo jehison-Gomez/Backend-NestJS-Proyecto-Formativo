@@ -1,4 +1,4 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 import { AreaEstado } from '../../domain/area-estado.enum';
 import { SedeOrmEntity } from 'src/sedes/infrastructure/persistence/sede.orm-entity';
 import { ProgramaOrmEntity } from 'src/programas/infrastructure/persistence/programa.orm-entity';
@@ -6,11 +6,12 @@ import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuari
 import { UbicacionOrmEntity } from 'src/ubicacion/infrastructure/persistence/ubicacion.orm-entity';
 
 @Entity('areas')
+@Unique('UQ_area_nombre_sede', ['nombre', 'sede'])
 export class AreaOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255 })
   nombre: string;
 
   @Column({ type: 'text' })

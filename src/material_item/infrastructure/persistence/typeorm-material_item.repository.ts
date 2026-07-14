@@ -20,7 +20,18 @@ export class TypeOrmMaterial_itemRepository implements Material_itemRepository {
       observacion:  orm.observacion,
       estadoItem:   orm.estadoItem,
       estado:       orm.estado,
-      materiale:    orm.materiale ? { id: orm.materiale.id } as any : undefined,
+      materiale:    orm.materiale ? {
+        id:                  orm.materiale.id,
+        nombre:              orm.materiale.nombre,
+        descripcion:         orm.materiale.descripcion,
+        tipo:                orm.materiale.tipo,
+        categoriaMaterial:   orm.materiale.categoriaMaterial
+          ? { id: orm.materiale.categoriaMaterial.id, nombre: orm.materiale.categoriaMaterial.nombre }
+          : undefined,
+        ubicacion:           orm.materiale.ubicacion
+          ? { id: orm.materiale.ubicacion.id, nombre: orm.materiale.ubicacion.nombre }
+          : undefined,
+      } as any : undefined,
       creadoEn:     orm.creadoEn,
       actualizadoEn: orm.actualizadoEn,
     });
@@ -44,12 +55,17 @@ export class TypeOrmMaterial_itemRepository implements Material_itemRepository {
   }
 
   async findAll(): Promise<Material_item[]> {
-    const list = await this.repo.find({ relations: ['materiale'] });
+    const list = await this.repo.find({
+      relations: ['materiale', 'materiale.categoriaMaterial', 'materiale.ubicacion'],
+    });
     return list.map(this.toDomain.bind(this));
   }
 
   async findOne(id: string): Promise<Material_item | null> {
-    const found = await this.repo.findOne({ where: { id }, relations: ['materiale'] });
+    const found = await this.repo.findOne({
+      where: { id },
+      relations: ['materiale', 'materiale.categoriaMaterial', 'materiale.ubicacion'],
+    });
     return found ? this.toDomain(found) : null;
   }
 

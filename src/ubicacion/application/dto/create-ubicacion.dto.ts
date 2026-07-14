@@ -23,4 +23,8 @@ export class CreateUbicacionDto {
   @IsUUID('4', { message: 'El ID del área debe ser un UUID válido' })
   @IsNotEmpty({ message: 'El área es obligatoria' })
   areaId: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del encargado debe ser un UUID válido' })
+  encargadoId?: string;
 }

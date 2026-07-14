@@ -5,6 +5,7 @@ import { Ubicacion } from '../../domain/ubicacion.entity';
 import { handleDbErrors } from '../handle-db-errors';
 import { FindOneTipo_ubicacionUseCase } from 'src/tipo_ubicacion/application/use-cases/find-one-tipo_ubicacion.use-case';
 import { FindOneAreaUseCase } from 'src/areas/application/use-cases/find-one-area.use-case';
+import { FindOneUsuarioUseCase } from 'src/usuarios/application/use-cases/find-one-usuario.use-case';
 
 @Injectable()
 export class UpdateUbicacionUseCase {
@@ -12,6 +13,7 @@ export class UpdateUbicacionUseCase {
     private readonly ubicacionRepository: UbicacionRepository,
     private readonly findOneTipoUbicacion: FindOneTipo_ubicacionUseCase,
     private readonly findOneArea: FindOneAreaUseCase,
+    private readonly findOneUsuario: FindOneUsuarioUseCase,
   ) {}
 
   async execute(id: string, dto: UpdateUbicacionDto): Promise<Ubicacion> {
@@ -24,6 +26,11 @@ export class UpdateUbicacionUseCase {
     if (dto.estado          !== undefined) partial.estado         = dto.estado;
     if (dto.tipoUbicacionId !== undefined) partial.tipoUbicacion  = await this.findOneTipoUbicacion.execute(dto.tipoUbicacionId);
     if (dto.areaId          !== undefined) partial.area           = await this.findOneArea.execute(dto.areaId);
+    if (dto.encargadoId     !== undefined) {
+      partial.encargado = dto.encargadoId
+        ? await this.findOneUsuario.execute(dto.encargadoId)
+        : null;
+    }
 
     try {
       return await this.ubicacionRepository.update(id, partial);

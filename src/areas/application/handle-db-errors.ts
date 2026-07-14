@@ -7,7 +7,9 @@ export function handleDbErrors(error: any): never {
 
   if (error.code === '23505')
     throw new ConflictException(
-      `Ya existe un registro con ese valor único: ${error.detail}`
+      error.constraint?.includes('UQ_area_nombre_sede')
+        ? 'Ya existe un área con ese nombre en esta sede'
+        : `Ya existe un registro con ese valor único: ${error.detail}`
     );
 
   if (error.code === '23503')

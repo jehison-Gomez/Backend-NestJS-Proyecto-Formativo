@@ -6,4 +6,5 @@ export enum PrestamoEstado {
   ENTREGADO          = 'ENTREGADO',
   DEVUELTO           = 'DEVUELTO',
   DEVOLUCION_PARCIAL = 'DEVOLUCION_PARCIAL',
+  VENCIDO            = 'VENCIDO',
 }

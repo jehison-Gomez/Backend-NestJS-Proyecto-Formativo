@@ -29,9 +29,9 @@ export class CreateMaterialeDto {
   @IsNotEmpty()
   categoriaMaterialId: string;
 
+  @IsOptional()
   @IsUUID('4')
-  @IsNotEmpty()
-  fichaId: string;
+  fichaId?: string;
 
   @IsEnum(TipoMateriale)
   @IsNotEmpty()

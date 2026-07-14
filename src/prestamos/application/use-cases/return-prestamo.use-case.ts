@@ -7,6 +7,7 @@ import { Material_itemRepository } from 'src/material_item/domain/material_item.
 import { Material_itemEstado } from 'src/material_item/domain/material_item-estado.enum';
 import { CreateNotificacionUseCase } from 'src/notificaciones/application/use-cases/create-notificacion.use-case';
 import { NotificacionTipo } from 'src/notificaciones/domain/notificacion-tipo.enum';
+import { CreatePrestamoHistorialUseCase } from 'src/prestamo_historial/application/use-cases/create-prestamo_historial.use-case';
 
 @Injectable()
 export class ReturnPrestamoUseCase {
@@ -15,6 +16,7 @@ export class ReturnPrestamoUseCase {
     private readonly prestamoItemRepository: PrestamoItemRepository,
     private readonly materialItemRepository: Material_itemRepository,
     private readonly createNotificacion: CreateNotificacionUseCase,
+    private readonly createHistorial: CreatePrestamoHistorialUseCase,
   ) {}
 
   async execute(id: string): Promise<Prestamo> {
@@ -51,6 +53,16 @@ export class ReturnPrestamoUseCase {
         });
       }
     } catch { /* no interrumpir si falla la notificación */ }
+
+    try {
+      await this.createHistorial.execute({
+        prestamoId:     id,
+        estadoAnterior: prestamo.estado,
+        estadoNuevo:    PrestamoEstado.DEVUELTO,
+        usuarioId:      null,
+        observacion:    null,
+      });
+    } catch { /* no interrumpir si falla el historial */ }
 
     return updated;
   }

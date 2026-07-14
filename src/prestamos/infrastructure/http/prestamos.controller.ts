@@ -12,8 +12,11 @@ import { ApprovePrestamoUseCase }             from '../../application/use-cases/
 import { RejectPrestamoUseCase }              from '../../application/use-cases/reject-prestamo.use-case';
 import { DeliverPrestamoUseCase }             from '../../application/use-cases/deliver-prestamo.use-case';
 import { ReturnPrestamoUseCase }              from '../../application/use-cases/return-prestamo.use-case';
-import { CambiarUbicacionMaterialUseCase }    from '../../application/use-cases/cambiar-ubicacion-material.use-case';
-import { CreatePrestamoDto }                  from '../../application/dto/create-prestamo.dto';
+import { CambiarUbicacionMaterialUseCase }        from '../../application/use-cases/cambiar-ubicacion-material.use-case';
+import { FindByPrestamoPrestamoHistorialUseCase } from 'src/prestamo_historial/application/use-cases/find-by-prestamo-prestamo_historial.use-case';
+import { CheckVencidosPrestamosUseCase }          from '../../application/use-cases/check-vencidos-prestamos.use-case';
+import { FindPorBodegaUseCase }                   from '../../application/use-cases/find-por-bodega.use-case';
+import { CreatePrestamoDto }                      from '../../application/dto/create-prestamo.dto';
 import { UpdatePrestamoDto }                  from '../../application/dto/update-prestamo.dto';
 import { ApprovePrestamoDto }                 from '../../application/dto/approve-prestamo.dto';
 import { RejectPrestamoDto }                  from '../../application/dto/reject-prestamo.dto';
@@ -33,12 +36,20 @@ export class PrestamosController {
     private readonly rejectPrestamoUseCase:           RejectPrestamoUseCase,
     private readonly deliverPrestamoUseCase:          DeliverPrestamoUseCase,
     private readonly returnPrestamoUseCase:           ReturnPrestamoUseCase,
-    private readonly cambiarUbicacionMaterialUseCase: CambiarUbicacionMaterialUseCase,
+    private readonly cambiarUbicacionMaterialUseCase:         CambiarUbicacionMaterialUseCase,
+    private readonly findHistorialByPrestamoUseCase:          FindByPrestamoPrestamoHistorialUseCase,
+    private readonly checkVencidosPrestamosUseCase:           CheckVencidosPrestamosUseCase,
+    private readonly findPorBodegaUseCase:                    FindPorBodegaUseCase,
   ) {}
 
   @Post()
   create(@Body() dto: CreatePrestamoDto) {
     return this.createPrestamoUseCase.execute(dto);
+  }
+
+  @Post('revisar-vencidos')
+  revisarVencidos() {
+    return this.checkVencidosPrestamosUseCase.execute();
   }
 
   @Get()
@@ -47,9 +58,19 @@ export class PrestamosController {
     return this.findAllPrestamosUseCase.execute(sedeId);
   }
 
+  @Get('por-bodega')
+  porBodega(@CurrentUser() user: JwtPayload) {
+    return this.findPorBodegaUseCase.execute(user.sub);
+  }
+
   @Get('usuario/:usuarioId')
   findByUsuario(@Param('usuarioId', ParseUUIDPipe) usuarioId: string) {
     return this.findByUsuarioPrestamoUseCase.execute(usuarioId);
+  }
+
+  @Get(':id/historial')
+  historial(@Param('id', ParseUUIDPipe) id: string) {
+    return this.findHistorialByPrestamoUseCase.execute(id);
   }
 
   @Get(':id')

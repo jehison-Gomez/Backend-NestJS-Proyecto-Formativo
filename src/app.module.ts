@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { TenantModule } from './tenant/tenant.module';
+import { TenantInterceptor } from './tenant/tenant.interceptor';
 import { JwtAuthGuard } from './auth/infrastructure/guards/jwt-auth.guard';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -80,10 +82,12 @@ import { Usuario_permisosModule }     from './usuario_permisos/usuario_permisos.
     KardexModule,
     AuthModule,
     Usuario_permisosModule,
+    TenantModule,
   ],
   controllers: [],
   providers: [
-    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD,        useClass: JwtAuthGuard },
+    { provide: APP_INTERCEPTOR,  useClass: TenantInterceptor },
   ],
 })
 export class AppModule {}

@@ -10,6 +10,8 @@ import { UsuarioRepository } from 'src/usuarios/domain/usuario.repository';
 import { CreateNotificacionUseCase } from 'src/notificaciones/application/use-cases/create-notificacion.use-case';
 import { NotificacionTipo } from 'src/notificaciones/domain/notificacion-tipo.enum';
 import { Usuario } from 'src/usuarios/domain/usuario.entity';
+import { CreatePrestamoHistorialUseCase } from 'src/prestamo_historial/application/use-cases/create-prestamo_historial.use-case';
+import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
 
 @Injectable()
 export class CreatePrestamoUseCase {
@@ -20,6 +22,7 @@ export class CreatePrestamoUseCase {
     private readonly fichaRepository: FichaRepository,
     private readonly usuarioRepository: UsuarioRepository,
     private readonly createNotificacion: CreateNotificacionUseCase,
+    private readonly createHistorial: CreatePrestamoHistorialUseCase,
   ) {}
 
   async execute(dto: CreatePrestamoDto): Promise<Prestamo> {
@@ -49,6 +52,17 @@ export class CreatePrestamoUseCase {
     } catch (error) {
       handleDbErrors(error);
     }
+
+    // Registrar entrada inicial en el historial
+    try {
+      await this.createHistorial.execute({
+        prestamoId:     prestamo!.id,
+        estadoAnterior: null,
+        estadoNuevo:    PrestamoEstado.PENDIENTE,
+        usuarioId:      dto.solicitanteId ?? null,
+        observacion:    'Préstamo creado',
+      });
+    } catch { /* no interrumpir */ }
 
     // Notificar al admin de la sede del material solicitado
     try {

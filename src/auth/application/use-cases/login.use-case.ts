@@ -22,11 +22,12 @@ export class LoginUseCase {
       throw new UnauthorizedException('Usuario desactivado');
 
     const payload = {
-      sub:    usuario.id,
-      correo: usuario.correo,
-      nombre: usuario.nombre,
-      rol:    usuario.role?.nombre,
-      sedeId: usuario.sede?.id ?? null,
+      sub:      usuario.id,
+      correo:   usuario.correo,
+      nombre:   usuario.nombre,
+      rol:      usuario.role?.nombre,
+      sedeId:   usuario.sede?.id ?? null,
+      centroId: usuario.sede?.centro?.id ?? null,
     };
 
     return { access_token: this.jwtService.sign(payload) };

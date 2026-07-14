@@ -6,6 +6,7 @@ export type JwtPayload = {
   nombre: string;
   rol: string;
   sedeId: string | null;
+  centroId: string | null;
 };
 
 export const CurrentUser = createParamDecorator(

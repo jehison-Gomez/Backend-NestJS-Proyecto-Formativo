@@ -15,11 +15,13 @@ import { FindAllUbicacionUseCase }          from './application/use-cases/find-a
 import { FindOneUbicacionUseCase }          from './application/use-cases/find-one-ubicacion.use-case';
 import { UpdateUbicacionUseCase }           from './application/use-cases/update-ubicacion.use-case';
 import { RemoveUbicacionUseCase }           from './application/use-cases/remove-ubicacion.use-case';
+import { FindMiBodegaUseCase }              from './application/use-cases/find-mi-bodega.use-case';
 
 // Módulos relacionados
 import { Tipo_ubicacionModule }             from 'src/tipo_ubicacion/tipo_ubicacion.module';
 import { AreasModule }                      from 'src/areas/areas.module';
 import { AuthModule }                       from 'src/auth/auth.module';
+import { UsuariosModule }                   from 'src/usuarios/usuarios.module';
 
 const USE_CASES = [
   CreateUbicacionUseCase,
@@ -27,6 +29,7 @@ const USE_CASES = [
   FindOneUbicacionUseCase,
   UpdateUbicacionUseCase,
   RemoveUbicacionUseCase,
+  FindMiBodegaUseCase,
 ];
 
 @Module({
@@ -35,6 +38,7 @@ const USE_CASES = [
     Tipo_ubicacionModule,
     AreasModule,
     AuthModule,
+    UsuariosModule,
   ],
   controllers: [UbicacionController],
   providers: [
@@ -44,6 +48,6 @@ const USE_CASES = [
       useClass: TypeOrmUbicacionRepository,
     },
   ],
-  exports: [...USE_CASES],
+  exports: [...USE_CASES, UbicacionRepository],
 })
 export class UbicacionModule {}

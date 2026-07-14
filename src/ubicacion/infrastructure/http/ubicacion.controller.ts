@@ -7,6 +7,7 @@ import { FindAllUbicacionUseCase }  from '../../application/use-cases/find-all-u
 import { FindOneUbicacionUseCase }   from '../../application/use-cases/find-one-ubicacion.use-case';
 import { UpdateUbicacionUseCase }    from '../../application/use-cases/update-ubicacion.use-case';
 import { RemoveUbicacionUseCase }    from '../../application/use-cases/remove-ubicacion.use-case';
+import { FindMiBodegaUseCase }       from '../../application/use-cases/find-mi-bodega.use-case';
 import { CreateUbicacionDto }        from '../../application/dto/create-ubicacion.dto';
 import { UpdateUbicacionDto }        from '../../application/dto/update-ubicacion.dto';
 
@@ -19,11 +20,17 @@ export class UbicacionController {
     private readonly findOneUbicacionUseCase:  FindOneUbicacionUseCase,
     private readonly updateUbicacionUseCase:   UpdateUbicacionUseCase,
     private readonly removeUbicacionUseCase:   RemoveUbicacionUseCase,
+    private readonly findMiBodegaUseCase:      FindMiBodegaUseCase,
   ) {}
 
   @Post()
   create(@Body() dto: CreateUbicacionDto) {
     return this.createUbicacionUseCase.execute(dto);
+  }
+
+  @Get('mi-bodega')
+  findMiBodega(@CurrentUser() user: JwtPayload) {
+    return this.findMiBodegaUseCase.execute(user.sub);
   }
 
   @Get()

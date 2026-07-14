@@ -6,12 +6,14 @@ import { Area } from '../../domain/area.entity';
 import { AreaOrmEntity } from './area.orm-entity';
 import { Sede } from 'src/sedes/domain/sede.entity';
 import { Usuario } from 'src/usuarios/domain/usuario.entity';
+import { TenantContext } from 'src/tenant/tenant.context';
 
 @Injectable()
 export class TypeOrmAreaRepository implements AreaRepository {
   constructor(
     @InjectRepository(AreaOrmEntity)
     private readonly repo: Repository<AreaOrmEntity>,
+    private readonly tenantContext: TenantContext,
   ) {}
 
   private toDomain(orm: AreaOrmEntity): Area {
@@ -55,12 +57,17 @@ export class TypeOrmAreaRepository implements AreaRepository {
   }
 
   async findAll(sedeId?: string | null): Promise<Area[]> {
+    const centroId = this.tenantContext.getCentroId();
     const query = this.repo.createQueryBuilder('area')
       .leftJoinAndSelect('area.sede', 'sede')
-      .leftJoinAndSelect('area.usuarioLider', 'usuarioLider');
+      .leftJoinAndSelect('area.usuarioLider', 'usuarioLider')
+      .leftJoin('sede.centro', 'centro');
 
+    if (centroId) {
+      query.andWhere('centro.id = :centroId', { centroId });
+    }
     if (sedeId !== undefined) {
-      query.where(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
+      query.andWhere(sedeId ? 'sede.id = :sedeId' : '1 = 0', sedeId ? { sedeId } : {});
     }
 
     const list = await query.getMany();

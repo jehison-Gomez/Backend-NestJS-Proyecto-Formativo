@@ -10,6 +10,7 @@ import { FindOneMaterial_consumibleUseCase } from 'src/material_consumible/appli
 import { UpdateMaterial_consumibleUseCase } from 'src/material_consumible/application/use-cases/update-material_consumible.use-case';
 import { CreateNotificacionUseCase } from 'src/notificaciones/application/use-cases/create-notificacion.use-case';
 import { NotificacionTipo } from 'src/notificaciones/domain/notificacion-tipo.enum';
+import { CreatePrestamoHistorialUseCase } from 'src/prestamo_historial/application/use-cases/create-prestamo_historial.use-case';
 
 @Injectable()
 export class DeliverPrestamoUseCase {
@@ -21,6 +22,7 @@ export class DeliverPrestamoUseCase {
     private readonly findOneConsumible: FindOneMaterial_consumibleUseCase,
     private readonly updateConsumible: UpdateMaterial_consumibleUseCase,
     private readonly createNotificacion: CreateNotificacionUseCase,
+    private readonly createHistorial: CreatePrestamoHistorialUseCase,
   ) {}
 
   async execute(id: string): Promise<Prestamo> {
@@ -71,6 +73,16 @@ export class DeliverPrestamoUseCase {
         });
       }
     } catch { /* no interrumpir si falla la notificación */ }
+
+    try {
+      await this.createHistorial.execute({
+        prestamoId:     id,
+        estadoAnterior: prestamo.estado,
+        estadoNuevo:    PrestamoEstado.ENTREGADO,
+        usuarioId:      null,
+        observacion:    null,
+      });
+    } catch { /* no interrumpir si falla el historial */ }
 
     return updated;
   }

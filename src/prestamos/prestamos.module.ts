@@ -16,7 +16,9 @@ import { ApprovePrestamoUseCase }         from './application/use-cases/approve-
 import { RejectPrestamoUseCase }          from './application/use-cases/reject-prestamo.use-case';
 import { DeliverPrestamoUseCase }         from './application/use-cases/deliver-prestamo.use-case';
 import { ReturnPrestamoUseCase }          from './application/use-cases/return-prestamo.use-case';
-import { CambiarUbicacionMaterialUseCase } from './application/use-cases/cambiar-ubicacion-material.use-case';
+import { CambiarUbicacionMaterialUseCase }   from './application/use-cases/cambiar-ubicacion-material.use-case';
+import { CheckVencidosPrestamosUseCase }     from './application/use-cases/check-vencidos-prestamos.use-case';
+import { FindPorBodegaUseCase }             from './application/use-cases/find-por-bodega.use-case';
 
 import { UsuariosModule }               from 'src/usuarios/usuarios.module';
 import { FichasModule }                from 'src/fichas/fichas.module';
@@ -28,6 +30,7 @@ import { NotificacionesModule }        from 'src/notificaciones/notificaciones.m
 import { PrestamoItemModule }          from 'src/prestamo_item/prestamo_item.module';
 import { PrestamoConsumibleModule }    from 'src/prestamo_consumible/prestamo_consumible.module';
 import { Material_consumibleModule }   from 'src/material_consumible/material_consumible.module';
+import { PrestamoHistorialModule }     from 'src/prestamo_historial/prestamo_historial.module';
 
 const USE_CASES = [
   CreatePrestamoUseCase,
@@ -41,6 +44,8 @@ const USE_CASES = [
   DeliverPrestamoUseCase,
   ReturnPrestamoUseCase,
   CambiarUbicacionMaterialUseCase,
+  CheckVencidosPrestamosUseCase,
+  FindPorBodegaUseCase,
 ];
 
 @Module({
@@ -56,6 +61,7 @@ const USE_CASES = [
     PrestamoItemModule,
     PrestamoConsumibleModule,
     Material_consumibleModule,
+    PrestamoHistorialModule,
   ],
   controllers: [PrestamosController],
   providers: [

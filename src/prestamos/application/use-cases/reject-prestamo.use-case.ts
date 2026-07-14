@@ -6,6 +6,7 @@ import { PrestamoEstado } from '../../domain/prestamo-estado.enum';
 import { FindOneUsuarioUseCase } from 'src/usuarios/application/use-cases/find-one-usuario.use-case';
 import { CreateNotificacionUseCase } from 'src/notificaciones/application/use-cases/create-notificacion.use-case';
 import { NotificacionTipo } from 'src/notificaciones/domain/notificacion-tipo.enum';
+import { CreatePrestamoHistorialUseCase } from 'src/prestamo_historial/application/use-cases/create-prestamo_historial.use-case';
 
 @Injectable()
 export class RejectPrestamoUseCase {
@@ -13,6 +14,7 @@ export class RejectPrestamoUseCase {
     private readonly prestamoRepository: PrestamoRepository,
     private readonly findOneUsuario: FindOneUsuarioUseCase,
     private readonly createNotificacion: CreateNotificacionUseCase,
+    private readonly createHistorial: CreatePrestamoHistorialUseCase,
   ) {}
 
   async execute(id: string, dto: RejectPrestamoDto): Promise<Prestamo> {
@@ -47,6 +49,16 @@ export class RejectPrestamoUseCase {
         });
       }
     } catch { /* no interrumpir si falla la notificación */ }
+
+    try {
+      await this.createHistorial.execute({
+        prestamoId:     id,
+        estadoAnterior: prestamo.estado,
+        estadoNuevo:    PrestamoEstado.RECHAZADO,
+        usuarioId:      dto.revisadoPorId ?? null,
+        observacion:    dto.observacionRevision ?? null,
+      });
+    } catch { /* no interrumpir si falla el historial */ }
 
     return updated;
   }

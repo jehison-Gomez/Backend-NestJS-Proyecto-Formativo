@@ -1,98 +1,101 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Sistema de Gestión de Materiales SENA
+## Backend — Instrucciones para ejecutar
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Requisitos previos
 
-## Description
+Asegurate de tener instalado en tu computador:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+| Herramienta | Como verificar |
+|---|---|
+| Node.js (version 18 o superior) | `node --version` |
+| npm | `npm --version` |
+| Docker Desktop | `docker --version` |
 
-## Project setup
+---
+
+## PASO 1 — Iniciar la base de datos
+
+La base de datos es PostgreSQL y corre con Docker.
+
+Abre una terminal en esta carpeta y ejecuta:
 
 ```bash
-$ npm install
+docker-compose up -d
 ```
 
-## Compile and run the project
+Verifica que este corriendo:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker ps
 ```
 
-## Run tests
+Debes ver el contenedor **proyecto-sena** con estado **Up**.
+
+---
+
+## PASO 2 — Instalar dependencias
+
+Solo la primera vez que ejecutes el proyecto:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## PASO 3 — Iniciar el servidor
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Cuando el backend este listo veras este mensaje en consola:
 
-## Resources
+```
+[NestApplication] Application is running on: http://[::1]:3000
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+El backend queda disponible en: **http://localhost:3000**
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## Variables de entorno
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+El archivo `.env` ya esta configurado con los siguientes valores:
 
-## Stay in touch
+```
+DB_HOST=localhost
+DB_PORT=5433
+DB_USERNAME=postgres
+DB_PASSWORD=admin123
+DB_NAME=proyecto_sena
+JWT_SECRET=supersecretkey_dev_2024
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## Comandos disponibles
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+| Comando | Descripcion |
+|---|---|
+| `npm run start:dev` | Inicia en modo desarrollo con recarga automatica |
+| `npm run start` | Inicia sin recarga automatica |
+| `npm run build` | Compila el proyecto TypeScript |
+| `npm run start:prod` | Ejecuta la version compilada |
+
+---
+
+## Solucion de problemas
+
+**Error de conexion a la base de datos:**
+```
+Error: connect ECONNREFUSED 127.0.0.1:5433
+```
+Solucion: ejecuta primero `docker-compose up -d` y espera unos segundos.
+
+**Para detener la base de datos:**
+```bash
+docker-compose down
+```

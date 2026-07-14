@@ -2,6 +2,7 @@ import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColum
 import { UbicacionEstado } from '../../domain/ubicacion-estado.enum';
 import { Tipo_ubicacionOrmEntity } from 'src/tipo_ubicacion/infrastructure/persistence/tipo_ubicacion.orm-entity';
 import { AreaOrmEntity } from 'src/areas/infrastructure/persistence/area.orm-entity';
+import { UsuarioOrmEntity } from 'src/usuarios/infrastructure/persistence/usuario.orm-entity';
 
 @Entity('ubicacion')
 export class UbicacionOrmEntity {
@@ -30,6 +31,10 @@ export class UbicacionOrmEntity {
   })
   @JoinColumn({ name: 'area_id' })
   area: AreaOrmEntity;
+
+  @ManyToOne(() => UsuarioOrmEntity, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'encargado_id' })
+  encargado: UsuarioOrmEntity | null;
 
   @CreateDateColumn({ name: 'creado_en' })
   creadoEn: Date;
